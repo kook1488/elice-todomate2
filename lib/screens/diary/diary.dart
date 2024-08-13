@@ -1,1 +1,1 @@
-//test commited
+//class diary{}
