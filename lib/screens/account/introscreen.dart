@@ -1,7 +1,7 @@
-import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:todomate/screens/account/loginscreen.dart';
 
+import 'package:flutter/material.dart';
+import 'package:todomate/screens/account/loginscreen.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
