@@ -1,1 +1,1 @@
-//test commit
+//class diary{}
