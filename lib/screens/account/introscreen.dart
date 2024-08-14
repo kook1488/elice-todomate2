@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todomate/screens/account/account.dart';
 import 'dart:async';
 import 'package:todomate/screens/account/loginscreen.dart';
 
@@ -41,7 +42,7 @@ class _IntroScreenState extends State<IntroScreen> {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const LoginScreen()),
+        MaterialPageRoute(builder: (context) => LoginScreen()),
       );
     });
   }

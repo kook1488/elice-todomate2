@@ -31,6 +31,15 @@ dependencies:
   flutter:
     sdk: flutter
   sqflite: ^2.3.3+1
+  mysql_client: ^0.0.27
+  shared_preferences: ^2.3.1
+  crypto: ^3.0.4
+  http: ^1.2.2
+  fluttertoast: ^8.2.6
+  get:
+  google_fonts:
+  web_socket_channel: ^3.0.1
+
 
 
   # The following adds the Cupertino Icons font to your application.
