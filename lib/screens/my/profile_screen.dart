@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(MyApp());
-} //commit 연습3
+import 'delete_account.dart';
+import 'nickname_change.dart';
+import 'password_change.dart';
+import 'profile_change.dart';
 
-class MyApp extends StatelessWidget {
+class profile_screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,12 +30,15 @@ class MyApp extends StatelessWidget {
                     Row(
                       children: [
                         // 프로필 이미지
-                        CircleAvatar(
-                          radius: 50.0,
-                          backgroundImage: AssetImage(
-                              'asset/image/avatar.png'), // 프로필 이미지 경로
+                        Padding(
+                          padding: const EdgeInsets.only(left: 40.0),
+                          child: CircleAvatar(
+                            radius: 50.0,
+                            backgroundImage: AssetImage(
+                                'asset/image/avatar.png'), // 프로필 이미지 경로
+                          ),
                         ),
-                        SizedBox(width: 16.0), // 프로필 이미지와 텍스트 사이 간격
+                        SizedBox(width: 60.0), // 프로필 이미지와 텍스트 사이 간격
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -101,7 +105,8 @@ class MyApp extends StatelessWidget {
                       children: [
                         Column(
                           children: [
-                            Icon(Icons.star, size: 40.0, color: Colors.orange),
+                            Icon(Icons.school,
+                                size: 40.0, color: Colors.orange),
                             Text('4',
                                 style: TextStyle(
                                     fontSize: 16.0, color: Colors.white)),
@@ -141,16 +146,62 @@ class MyApp extends StatelessWidget {
 
               // 하단 버튼 섹션
               Expanded(
+                // 이쪽 버튼 사이에 구현이 안되는거 해결 해야할듯
                 child: Container(
                   color: Colors.white,
                   width: 320.0,
                   child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.start, // Column의 주 축에서 시작
+                    crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 꽉 차게
                     children: [
-                      buildMenuItem(Icons.person, "프로필 이미지"),
-                      buildMenuItem(Icons.sync, "닉네임 변경"),
-                      buildMenuItem(Icons.lock, "비밀번호 변경"),
-                      buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
-                    ], /////
+                      SizedBox(height: 35.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => profile_change()),
+                          );
+                        },
+                        child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
+                      ),
+                      SizedBox(height: 12.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => nickname_change()),
+                          );
+                        },
+                        child: buildMenuItem(Icons.sync, "닉네임 변경"),
+                      ), // 간격 추가
+
+                      SizedBox(height: 12.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => password_change()),
+                          );
+                        },
+                        child: buildMenuItem(Icons.lock, "비밀번호 변경"),
+                      ), // 간격 추가
+
+                      SizedBox(height: 12.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => delete_account()),
+                          );
+                        },
+                        child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
+                      ), // 간격 추가
+                    ],
                   ),
                 ),
               ),
