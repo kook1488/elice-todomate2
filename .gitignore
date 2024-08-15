@@ -4,7 +4,9 @@
 ### 임시로 assets 진행 방향에 따라.. 무시하기 위해 추가함 by kitae
 # chat 파트는 asset이 아니고 assets 로 설청을 처음에 해서 사용중였음. by kitae
 
-/assets/
+/assets
+/asset/images
+
 
 ### Dart ###
 # See https://www.dartlang.org/guides/libraries/private-files
@@ -15,6 +17,28 @@
 build/
 # If you're building an application, you may want to check-in your pubspec.lock
 pubspec.lock
+
+# MacOS 관련 생성되는 임시 파일들
+Podfile.lock
+ios/Podfile.lock
+ios/Runner/AppDelegate.swift
+# macOS system files
+.DS_Store
+**/.DS_Store
+.AppleDouble
+.LSOverride
+# swift 관련
+ios/Runner/AppDelegate.swift
+
+# Files that might appear in the root of a volume
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.
