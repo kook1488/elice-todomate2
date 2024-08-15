@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:todomate/chat/chat_inner_screen/chat_inner_screen.dart';
-import 'package:todomate/chat/chats_screen/models/chat_model.dart';
+import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/core/app_export.dart';
 
 class ChatsItemWidget extends StatelessWidget {

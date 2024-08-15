@@ -98,3 +98,18 @@ List<Map<String, dynamic>> itemsList = [
     'messagesCount': 0,
   },
 ];
+
+/* DB -- 채팅방 테이블
+CREATE TABLE chats(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  image TEXT,
+  title TEXT,
+  pinned INTEGER,
+  muted INTEGER,
+  archived INTEGER,
+  name TEXT,
+  lastMessage TEXT,
+  date TEXT,
+  unread INTEGER
+);
+*/

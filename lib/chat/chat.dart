@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:todomate/chat/chats_screen/chats_screen.dart';
-import 'package:todomate/chat/core/user_info.dart';
+import 'package:todomate/chat/models/user_info.dart';
 
 
 

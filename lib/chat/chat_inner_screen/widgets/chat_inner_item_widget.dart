@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:todomate/chat/core/app_export.dart';
-import 'package:todomate/chat/chat_inner_screen/models/message_model.dart';
+import 'package:todomate/chat/models/message_model.dart';
 import 'package:intl/intl.dart';
 
 class ChatInnerItemWidget extends StatelessWidget {

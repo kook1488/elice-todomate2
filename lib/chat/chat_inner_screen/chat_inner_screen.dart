@@ -7,11 +7,11 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:todomate/chat/chat_inner_screen/chat_input_section.dart';
-import 'package:todomate/chat/chat_inner_screen/models/message_model.dart';
+import 'package:todomate/chat/models/message_model.dart';
 import 'package:todomate/chat/chat_inner_screen/widgets/chat_inner_item_widget.dart';
 import 'package:todomate/chat/core/app_export.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
-import 'package:todomate/chat/core/user_info.dart';
+import 'package:todomate/chat/models/user_info.dart';
 
 class ChatInnerScreen extends StatefulWidget {
   final String jsonFileName;

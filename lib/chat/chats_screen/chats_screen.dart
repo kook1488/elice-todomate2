@@ -4,11 +4,11 @@ import 'package:gap/gap.dart';
 import 'package:todomate/chat/core/app_export.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 
-import 'models/chat_model.dart';
+import '../models/chat_model.dart';
 import 'widgets/chats_item_widget.dart';
 
 import 'package:todomate/chat/chat_inner_screen/chat_inner_screen.dart';
-import 'package:todomate/chat/core/user_info.dart';
+import 'package:todomate/chat/models/user_info.dart';
 
 class ChatsScreen extends StatefulWidget {
 final UserInfo userInfo;

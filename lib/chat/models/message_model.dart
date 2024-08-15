@@ -43,3 +43,20 @@ class MessageModel {
     'read': read,
   };
 }
+
+/* 
+// 메시지 테이블 생성 명령
+CREATE TABLE messages(
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  chatId INTEGER,
+  sender TEXT,
+  userId INTEGER,
+  avatarImage TEXT,
+  attachedImage TEXT,
+  message TEXT,
+  timestamp TEXT,
+  read INTEGER,
+  FOREIGN KEY (chatId) REFERENCES chats (id)
+);
+*/
+
