@@ -6,21 +6,35 @@ import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'package:todomate/chat/core/app_export.dart';
-
 import 'package:todomate/chat/chat_inner_screen/chat_input_section.dart';
 import 'package:todomate/chat/chat_inner_screen/widgets/chat_inner_item_widget.dart';
+import 'package:todomate/chat/core/app_export.dart';
 
 class ChatInnerScreen extends StatefulWidget {
   final String? chatId;
 
-  const ChatInnerScreen({Key? key, this.chatId}) : super(key: key);
+  const ChatInnerScreen({super.key, this.chatId});
 
   @override
   _ChatInnerScreenState createState() => _ChatInnerScreenState();
 }
 
 class _ChatInnerScreenState extends State<ChatInnerScreen> {
+  // 로그인 사용자 정보
+  static const String userNickName = '플로터';
+  static const int userId = 1;
+  static const String userEmail = 'plot@gmail.com';
+  static const String userName = '민수';
+  static const String avatarPath = 'assets/images/avata_1.png';
+  // 채팅 상대방 정보
+  static const String otherNickName = '조이';
+  static const int othreUserId = 3;
+  static const String otherEmail = 'yoy@gmail.com';
+  static const String otherName = '영희';
+  static const String otherAvatarPath = 'assets/images/avata_3.png';
+  // static const Color appBarColor = Color.fromARGB(255, 190, 144, 4);
+  // static const Color bgColor = Colors.amber;
+
   List<dynamic> messages = [];
   File? _image;
   final picker = ImagePicker();
@@ -80,10 +94,10 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
       setState(() {
         messages.add({
           'id': messages.length + 1,
-          'sender': 'Me',
-          'userId': 1,
+          'sender': userNickName,
+          'userId': userId,
           'message': _messageController.text,
-          'attach': _image?.path,
+          'attach': avatarPath,
           'timestamp': DateTime.now().toIso8601String(),
           'read': false,
         });
@@ -125,7 +139,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
             crossAxisAlignment: CrossAxisAlignment.center, // 수직으로 가운데 정렬
             children: [
               CircleAvatar(
-                backgroundImage: AssetImage('assets/images/avata_3.png'),
+                backgroundImage: AssetImage(otherAvatarPath),
                 radius: 45,
               ),
               SizedBox(
@@ -133,7 +147,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
               ),
               Expanded(
                 child: Text(
-                  '영희',
+                  otherNickName,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
