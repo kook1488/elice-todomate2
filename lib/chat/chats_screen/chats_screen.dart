@@ -8,9 +8,12 @@ import 'models/chat_model.dart';
 import 'widgets/chats_item_widget.dart';
 
 import 'package:todomate/chat/chat_inner_screen/chat_inner_screen.dart';
+import 'package:todomate/chat/core/user_info.dart';
 
 class ChatsScreen extends StatefulWidget {
-  const ChatsScreen({super.key});
+final UserInfo userInfo;
+
+  const ChatsScreen({Key? key, required this.userInfo}) : super(key: key);
 
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
@@ -100,6 +103,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                           chatTitle: chatList[index].title,
                           otherAvatarPath: chatList[index].image,
                           chatId: chatList[index].id,
+                          userInfo: widget.userInfo,
                         ),                      ),
                     ),
                     child: ChatsItemWidget(chatList[index]),

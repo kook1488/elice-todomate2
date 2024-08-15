@@ -11,12 +11,14 @@ import 'package:todomate/chat/chat_inner_screen/models/message_model.dart';
 import 'package:todomate/chat/chat_inner_screen/widgets/chat_inner_item_widget.dart';
 import 'package:todomate/chat/core/app_export.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
+import 'package:todomate/chat/core/user_info.dart';
 
 class ChatInnerScreen extends StatefulWidget {
   final String jsonFileName;
   final String chatTitle;
   final String otherAvatarPath;
   final int chatId;
+  final UserInfo userInfo;
 
   const ChatInnerScreen({
     super.key, 
@@ -24,6 +26,7 @@ class ChatInnerScreen extends StatefulWidget {
     required this.chatTitle, 
     required this.otherAvatarPath,
     required this.chatId,
+    required this.userInfo,
   });
 
   @override
@@ -88,10 +91,10 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
       setState(() {
         messages.add(MessageModel(
           id: messages.length + 1,
-          sender: userNickName,
-          userId: userId,
+          sender: widget.userInfo.nickName,
+          userId: widget.userInfo.id,
           message: _messageController.text,
-          avatarImage: avatarPath,
+          avatarImage: widget.userInfo.avatarPath,
           attachedImage: _image?.path,
           timestamp: DateTime.now(),
           read: false,
