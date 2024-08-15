@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:todomate/chat/core/app_export.dart';
+import 'package:todomate/chat/chat_inner_screen/models/message_model.dart';
+import 'package:intl/intl.dart';
 
 class ChatInnerItemWidget extends StatelessWidget {
   final bool isRight;
-  final String? attachedImage;
-  final String? text;
-  final String date;
+  final MessageModel message;
   final bool? highlight;
 
   const ChatInnerItemWidget({
     Key? key,
     this.isRight = false,
     this.highlight,
-    this.attachedImage,
-    this.text,
-    required this.date,
+    required this.message,
   }) : super(key: key);
 
   @override
@@ -44,7 +42,7 @@ class ChatInnerItemWidget extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (attachedImage != null)
+                  if (message.attachedImage != null)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 8),
                       child: ClipRRect(
@@ -55,20 +53,19 @@ class ChatInnerItemWidget extends StatelessWidget {
                             maxHeight: 150,
                           ),
                           child: Image.asset(
-                            attachedImage!,
+                            message.attachedImage!,
                             fit: BoxFit.contain,
                           ),
                         ),
                       ),
                     ),
-                  if (text != null)
-                    Text(
-                      text!,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: isRight ? Colors.white : Colors.black,
-                      ),
+                  Text(
+                    message.message,
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: isRight ? Colors.white : Colors.black,
                     ),
+                  ),
                 ],
               ),
             ),
@@ -76,7 +73,7 @@ class ChatInnerItemWidget extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(top: 4, left: 4, right: 4),
             child: Text(
-              date,
+              DateFormat('HH:mm').format(message.timestamp),
               style: TextStyle(
                 color: Colors.grey[600],
                 fontSize: 12,

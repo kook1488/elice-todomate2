@@ -7,6 +7,7 @@ import 'package:gap/gap.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:todomate/chat/chat_inner_screen/chat_input_section.dart';
+import 'package:todomate/chat/chat_inner_screen/models/message_model.dart';
 import 'package:todomate/chat/chat_inner_screen/widgets/chat_inner_item_widget.dart';
 import 'package:todomate/chat/core/app_export.dart';
 
@@ -32,10 +33,8 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
   static const String otherEmail = 'yoy@gmail.com';
   static const String otherName = '영희';
   static const String otherAvatarPath = 'assets/images/avata_3.png';
-  // static const Color appBarColor = Color.fromARGB(255, 190, 144, 4);
-  // static const Color bgColor = Colors.amber;
 
-  List<dynamic> messages = [];
+  List<MessageModel> messages = [];
   File? _image;
   final picker = ImagePicker();
   final TextEditingController _messageController = TextEditingController();
@@ -53,7 +52,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
       final String response = await rootBundle.loadString('assets/chat.json');
       final List<dynamic> data = await json.decode(response);
       setState(() {
-        messages = data;
+        messages = data.map((item) => MessageModel.fromJson(item)).toList();
       });
       WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
     } catch (e) {
@@ -92,33 +91,32 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
   void _sendMessage() {
     if (_messageController.text.isNotEmpty || _image != null) {
       setState(() {
-        messages.add({
-          'id': messages.length + 1,
-          'sender': userNickName,
-          'userId': userId,
-          'message': _messageController.text,
-          'attach': avatarPath,
-          'timestamp': DateTime.now().toIso8601String(),
-          'read': false,
-        });
+        messages.add(MessageModel(
+          id: messages.length + 1,
+          sender: userNickName,
+          userId: userId,
+          message: _messageController.text,
+          avatarImage: avatarPath,
+          attachedImage: _image?.path,
+          timestamp: DateTime.now(),
+          read: false,
+        ));
         _messageController.clear();
         _image = null;
       });
       _scrollToBottom();
     }
-    // 포커스를 다시 텍스트 필드로 옮깁니다.
     FocusScope.of(context).requestFocus(_focusNode);
   }
 
-  String _formatDate(String timestamp) {
-    final date = DateTime.parse(timestamp);
+  String _formatDate(DateTime date) {
     return DateFormat('HH:mm').format(date);
   }
 
   bool _shouldShowDateSeparator(int index) {
     if (index == 0) return true;
-    final currentDate = DateTime.parse(messages[index]['timestamp']);
-    final previousDate = DateTime.parse(messages[index - 1]['timestamp']);
+    final currentDate = messages[index].timestamp;
+    final previousDate = messages[index - 1].timestamp;
     return !currentDate.isSameDate(previousDate);
   }
 
@@ -136,7 +134,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: const Row(
-            crossAxisAlignment: CrossAxisAlignment.center, // 수직으로 가운데 정렬
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
                 backgroundImage: AssetImage(otherAvatarPath),
@@ -170,7 +168,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
               itemCount: messages.length,
               itemBuilder: (context, index) {
                 final message = messages[index];
-                final bool isUserMessage = message['userId'] == 1;
+                final bool isUserMessage = message.userId == userId;
 
                 return Column(
                   children: [
@@ -185,19 +183,18 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           child: Text(
-                            DateFormat('yyyy-MM-dd')
-                                .format(DateTime.parse(message['timestamp'])),
+                            DateFormat('yyyy-MM-dd').format(message.timestamp),
                             style: const TextStyle(color: Colors.black54),
                           ),
                         ),
                       ),
-                    if (!isUserMessage && message['sender'] != null)
+                    if (!isUserMessage)
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Padding(
                           padding: const EdgeInsets.only(left: 8, bottom: 4),
                           child: Text(
-                            message['sender'],
+                            message.sender,
                             style: const TextStyle(
                               color: Color(0xffff642d),
                               fontSize: 14,
@@ -212,11 +209,12 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
                           : MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (!isUserMessage && message['image'] != null)
+                        if (!isUserMessage)
                           Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: CircleAvatar(
-                              backgroundImage: AssetImage(message['image']),
+                              backgroundImage: AssetImage(
+                                  message.avatarImage ?? otherAvatarPath),
                               radius: 30,
                             ),
                           ),
@@ -224,9 +222,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
                           child: ChatInnerItemWidget(
                             isRight: isUserMessage,
                             highlight: false,
-                            text: message['message'],
-                            attachedImage: message['attach'],
-                            date: _formatDate(message['timestamp']),
+                            message: message,
                           ),
                         ),
                       ],
@@ -235,6 +231,8 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
                   ],
                 );
               },
+
+              ///
             ),
           ),
           if (_image != null)
