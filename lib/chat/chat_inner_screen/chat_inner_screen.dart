@@ -234,31 +234,36 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
             Stack(
               alignment: Alignment.topRight,
               children: [
-                Container(
-                  height: 100,
-                  width: 100,
-                  margin: const EdgeInsets.only(bottom: 8, right: 8),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
-                    image: DecorationImage(
-                      image: FileImage(_image!),
-                      fit: BoxFit.cover,
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, right: 10),
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: DecorationImage(
+                        image: FileImage(_image!),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
                 Positioned(
-                  top: -8,
-                  right: -8,
+                  top: 0,
+                  right: 0,
                   child: GestureDetector(
                     onTap: _removeImage,
                     child: Container(
-                      padding: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                        color: Colors.grey[700],
+                        color: Colors.black.withOpacity(0.5),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.close,
-                          size: 16, color: Colors.white),
+                      child: const Icon(
+                        Icons.close,
+                        size: 20,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
