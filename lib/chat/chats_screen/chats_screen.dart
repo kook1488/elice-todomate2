@@ -79,10 +79,6 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  // SvgPicture.asset(
-                  //   ImageConstant.imgFrame242,
-                  //   fit: BoxFit.fill,
-                  // ),
                 ],
               ),
             ),
