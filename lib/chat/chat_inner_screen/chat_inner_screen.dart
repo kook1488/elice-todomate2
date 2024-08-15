@@ -64,6 +64,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
       });
       scrollToBottom();
     } catch (e) {
+      print('Error loading chat data: $e');
       print(StackTrace.current);
     }
   }
@@ -120,7 +121,12 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pop(true);  // 읽음 상태 업데이트를 위해 true 반환
+        return false;
+      },
+      child: Scaffold(
       backgroundColor: Colors.grey[100],
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(120),
@@ -278,7 +284,8 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
           ),
         ],
       ),
-    );
+    ));
+     // 여기 
   }
 }
 
