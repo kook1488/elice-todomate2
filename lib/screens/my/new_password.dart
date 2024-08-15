@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todomate/screens/my/profile_screen.dart';
 
 class new_password extends StatelessWidget {
   @override
@@ -237,7 +238,13 @@ class new_password extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => profile_screen()),
+                            );
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.orange,
                             shape: RoundedRectangleBorder(
