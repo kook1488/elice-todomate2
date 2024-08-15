@@ -12,19 +12,21 @@ class DiaryCalendarScreen extends StatelessWidget {
       home: Scaffold(
         body: Center(
           child: TableCalendar(
-            locale: 'ko-KR',
             focusedDay: DateTime.now(),
             firstDay: DateTime.now().subtract(const Duration(days: 60)),
             lastDay: DateTime.now().add(const Duration(days: 60)),
-            headerStyle: HeaderStyle(
+            headerStyle: const HeaderStyle(
               formatButtonVisible: false,
-              titleCentered: true,
-              titleTextStyle: const TextStyle(
+              titleCentered: false,
+              titleTextStyle: TextStyle(
                 color: Colors.black,
               ),
-              headerPadding: const EdgeInsets.symmetric(vertical: 4.0),
-              leftChevronIcon: const SizedBox.shrink(), // 아이콘 숨기기
-              rightChevronIcon: const SizedBox.shrink(), // 아이콘 숨기기
+              headerPadding: EdgeInsets.symmetric(vertical: 4.0),
+              leftChevronIcon: const Icon(
+              Icons.arrow_left,
+              size: 40.0,
+            ), // 아이콘 숨기기
+              rightChevronIcon: SizedBox.shrink(), // 아이콘 숨기기
             ),
             calendarBuilders: CalendarBuilders(
               headerTitleBuilder: (context, day) {
@@ -38,8 +40,8 @@ class DiaryCalendarScreen extends StatelessWidget {
                         fontSize: 20.0,
                       ),
                     ),
-                    Row(
-                      children: const [
+                    const Row(
+                      children: [
                         Icon(Icons.arrow_left),
                         SizedBox(width: 8.0),
                         Icon(Icons.arrow_right),
