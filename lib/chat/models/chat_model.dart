@@ -10,6 +10,7 @@ class ChatModel {
     required this.date,
     required this.unread,
   });
+  
   final int id;  
   final String image;
   final String title;
@@ -29,6 +30,7 @@ class ChatModel {
       );
 
   Map<String, dynamic> toJson() => {
+        "id": id,
         "image": image,
         "title": title,
         "name": name,
@@ -48,6 +50,27 @@ class ChatModel {
     } else {
       return DateFormat('MM/dd').format(date);
     }
+  }
+
+  // copyWith 메서드 추가
+  ChatModel copyWith({
+    int? id,
+    String? image,
+    String? title,
+    String? name,
+    String? lastMessage,
+    DateTime? date,
+    int? unread,
+  }) {
+    return ChatModel(
+      id: id ?? this.id,
+      image: image ?? this.image,
+      title: title ?? this.title,
+      name: name ?? this.name,
+      lastMessage: lastMessage ?? this.lastMessage,
+      date: date ?? this.date,
+      unread: unread ?? this.unread,
+    );
   }
 }
 
