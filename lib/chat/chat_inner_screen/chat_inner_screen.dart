@@ -21,7 +21,8 @@ class ChatInnerScreen extends StatefulWidget {
   _ChatInnerScreenState createState() => _ChatInnerScreenState();
 }
 
-class _ChatInnerScreenState extends State<ChatInnerScreen> with ScrollControllerMixin {
+class _ChatInnerScreenState extends State<ChatInnerScreen>
+    with ScrollControllerMixin {
   // 로그인 사용자 정보
   static const String userNickName = '플로터';
   static const int userId = 1;
@@ -166,7 +167,8 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> with ScrollController
                       Center(
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(15),
@@ -193,14 +195,17 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> with ScrollController
                         ),
                       ),
                     Row(
-                      mainAxisAlignment: isUserMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
+                      mainAxisAlignment: isUserMessage
+                          ? MainAxisAlignment.end
+                          : MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (!isUserMessage)
                           Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: CircleAvatar(
-                              backgroundImage: AssetImage(message.avatarImage ?? otherAvatarPath),
+                              backgroundImage: AssetImage(
+                                  message.avatarImage ?? otherAvatarPath),
                               radius: 20,
                             ),
                           ),

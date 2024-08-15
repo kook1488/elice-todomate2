@@ -11,13 +11,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Todomate App',
+      title: 'Messenger App',
       theme: ThemeData(fontFamily: 'General Sans'),
       home: const ChatsScreen(),
     );

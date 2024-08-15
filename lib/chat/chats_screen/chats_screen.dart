@@ -26,7 +26,15 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
   void loadChats() {
     setState(() {
       chatList = itemsList.map((item) => ChatModel.fromJson(item)).toList();
+      chatList.sort((a, b) => b.date.compareTo(a.date)); // 날짜 기준으로 내림차순 정렬
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) => scrollToTop());
+  }
+
+  void scrollToTop() {
+    if (scrollController.hasClients) {
+      scrollController.jumpTo(0);
+    }
   }
 
   @override
