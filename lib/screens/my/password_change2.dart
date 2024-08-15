@@ -1,23 +1,19 @@
 import 'package:flutter/material.dart';
 
-//밑에 4개는 자고 나서 하자
-
-class nickname_change extends StatelessWidget {
+//안쓰는 페이지
+class password_change2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.white, // 배경색 설정
         appBar: AppBar(
-          backgroundColor: Colors.grey,
+          backgroundColor: Colors.grey, // 앱바 배경색
           leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black),
-            onPressed: () {
-              Navigator.pop(context);
-            },
+            icon: Icon(Icons.arrow_back, color: Colors.black), // 뒤로가기 버튼
+            onPressed: () {},
           ),
         ),
-        resizeToAvoidBottomInset: false, // 이 줄을 추가하여 키보드가 나타날 때 레이아웃 재조정을 방지
         body: SafeArea(
           child: Column(
             children: [
@@ -38,7 +34,7 @@ class nickname_change extends StatelessWidget {
                                 'asset/image/avatar.png'), // 프로필 이미지 경로
                           ),
                         ),
-                        SizedBox(width: 60.0),
+                        SizedBox(width: 60.0), // 프로필 이미지와 텍스트 사이 간격
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -143,70 +139,64 @@ class nickname_change extends StatelessWidget {
                   ],
                 ),
               ),
-              // 하단 그리드뷰 및 버튼 섹션
+
+              // 하단 버튼 섹션
               Expanded(
+                // 이쪽 버튼 사이에 구현이 안되는거 해결 해야할듯
                 child: Container(
                   color: Colors.white,
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
+                  width: 320.0,
                   child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.start, // Column의 주 축에서 시작
+                    crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 꽉 차게
                     children: [
-                      SizedBox(height: 40.0),
-                      // 텍스트 필드 추가된 부분
-                      TextField(
-                        decoration: InputDecoration(
-                          hintText: 'NEW ID...',
-                          hintStyle: TextStyle(
-                            color: Colors.grey,
-                            fontSize: 35.0,
-                            fontWeight: FontWeight.normal,
-                          ),
-                          filled: true,
-                          fillColor: Colors.white,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding:
-                              EdgeInsets.zero, // 패딩을 없애서 아이콘과 텍스트를 최대한 가깝게
-                          prefixIcon: Icon(
-                            Icons.published_with_changes,
-                            size: 40.0,
-                            color: Colors.grey,
-                          ),
-                        ),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      SizedBox(height: 250.0),
-                      ElevatedButton(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange, // 버튼 배경색
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 70.0, vertical: 10.0),
-                        ),
-                        child: Text(
-                          'change',
-                          style: TextStyle(
-                            fontSize: 35.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 60.0), // 버튼과 화면 하단 사이의 간격 추가
+                      SizedBox(height: 35.0),
+                      buildMenuItem(Icons.send, "이메일로 인증번호 전송"),
                     ],
                   ),
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  // 메뉴 아이템 빌드 함수
+  Widget buildMenuItem(IconData icon, String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Container(
+        padding: EdgeInsets.all(16.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            CircleAvatar(
+              radius: 24.0,
+              backgroundColor: Colors.grey[300],
+              child: Icon(icon, color: Colors.black, size: 30.0),
+            ),
+            SizedBox(width: 16.0),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: 18.0,
+                color: Colors.black87,
+              ),
+            ),
+          ],
         ),
       ),
     );
