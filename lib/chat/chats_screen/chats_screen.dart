@@ -95,8 +95,12 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (_) => ChatInnerScreen(jsonFileName: 'chat_${chatList[index].id}.json'),
-                      ),
+                        builder: (_) => ChatInnerScreen(
+                          jsonFileName: 'chat_${chatList[index].id}.json',
+                          chatTitle: chatList[index].title,
+                          otherAvatarPath: chatList[index].image,
+                          chatId: chatList[index].id,
+                        ),                      ),
                     ),
                     child: ChatsItemWidget(chatList[index]),
                   );

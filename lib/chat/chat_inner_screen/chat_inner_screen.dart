@@ -14,8 +14,17 @@ import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 
 class ChatInnerScreen extends StatefulWidget {
   final String jsonFileName;
+  final String chatTitle;
+  final String otherAvatarPath;
+  final int chatId;
 
-  const ChatInnerScreen({super.key, required this.jsonFileName});
+  const ChatInnerScreen({
+    super.key, 
+    required this.jsonFileName, 
+    required this.chatTitle, 
+    required this.otherAvatarPath,
+    required this.chatId,
+  });
 
   @override
   _ChatInnerScreenState createState() => _ChatInnerScreenState();
@@ -29,12 +38,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
   static const String userEmail = 'plot@gmail.com';
   static const String userName = '민수';
   static const String avatarPath = 'assets/images/avata_1.png';
-  // 채팅 상대방 정보
-  static const String otherNickName = '조이';
-  static const int othreUserId = 3;
-  static const String otherEmail = 'yoy@gmail.com';
-  static const String otherName = '영희';
-  static const String otherAvatarPath = 'assets/images/avata_3.png';
+
 
   List<MessageModel> messages = [];
   File? _image;
@@ -126,20 +130,20 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
             icon: const Icon(Icons.arrow_back, color: Colors.white),
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: const Row(
+          title: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CircleAvatar(
-                backgroundImage: AssetImage(otherAvatarPath),
+                backgroundImage: AssetImage(widget.otherAvatarPath),
                 radius: 45,
               ),
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               Expanded(
                 child: Text(
-                  otherNickName,
-                  style: TextStyle(
+                  widget.chatTitle,
+                  style: const TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 22,
@@ -207,7 +211,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
                             padding: const EdgeInsets.only(right: 8),
                             child: CircleAvatar(
                               backgroundImage: AssetImage(
-                                  message.avatarImage ?? otherAvatarPath),
+                                  message.avatarImage ?? widget.otherAvatarPath),
                               radius: 20,
                             ),
                           ),
