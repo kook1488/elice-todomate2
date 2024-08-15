@@ -10,6 +10,7 @@ import 'package:todomate/chat/chat_inner_screen/chat_input_section.dart';
 import 'package:todomate/chat/chat_inner_screen/models/message_model.dart';
 import 'package:todomate/chat/chat_inner_screen/widgets/chat_inner_item_widget.dart';
 import 'package:todomate/chat/core/app_export.dart';
+import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 
 class ChatInnerScreen extends StatefulWidget {
   final String? chatId;
@@ -20,7 +21,7 @@ class ChatInnerScreen extends StatefulWidget {
   _ChatInnerScreenState createState() => _ChatInnerScreenState();
 }
 
-class _ChatInnerScreenState extends State<ChatInnerScreen> {
+class _ChatInnerScreenState extends State<ChatInnerScreen> with ScrollControllerMixin {
   // 로그인 사용자 정보
   static const String userNickName = '플로터';
   static const int userId = 1;
@@ -38,7 +39,6 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
   File? _image;
   final picker = ImagePicker();
   final TextEditingController _messageController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -54,20 +54,10 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
       setState(() {
         messages = data.map((item) => MessageModel.fromJson(item)).toList();
       });
-      WidgetsBinding.instance.addPostFrameCallback((_) => _scrollToBottom());
+      scrollToBottom();
     } catch (e) {
       print('Error loading messages: $e');
     }
-  }
-
-  void _scrollToBottom() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    });
   }
 
   Future getImage() async {
@@ -104,7 +94,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
         _messageController.clear();
         _image = null;
       });
-      _scrollToBottom();
+      scrollToBottom();
     }
     FocusScope.of(context).requestFocus(_focusNode);
   }
@@ -163,7 +153,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
         children: [
           Expanded(
             child: ListView.builder(
-              controller: _scrollController,
+              controller: scrollController,
               padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
               itemCount: messages.length,
               itemBuilder: (context, index) {
@@ -176,8 +166,7 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
                       Center(
                         child: Container(
                           margin: const EdgeInsets.symmetric(vertical: 10),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 5),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                           decoration: BoxDecoration(
                             color: Colors.grey[300],
                             borderRadius: BorderRadius.circular(15),
@@ -204,18 +193,15 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
                         ),
                       ),
                     Row(
-                      mainAxisAlignment: isUserMessage
-                          ? MainAxisAlignment.end
-                          : MainAxisAlignment.start,
+                      mainAxisAlignment: isUserMessage ? MainAxisAlignment.end : MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (!isUserMessage)
                           Padding(
                             padding: const EdgeInsets.only(right: 8),
                             child: CircleAvatar(
-                              backgroundImage: AssetImage(
-                                  message.avatarImage ?? otherAvatarPath),
-                              radius: 30,
+                              backgroundImage: AssetImage(message.avatarImage ?? otherAvatarPath),
+                              radius: 20,
                             ),
                           ),
                         Expanded(
@@ -231,8 +217,6 @@ class _ChatInnerScreenState extends State<ChatInnerScreen> {
                   ],
                 );
               },
-
-              ///
             ),
           ),
           if (_image != null)
