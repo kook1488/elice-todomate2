@@ -1,6 +1,11 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,androidstudio,flutter,dart
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,androidstudio,flutter,dart
 
+### 임시로 assets 진행 방향에 따라.. 무시하기 위해 추가함 by kitae
+# chat 파트는 asset이 아니고 assets 로 설청을 처음에 해서 사용중였음. by kitae
+
+/assets/
+
 ### Dart ###
 # See https://www.dartlang.org/guides/libraries/private-files
 
