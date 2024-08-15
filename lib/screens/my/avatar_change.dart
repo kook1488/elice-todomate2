@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'profile_screen.dart';
+
 class avatar_change extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -149,29 +151,70 @@ class avatar_change extends StatelessWidget {
                     children: [
                       SizedBox(height: 30.0),
                       Expanded(
-                        child: GridView.builder(
-                          itemCount: 6, // 아이템 개수
+                        child: GridView(
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3, // 한 줄에 보여줄 아이템 개수
-                            crossAxisSpacing: 8.0, // 아이템 사이의 가로 간격
-                            mainAxisSpacing: 8.0, // 아이템 사이의 세로 간격
-                            childAspectRatio: 1.0, // 아이템의 가로:세로 비율
+                            crossAxisCount: 3, // 한 줄에 3개의 아이템
+                            crossAxisSpacing: 8.0,
+                            mainAxisSpacing: 8.0,
                           ),
-                          itemBuilder: (context, index) {
-                            return ClipRRect(
+                          children: [
+                            ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
                               child: Image.asset(
-                                'asset/image/man.png', // 이미지 경로
+                                'asset/image/avata_1.png', // 첫 번째 아바타 이미지 경로
                                 fit: BoxFit.cover,
                               ),
-                            );
-                          },
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Image.asset(
+                                'asset/image/avata_2.png', // 두 번째 아바타 이미지 경로
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Image.asset(
+                                'asset/image/avata_3.png', // 세 번째 아바타 이미지 경로
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Image.asset(
+                                'asset/image/avata_4.png', // 네 번째 아바타 이미지 경로
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Image.asset(
+                                'asset/image/avata_5.png', // 다섯 번째 아바타 이미지 경로
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(12.0),
+                              child: Image.asset(
+                                'asset/image/avata_6.png', // 여섯 번째 아바타 이미지 경로
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+
                       SizedBox(height: 20.0),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => profile_screen()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색
                           shape: RoundedRectangleBorder(

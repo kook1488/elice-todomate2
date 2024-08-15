@@ -183,7 +183,9 @@ class nickname_change extends StatelessWidget {
                       ),
                       SizedBox(height: 250.0),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색
                           shape: RoundedRectangleBorder(

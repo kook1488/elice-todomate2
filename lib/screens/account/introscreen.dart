@@ -1,12 +1,7 @@
-<<<<<<< lib/screens/account/introscreen.dart
-import 'package:flutter/material.dart';
-import 'package:todomate/screens/account/account.dart';
-=======
->>>>>>> lib/screens/account/introscreen.dart
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:todomate/screens/my/profile_screen.dart';
+import 'package:todomate/screens/account/loginscreen.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -46,9 +41,7 @@ class _IntroScreenState extends State<IntroScreen> {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-<<<<<<< lib/screens/account/introscreen.dart
         MaterialPageRoute(builder: (context) => LoginScreen()),
->>>>>>> lib/screens/account/introscreen.dart
       );
     });
   }
