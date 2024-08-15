@@ -7,7 +7,7 @@ class friend_profile extends StatelessWidget {
       home: Scaffold(
         backgroundColor: Colors.white, // 배경색 설정
         appBar: AppBar(
-          backgroundColor: Colors.orange, // 앱바 배경색을 이미지처럼 오렌지색으로 변경
+          backgroundColor: Color(0xFFFF642D), // 앱바 배경색을 이미지처럼 오렌지색으로 변경
           leading: IconButton(
             icon: Icon(Icons.arrow_back, color: Colors.white), // 뒤로가기 버튼
             onPressed: () {},
@@ -21,7 +21,7 @@ class friend_profile extends StatelessWidget {
             children: [
               // 상단 프로필 섹션
               Container(
-                color: Colors.orange, // 상단 배경색을 오렌지색으로 변경
+                color: Color(0xFFFF642D), // 상단 배경색을 오렌지색으로 변경
                 padding: EdgeInsets.all(16.0),
                 child: Column(
                   children: [
@@ -88,17 +88,6 @@ class friend_profile extends StatelessWidget {
               ),
 
               // 친구 리스트 섹션
-              Expanded(
-                child: Container(
-                  color: Colors.white,
-                  child: ListView.builder(
-                    itemCount: 3, // 친구 수에 따라 변경
-                    itemBuilder: (context, index) {
-                      return buildFriendListItem(index); // index를 매개변수로 전달
-                    },
-                  ),
-                ),
-              ),
             ],
           ),
         ),
