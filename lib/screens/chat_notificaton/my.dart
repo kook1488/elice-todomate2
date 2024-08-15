@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 class My extends StatelessWidget {
+  const My({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyReservedChatsPage(),
     );
@@ -17,12 +19,14 @@ class MyReservedChatsPage extends StatelessWidget {
     // 추가적인 채팅방 정보는 여기에 추가
   ];
 
+  const MyReservedChatsPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('내가 예약한 채팅방', style: TextStyle(fontSize: 18.0)),
+        title: const Text('내가 예약한 채팅방', style: TextStyle(fontSize: 18.0)),
         backgroundColor: Colors.white,
       ),
       body: ListView.builder(
@@ -32,7 +36,7 @@ class MyReservedChatsPage extends StatelessWidget {
           return Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               decoration: BoxDecoration(
                 color: Colors.grey[500],
                 borderRadius: BorderRadius.circular(12.0),
@@ -45,23 +49,23 @@ class MyReservedChatsPage extends StatelessWidget {
                     children: [
                       Text(
                         chat['title']!,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 16.0,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 8.0),
+                      const SizedBox(height: 8.0),
                       Text(
                         chat['time']!,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 14.0,
                           color: Colors.white,
                         ),
                       ),
                     ],
                   ),
-                  Icon(Icons.chevron_right, color: Colors.white),
+                  const Icon(Icons.chevron_right, color: Colors.white),
                 ],
               ),
             ),
@@ -72,14 +76,14 @@ class MyReservedChatsPage extends StatelessWidget {
         onPressed: () {
           // 플로팅 액션 버튼 액션 구현
         },
-        child: Icon(Icons.add),
         backgroundColor: Colors.blue,
+        child: const Icon(Icons.add),
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.grey[200],
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey[600],
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'HOME',
