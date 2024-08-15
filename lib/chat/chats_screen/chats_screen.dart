@@ -8,7 +8,7 @@ import 'models/chat_model.dart';
 import 'widgets/chats_item_widget.dart';
 
 class ChatsScreen extends StatefulWidget {
-  const ChatsScreen({Key? key}) : super(key: key);
+  const ChatsScreen({super.key});
 
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
@@ -74,10 +74,10 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  SvgPicture.asset(
-                    ImageConstant.imgFrame242,
-                    fit: BoxFit.fill,
-                  ),
+                  // SvgPicture.asset(
+                  //   ImageConstant.imgFrame242,
+                  //   fit: BoxFit.fill,
+                  // ),
                 ],
               ),
             ),
@@ -85,7 +85,8 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
             Expanded(
               child: ListView.builder(
                 controller: scrollController,
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 itemCount: chatList.length,
                 itemBuilder: (context, index) {
                   return ChatsItemWidget(chatList[index]);

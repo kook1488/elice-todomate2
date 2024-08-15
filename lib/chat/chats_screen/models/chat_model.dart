@@ -55,7 +55,7 @@ List<Map<String, dynamic>> itemsList = [
     'title': '플로터 스터디',
     'name': '조이',
     'lastMessage': '오늘 카페에 같이가자...',
-    'date': '2024-08-15T11:36:00',
+    'date': '2024-08-15T10:02:00Z',
     'messagesCount': 1,
   },
   {
@@ -63,16 +63,15 @@ List<Map<String, dynamic>> itemsList = [
     'title': '편의점 탐방',
     'name': '칼스버그',
     'lastMessage': '편의점 감밥 어디께 좋아...',
-    'date': '2024-08-15T11:36:00',
+    'date': '2024-08-14T10:04:00Z',
     'messagesCount': 2,
   },
   {
     'image': 'assets/images/avata_5.png',
     'title': '목마와 맥주',
-
     'name': '디디',
     'lastMessage': '오늘 맥주한잔 하자...',
-    'date': '2024-08-15T11:36:00',
+    'date': '2024-08-14T10:02:00Z',
     'messagesCount': 0,
   },
   {
@@ -88,7 +87,7 @@ List<Map<String, dynamic>> itemsList = [
     'title': '이력서 리뷰',
     'name': '태권V',
     'lastMessage': '요즘 날씨에 운동하기 힘들지?...',
-    'date': '2024-08-15T11:36:00',
+    'date': '2024-08-12T10:02:00Z',
     'messagesCount': 0,
   },
 ];
