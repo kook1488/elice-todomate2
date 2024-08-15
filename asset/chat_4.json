@@ -1,11 +1,11 @@
 [
     {
         "id": 1,
-        "sender": "조이",
-        "userId": 2,
+        "sender": "칼스버그",
+        "userId": 4,
         "image": "assets/images/avata_3.png",
-        "message": "안녕?",
-        "timestamp": "2024-08-14T10:00:00Z",
+        "message": "요즘 새로운 편의점 발견은 했어?",
+        "timestamp": "2024-08-13T10:10:00Z",
         "read": true
     },
     {
@@ -13,17 +13,26 @@
         "sender": "플로터",
         "userId": 1,
         "image": "assets/images/avata_1.png",
-        "message": "잘지내지",
-        "timestamp": "2024-08-14T10:02:00Z",
+        "message": "요즘은 새로운데 잘 못가",
+        "timestamp": "2024-08-13T10:12:00Z",
         "read": true
     },
     {
         "id": 3,
-        "sender": "조이",
-        "userId": 2,
+        "sender": "칼스버그",
+        "userId": 4,
         "image": "assets/images/avata_3.png",
-        "message": "응 잘지내",
+        "message": "맥주와 김밥을 먹어볼까?",
         "timestamp": "2024-08-14T10:02:00Z",
+        "read": false
+    },
+    {
+        "id": 3,
+        "sender": "칼스버그",
+        "userId": 4,
+        "image": "assets/images/avata_3.png",
+        "message": "편의점 김밥 어디께 좋아",
+        "timestamp": "2024-08-14T10:04:00Z",
         "read": false
     }
 ]

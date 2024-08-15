@@ -4,7 +4,7 @@
         "sender": "조이",
         "userId": 2,
         "image": "assets/images/avata_3.png",
-        "message": "안녕?",
+        "message": "있다 점심 같이 먹자",
         "timestamp": "2024-08-14T10:00:00Z",
         "read": true
     },
@@ -13,7 +13,7 @@
         "sender": "플로터",
         "userId": 1,
         "image": "assets/images/avata_1.png",
-        "message": "잘지내지",
+        "message": "오케이",
         "timestamp": "2024-08-14T10:02:00Z",
         "read": true
     },
@@ -22,8 +22,8 @@
         "sender": "조이",
         "userId": 2,
         "image": "assets/images/avata_3.png",
-        "message": "응 잘지내",
-        "timestamp": "2024-08-14T10:02:00Z",
+        "message": "오늘 카페에 같이 가자",
+        "timestamp": "2024-08-15T10:02:00Z",
         "read": false
     }
 ]
