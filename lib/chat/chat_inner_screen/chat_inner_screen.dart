@@ -35,8 +35,6 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
   // 로그인 사용자 정보
   static const String userNickName = '플로터';
   static const int userId = 1;
-  static const String userEmail = 'plot@gmail.com';
-  static const String userName = '민수';
   static const String avatarPath = 'assets/images/avata_1.png';
 
 
