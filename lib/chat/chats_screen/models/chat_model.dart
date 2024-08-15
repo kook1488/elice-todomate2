@@ -2,6 +2,7 @@ import 'package:intl/intl.dart';
 
 class ChatModel {
   ChatModel({
+    required this.id,
     required this.image,
     required this.title,
     required this.name,
@@ -9,7 +10,7 @@ class ChatModel {
     required this.date,
     required this.unread,
   });
-
+  final int id;  
   final String image;
   final String title;
   final String name;
@@ -18,6 +19,7 @@ class ChatModel {
   final int unread;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
+        id: json["id"],
         image: json["image"],
         title: json["title"],
         name: json["name"],
@@ -51,6 +53,7 @@ class ChatModel {
 
 List<Map<String, dynamic>> itemsList = [
   {
+    'id': 3,
     'image': 'assets/images/avata_3.png',
     'title': '플로터 스터디',
     'name': '조이',
@@ -59,6 +62,7 @@ List<Map<String, dynamic>> itemsList = [
     'messagesCount': 1,
   },
   {
+    'id': 4,
     'image': 'assets/images/avata_4.png',
     'title': '편의점 탐방',
     'name': '칼스버그',
@@ -67,6 +71,7 @@ List<Map<String, dynamic>> itemsList = [
     'messagesCount': 2,
   },
   {
+    'id': 5,
     'image': 'assets/images/avata_5.png',
     'title': '목마와 맥주',
     'name': '디디',
@@ -75,6 +80,7 @@ List<Map<String, dynamic>> itemsList = [
     'messagesCount': 0,
   },
   {
+    'id': 6,
     'image': 'assets/images/avata_6.png',
     'title': '게임 기획 연구',
     'name': '엉클',
@@ -83,6 +89,7 @@ List<Map<String, dynamic>> itemsList = [
     'messagesCount': 0,
   },
   {
+    'id': 2,
     'image': 'assets/images/avata_2.png',
     'title': '이력서 리뷰',
     'name': '태권V',

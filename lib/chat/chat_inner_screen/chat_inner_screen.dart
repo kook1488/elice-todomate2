@@ -13,9 +13,9 @@ import 'package:todomate/chat/core/app_export.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 
 class ChatInnerScreen extends StatefulWidget {
-  final String? chatId;
+  final String jsonFileName;
 
-  const ChatInnerScreen({super.key, this.chatId});
+  const ChatInnerScreen({super.key, required this.jsonFileName});
 
   @override
   _ChatInnerScreenState createState() => _ChatInnerScreenState();
@@ -50,14 +50,16 @@ class _ChatInnerScreenState extends State<ChatInnerScreen>
 
   Future<void> loadMessages() async {
     try {
-      final String response = await rootBundle.loadString('assets/chat.json');
+      print('Loading file: ${widget.jsonFileName}');
+      final String response =
+          await rootBundle.loadString('assets/${widget.jsonFileName}');
       final List<dynamic> data = await json.decode(response);
       setState(() {
         messages = data.map((item) => MessageModel.fromJson(item)).toList();
       });
       scrollToBottom();
     } catch (e) {
-      print('Error loading messages: $e');
+      print(StackTrace.current);
     }
   }
 

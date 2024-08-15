@@ -7,6 +7,8 @@ import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'models/chat_model.dart';
 import 'widgets/chats_item_widget.dart';
 
+import 'package:todomate/chat/chat_inner_screen/chat_inner_screen.dart';
+
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({super.key});
 
@@ -89,7 +91,15 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                     const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 itemCount: chatList.length,
                 itemBuilder: (context, index) {
-                  return ChatsItemWidget(chatList[index]);
+                  return InkWell(
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => ChatInnerScreen(jsonFileName: 'chat_${chatList[index].id}.json'),
+                      ),
+                    ),
+                    child: ChatsItemWidget(chatList[index]),
+                  );
                 },
               ),
             ),

@@ -10,8 +10,8 @@ class ChatsItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const ChatInnerScreen())),
+      // onTap: () => Navigator.push(
+      //     context, MaterialPageRoute(builder: (_) => const ChatInnerScreen())),
       child: Container(
         margin: EdgeInsets.only(
           top: getVerticalSize(6.0),
