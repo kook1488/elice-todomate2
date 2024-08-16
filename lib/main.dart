@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:todomate/screens/account/introscreen.dart';
+import 'package:todomate/screens/chat_notificaton/home.dart';
 
 void main() {
   runApp(MaterialApp(
-    home: IntroScreen(),
+    home: Home(),
+    debugShowCheckedModeBanner: false,
   ));
 }
