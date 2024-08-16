@@ -8,7 +8,7 @@ import 'package:todomate/chat/view/chat_inner_screen.dart';
 class NewChatScreen extends StatelessWidget {
   final UserInfo userInfo;
 
-  NewChatScreen({super.key, required this.userInfo});
+  NewChatScreen({Key? key, required this.userInfo}) : super(key: key);
 
   final List<Map<String, dynamic>> contacts = [
     {"id": 1, "name": "Alice", "image": "assets/images/avata_a.png"},
@@ -64,8 +64,7 @@ class NewChatScreen extends StatelessWidget {
             const Gap(12),
             Expanded(
               child: ListView.builder(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 itemCount: contacts.length,
                 itemBuilder: (context, index) {
                   final contact = contacts[index];
@@ -112,22 +111,36 @@ class NewChatScreen extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          ClipOval(
-                            child: Container(
-                              width: getSize(64),
-                              height: getSize(64),
-                              color: Colors.grey[300],
-                              child: Center(
-                                child: Text(
-                                  contact["name"][0],
-                                  style: TextStyle(
-                                    fontSize: getFontSize(24),
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ),
-                            ),
+                          Builder(
+                            builder: (BuildContext context) {
+                              print("Trying to load image: ${contact["image"]}");
+                              return Image.asset(
+                                contact["image"],
+                                height: getSize(64),
+                                width: getSize(64),
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  print("Error loading image: $error");
+                                  return ClipOval(
+                                    child: Container(
+                                      width: getSize(64),
+                                      height: getSize(64),
+                                      color: Colors.grey[300],
+                                      child: Center(
+                                        child: Text(
+                                          contact["name"][0],
+                                          style: TextStyle(
+                                            fontSize: getFontSize(24),
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey[600],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
                           const Gap(8),
                           Expanded(
