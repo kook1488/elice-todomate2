@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'dart:async';
 
-import 'package:todomate/screens/diary/diary.dart';
+import 'package:flutter/material.dart';
+import 'package:todomate/screens/my/profile_screen.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -42,7 +41,7 @@ class _IntroScreenState extends State<IntroScreen> {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const DiaryCalendarScreen()),
+        MaterialPageRoute(builder: (context) => profile_screen()),
       );
     });
   }

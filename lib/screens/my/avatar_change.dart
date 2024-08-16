@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todomate/screens/my/profile_screen.dart';
 
 class avatar_change extends StatelessWidget {
   @override
@@ -171,7 +172,13 @@ class avatar_change extends StatelessWidget {
                       ),
                       SizedBox(height: 20.0),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => profile_screen()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색
                           shape: RoundedRectangleBorder(

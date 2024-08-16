@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:todomate/screens/my/profile_screen.dart';
 //밑에 4개는 자고 나서 하자
 
 class nickname_change extends StatelessWidget {
@@ -183,7 +183,13 @@ class nickname_change extends StatelessWidget {
                       ),
                       SizedBox(height: 250.0),
                       ElevatedButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => profile_screen()),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색
                           shape: RoundedRectangleBorder(

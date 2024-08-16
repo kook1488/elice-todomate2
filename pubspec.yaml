@@ -72,6 +72,7 @@ flutter:
 
   assets:
     - asset/image/
+    - assets/image/
 
 
 
