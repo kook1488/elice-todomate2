@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';;
 import 'package:todomate/screens/my/profile_screen.dart';
 
 class IntroScreen extends StatefulWidget {
