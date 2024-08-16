@@ -58,7 +58,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
         ),
         body: Center(
           child: Padding(
-            padding: EdgeInsets.all(16.0),
+            padding: const EdgeInsets.all(16.0),
             child: Material(
               elevation: 5.0,
               borderRadius: BorderRadius.circular(16.0),
@@ -119,7 +119,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                           ),
                         ));
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 }),
               ),
