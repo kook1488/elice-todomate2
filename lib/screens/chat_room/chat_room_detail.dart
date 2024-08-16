@@ -216,6 +216,9 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                   ),
                 ),
               ),
+              onChanged: (value) {
+                _name = value;
+              },
             ),
             const SizedBox(height: 40),
             const Row(
