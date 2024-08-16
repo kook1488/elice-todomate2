@@ -1,25 +1,29 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gap/gap.dart';
 import 'package:todomate/chat/core/app_export.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
+import 'package:todomate/chat/models/user_info.dart';
+import 'package:todomate/chat/view/chat_inner_screen.dart';
+import 'package:todomate/chat/view/new_chat_screen.dart';
+
 import '../models/chat_model.dart';
 import 'widgets/chats_item_widget.dart';
-import 'package:todomate/chat/view/chat_inner_screen.dart';
-import 'package:todomate/chat/models/user_info.dart';
 
 class ChatsScreen extends StatefulWidget {
   final UserInfo userInfo;
 
-  const ChatsScreen({Key? key, required this.userInfo}) : super(key: key);
+  const ChatsScreen({super.key, required this.userInfo});
 
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
 }
 
 class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
-  final StreamController<List<ChatModel>> _chatListController = StreamController<List<ChatModel>>.broadcast();
+  final StreamController<List<ChatModel>> _chatListController =
+      StreamController<List<ChatModel>>.broadcast();
   List<ChatModel> _chatList = [];
 
   @override
@@ -85,7 +89,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
   void updateChatList(Map<String, dynamic> data) {
     int chatId = data['chatId'];
     int unreadCount = data['unreadCount'];
-    
+
     int index = _chatList.indexWhere((chat) => chat.id == chatId);
     if (index != -1) {
       _chatList[index] = _chatList[index].copyWith(unread: unreadCount);
@@ -149,7 +153,8 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                   if (snapshot.hasData) {
                     return ListView.builder(
                       controller: scrollController,
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 10),
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         return InkWell(
@@ -157,7 +162,8 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                             context,
                             MaterialPageRoute(
                               builder: (_) => ChatInnerScreen(
-                                jsonFileName: 'chat_${snapshot.data![index].id}.json',
+                                jsonFileName:
+                                    'chat_${snapshot.data![index].id}.json',
                                 chatTitle: snapshot.data![index].title,
                                 otherAvatarPath: snapshot.data![index].image,
                                 chatId: snapshot.data![index].id,
@@ -170,7 +176,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                       },
                     );
                   } else {
-                    return Center(child: CircularProgressIndicator());
+                    return const Center(child: CircularProgressIndicator());
                   }
                 },
               ),
@@ -178,6 +184,36 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
           ],
         ),
       ),
+      floatingActionButton: Container(
+        width: 56.0, // 직경 설정
+        height: 56.0,
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 2,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      NewChatScreen(userInfo: widget.userInfo)),
+            ).then((_) => loadChats());
+          },
+          backgroundColor: ColorConstant.fromHex('#FFFFFF'),
+          elevation: 2, // 그림자 제거
+          shape: const CircleBorder(),
+          child: const Icon(Icons.add), // 완전한 원형 모양
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: Material(
         elevation: 5,
         child: Container(
