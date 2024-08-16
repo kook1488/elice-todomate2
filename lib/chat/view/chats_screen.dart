@@ -1,9 +1,12 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
+import 'package:todomate/screens/my/profile_screen.dart';
+
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
@@ -17,7 +20,8 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
-  final StreamController<List<ChatModel>> _chatListController = StreamController<List<ChatModel>>.broadcast();
+  final StreamController<List<ChatModel>> _chatListController =
+      StreamController<List<ChatModel>>.broadcast();
   List<ChatModel> _chatList = [];
   int _selectedIndex = 0;
 
@@ -70,7 +74,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
       _buildChatList(),
       _buildContacts(),
       _buildNotifications(),
-      _buildAccount(),
+      profile_screen(),
     ];
 
     return Scaffold(
@@ -167,7 +171,8 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
                 return ListView.builder(
                   controller: scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   itemCount: chats.length,
                   itemBuilder: (context, index) {
                     final chat = chats[index];

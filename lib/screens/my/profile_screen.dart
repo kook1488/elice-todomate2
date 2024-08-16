@@ -155,7 +155,7 @@ class profile_screen extends StatelessWidget {
                         MainAxisAlignment.start, // Column의 주 축에서 시작
                     crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 꽉 차게
                     children: [
-                      SizedBox(height: 35.0),
+                      SizedBox(height: 20.0),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -166,7 +166,7 @@ class profile_screen extends StatelessWidget {
                         },
                         child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
                       ),
-                      SizedBox(height: 12.0),
+                      SizedBox(height: 8.0),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -178,7 +178,7 @@ class profile_screen extends StatelessWidget {
                         child: buildMenuItem(Icons.sync, "닉네임 변경"),
                       ), // 간격 추가
 
-                      SizedBox(height: 12.0),
+                      SizedBox(height: 8.0),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -190,7 +190,7 @@ class profile_screen extends StatelessWidget {
                         child: buildMenuItem(Icons.lock, "비밀번호 변경"),
                       ), // 간격 추가
 
-                      SizedBox(height: 12.0),
+                      SizedBox(height: 8.0),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
