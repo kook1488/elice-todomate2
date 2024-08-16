@@ -10,8 +10,8 @@ class ChatModel {
     required this.date,
     required this.unread,
   });
-  
-  final int id;  
+
+  final int id;
   final String image;
   final String title;
   final String name;
@@ -20,24 +20,24 @@ class ChatModel {
   final int unread;
 
   factory ChatModel.fromJson(Map<String, dynamic> json) => ChatModel(
-        id: json["id"],
-        image: json["image"],
-        title: json["title"],
-        name: json["name"],
-        lastMessage: json["lastMessage"],
-        date: DateTime.parse(json["date"]),
-        unread: json["messagesCount"],
-      );
+    id: json["id"],
+    image: json["image"],
+    title: json["title"],
+    name: json["name"],
+    lastMessage: json["lastMessage"],
+    date: DateTime.parse(json["date"]),
+    unread: json["messagesCount"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "image": image,
-        "title": title,
-        "name": name,
-        "lastMessage": lastMessage,
-        "date": date.toIso8601String(),
-        "messagesCount": unread,
-      };
+    "id": id,
+    "image": image,
+    "title": title,
+    "name": name,
+    "lastMessage": lastMessage,
+    "date": date.toIso8601String(),
+    "messagesCount": unread,
+  };
 
   String getFormattedDate() {
     final now = DateTime.now();
@@ -108,7 +108,7 @@ List<Map<String, dynamic>> itemsList = [
     'title': '게임 기획 연구',
     'name': '엉클',
     'lastMessage': '신규 게임 기획이 쉽지 않은것 같아...',
-    'date': '2024-08-15T11:36:00',
+    'date': '2024-08-15T11:36:00Z',
     'messagesCount': 0,
   },
   {
@@ -121,18 +121,3 @@ List<Map<String, dynamic>> itemsList = [
     'messagesCount': 0,
   },
 ];
-
-/* DB -- 채팅방 테이블
-CREATE TABLE chats(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  image TEXT,
-  title TEXT,
-  pinned INTEGER,
-  muted INTEGER,
-  archived INTEGER,
-  name TEXT,
-  lastMessage TEXT,
-  date TEXT,
-  unread INTEGER
-);
-*/
