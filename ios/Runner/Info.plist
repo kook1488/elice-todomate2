@@ -52,6 +52,6 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>마이크를 사용하려면 권한이 필요합니다.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
-	<string>사진 라이브러리에 사진을 추가하려면 권한이 필요합니다.</string>
+	<string>사진  라이브러리에 사진을 추가하려면 권한이 필요합니다.</string>
 </dict>
 </plist>
