@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "sender": "태권V",
+        "userId": 2,
+        "image": "assets/images/avata_3.png",
+        "message": "아침에 운동해?",
+        "timestamp": "2024-08-13T10:10:00Z",
+        "read": true
+    },
+    {
+        "id": 2,
+        "sender": "플로터",
+        "userId": 1,
+        "image": "assets/images/avata_1.png",
+        "message": "매일은 못하고 하루건너 하고 있어",
+        "timestamp": "2024-08-13T10:12:00Z",
+        "read": true
+    },
+    {
+        "id": 3,
+        "sender": "태권V",
+        "userId": 2,
+        "image": "assets/images/avata_3.png",
+        "message": "요즘 날씨에 운동하기 힘들지",
+        "timestamp": "2024-08-12T10:02:00Z",
+        "read": false
+    }
+]
