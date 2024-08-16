@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:todomate/chat/core/app_export.dart';
+import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/models/user_info.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
-import 'package:todomate/chat/models/chat_model.dart';
 
 class NewChatScreen extends StatelessWidget {
   final UserInfo userInfo;
 
-  NewChatScreen({Key? key, required this.userInfo}) : super(key: key);
+  NewChatScreen({super.key, required this.userInfo});
 
   final List<Map<String, dynamic>> contacts = [
     {"id": 1, "name": "Alice", "image": "assets/images/avata_a.png"},
@@ -64,7 +64,8 @@ class NewChatScreen extends StatelessWidget {
             const Gap(12),
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                 itemCount: contacts.length,
                 itemBuilder: (context, index) {
                   final contact = contacts[index];
@@ -79,10 +80,10 @@ class NewChatScreen extends StatelessWidget {
                         date: DateTime.now(),
                         unread: 0,
                       );
-                      
+
                       // 새 채팅 저장 (실제 구현에서는 DB에 저장해야 함)
                       // DatabaseHelper.instance.insertChat(newChat);
-                      
+
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
@@ -111,18 +112,27 @@ class NewChatScreen extends StatelessWidget {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            contact["image"],
-                            height: getSize(64),
-                            width: getSize(64),
-                            fit: BoxFit.cover,
+                          ClipOval(
+                            child: Container(
+                              width: getSize(64),
+                              height: getSize(64),
+                              color: Colors.grey[300],
+                              child: Center(
+                                child: Text(
+                                  contact["name"][0],
+                                  style: TextStyle(
+                                    fontSize: getFontSize(24),
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                           const Gap(8),
                           Expanded(
                             child: Text(
                               contact["name"],
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.left,
                               style: TextStyle(
                                 color: ColorConstant.gray900,
                                 fontSize: getFontSize(16),
