@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todomate/screens/account/loginscreen.dart';
 import 'package:todomate/screens/account/pwresetting.dart';
 
 class FindPwScreen extends StatelessWidget {
