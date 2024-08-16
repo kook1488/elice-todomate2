@@ -49,9 +49,9 @@ class ImageConstant {
 
   static String imgRectangle1622 = 'assets/images/img_rectangle162_2.png';
 
-  static String imgIcon1 = 'assets/images/img_icon_1.svg';
+  static String imgIcon1 = 'asset/image/img_icon_1.svg';
 
-  static String imgIcon3 = 'assets/images/img_icon_3.svg';
+  static String imgIcon3 = 'asset/image/img_icon_3.svg';
 
   static String imgRectangle1623 = 'assets/images/img_rectangle162_3.png';
 
@@ -67,7 +67,7 @@ class ImageConstant {
 
   static String imgIconsearch = 'assets/images/img_iconsearch.svg';
 
-  static String imgIcon = 'assets/images/img_icon.svg';
+  static String imgIcon = 'asset/image/img_icon.svg';
 
   static String imgIconchevronri = 'assets/images/img_iconchevronri.svg';
 

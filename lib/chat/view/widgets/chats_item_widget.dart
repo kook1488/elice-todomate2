@@ -34,7 +34,7 @@ class ChatsItemWidget extends StatelessWidget {
               mainAxisSize: MainAxisSize.max,
               children: [
                 Image.asset(
-                  item.image,
+                  'asset/image/avata_1.png',
                   height: getSize(64),
                   width: getSize(64),
                   fit: BoxFit.fill,

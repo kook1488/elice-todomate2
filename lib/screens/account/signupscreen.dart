@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:todomate/api/api.dart';
-import 'dart:convert';
-
+import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/account/loginscreen.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -45,46 +42,31 @@ class _SignupScreenState extends State<SignupScreen> {
   }
 
   Future<void> _signup() async {
+    if (_passwordController.text != _passwordController2.text) {
+      setState(() {
+        _errorMessage = "비밀번호가 동일하지 않습니다.";
+      });
+      return;
+    }
+
+    final dbHelper = DatabaseHelper();
+
+    Map<String, dynamic> user = {
+      'login_id': _loginIdController.text,
+      'nickname': _nicknameController.text,
+      'password': _passwordController.text,
+    };
+
     try {
-      final response = await http.post(
-        Uri.parse(API.signup),
-        body: {
-          'login_id': _loginIdController.text,
-          'password': _passwordController.text,
-          'nickname': _nicknameController.text,
-        },
+      await dbHelper.insertUser(user);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const LoginScreen()),
       );
-
-      print("Server response status code: ${response.statusCode}");
-      print("Server response body: ${response.body}");
-
-      if (response.statusCode == 200) {
-        if (response.body.trim().startsWith('{')) {
-          final jsonResponse = json.decode(response.body);
-          if (jsonResponse['success']) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (context) => const LoginScreen()),
-            );
-          } else {
-            setState(() {
-              _errorMessage = "회원가입에 실패했습니다. 다시 시도해주세요.";
-            });
-          }
-        } else {
-          setState(() {
-            _errorMessage = "서버 응답이 JSON 형식이 아닙니다.";
-          });
-        }
-      } else {
-        setState(() {
-          _errorMessage = "서버 오류: ${response.statusCode}";
-        });
-      }
     } catch (e) {
       print("Error: $e");
       setState(() {
-        _errorMessage = "네트워크 오류가 발생했습니다.";
+        _errorMessage = "회원가입에 실패했습니다. 다시 시도해주세요.";
       });
     }
   }
