@@ -4,6 +4,7 @@ import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
+import 'package:todomate/screens/diary/diary.dart';
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
@@ -69,7 +70,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     List<Widget> _pages = [
       _buildChatList(),
       _buildContacts(),
-      _buildNotifications(),
+      DiaryCalendarScreen(),
       _buildAccount(),
     ];
 

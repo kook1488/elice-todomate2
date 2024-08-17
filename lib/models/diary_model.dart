@@ -1,10 +1,12 @@
 class DiaryDTO{
+  int? id;
   String userId;
   String description;
   String imageUrl;
   DateTime createAt;
 
   DiaryDTO({
+    this.id,
     required this.userId,
     required this.description,
     required this.imageUrl,
@@ -13,6 +15,7 @@ class DiaryDTO{
   // JSON 데이터를 Diary 객체로 변환하는 팩토리 생성자
   factory DiaryDTO.fromJson(Map<String, dynamic> json) {
     return DiaryDTO(
+      id: json['id'],
       userId: json['userId'],
       description: json['description'],
       imageUrl: json['imageUrl'],
@@ -23,6 +26,7 @@ class DiaryDTO{
   // Diary 객체를 JSON 데이터로 변환하는 메서드
   Map<String, dynamic> toJson() {
     return {
+      'id': id,
       'userId': userId,
       'description': description,
       'imageUrl': imageUrl,
