@@ -36,7 +36,7 @@ class profile_change extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 50.0,
                             backgroundImage: AssetImage(
-                                'asset/image/avatar.png'), // 프로필 이미지 경로// 프로필 이미지 경로
+                                'asset/image/avata_1.png'), // 프로필 이미지 경로// 프로필 이미지 경로
                           ),
                         ),
                         SizedBox(width: 60.0), // 프로필 이미지와 텍스트 사이 간격

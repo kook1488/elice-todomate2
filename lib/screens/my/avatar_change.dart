@@ -33,7 +33,7 @@ class avatar_change extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 50.0,
                             backgroundImage: AssetImage(
-                                'asset/image/avatar.png'), // 프로필 이미지 경로
+                                'asset/image/avata_1.png'), // 프로필 이미지 경로
                           ),
                         ),
                         SizedBox(width: 60.0),
@@ -163,7 +163,7 @@ class avatar_change extends StatelessWidget {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
                               child: Image.asset(
-                                'asset/image/man.png', // 이미지 경로
+                                'asset/image/avata_1.png', // 이미지 경로
                                 fit: BoxFit.cover,
                               ),
                             );

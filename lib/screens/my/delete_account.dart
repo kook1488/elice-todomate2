@@ -1,6 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/screens/account/loginscreen.dart';
 
-class delete_account extends StatelessWidget {
+class DeleteAccount extends StatelessWidget {
+  final String loginId; // 사용자의 loginId를 받아서 처리
+
+  // 생성자에서 loginId를 전달받음
+  DeleteAccount({required this.loginId});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -32,7 +39,7 @@ class delete_account extends StatelessWidget {
                           child: CircleAvatar(
                             radius: 50.0,
                             backgroundImage: AssetImage(
-                                'asset/image/avatar.png'), // 프로필 이미지 경로
+                                'asset/image/avata_1.png'), // 프로필 이미지 경로
                           ),
                         ),
                         SizedBox(width: 60.0), // 프로필 이미지와 텍스트 사이 간격
@@ -169,7 +176,32 @@ class delete_account extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              // DatabaseHelper 인스턴스 가져오기
+                              final dbHelper = DatabaseHelper();
+
+                              // loginId를 기반으로 사용자 삭제
+                              int result =
+                                  await dbHelper.deleteUserByLoginId(loginId);
+
+                              if (result > 0) {
+                                // 성공적으로 삭제된 경우
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('회원 탈퇴가 완료되었습니다.')),
+                                );
+                                // 로그인 화면으로 이동
+                                Navigator.of(context).pushAndRemoveUntil(
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginScreen()),
+                                  (Route<dynamic> route) => false,
+                                );
+                              } else {
+                                // 삭제 실패한 경우
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('회원 탈퇴에 실패했습니다.')),
+                                );
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey, // 회색 버튼
                               padding: EdgeInsets.symmetric(
