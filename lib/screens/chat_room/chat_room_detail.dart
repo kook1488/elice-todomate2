@@ -216,15 +216,12 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                   ),
                 ),
               ),
-              onChanged: (value) {
-                _name = value;
-              },
             ),
             const SizedBox(height: 40),
             const Row(
               children: [
                 Text(
-                  '주제 선택',
+                  '주제 선택(일단 topicId 출력..)',
                   style: TextStyle(
                     fontSize: 17,
                   ),
