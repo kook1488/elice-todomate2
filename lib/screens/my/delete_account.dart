@@ -4,9 +4,7 @@ import 'package:todomate/models/signup_model.dart';
 class delete_account extends StatelessWidget {
   //178번째 줄
   final String loginId; // 사용자의 loginId를 받아서 처리
-
-  // 생성자에서 loginId를 전달받음
-  DeleteAccount({required this.loginId});
+  DeleteAccount({required this.loginId}); // 생성자에서 loginId를 전달받음
 
   @override
   Widget build(BuildContext context) {
