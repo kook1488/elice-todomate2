@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:todomate/models/signup_model.dart';
-import 'package:todomate/screens/account/loginscreen.dart';
 
-class DeleteAccount extends StatelessWidget {
+class delete_account extends StatelessWidget {
+  //178번째 줄
   final String loginId; // 사용자의 loginId를 받아서 처리
 
   // 생성자에서 loginId를 전달받음
@@ -183,24 +183,6 @@ class DeleteAccount extends StatelessWidget {
                               // loginId를 기반으로 사용자 삭제
                               int result =
                                   await dbHelper.deleteUserByLoginId(loginId);
-
-                              if (result > 0) {
-                                // 성공적으로 삭제된 경우
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('회원 탈퇴가 완료되었습니다.')),
-                                );
-                                // 로그인 화면으로 이동
-                                Navigator.of(context).pushAndRemoveUntil(
-                                  MaterialPageRoute(
-                                      builder: (context) => LoginScreen()),
-                                  (Route<dynamic> route) => false,
-                                );
-                              } else {
-                                // 삭제 실패한 경우
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text('회원 탈퇴에 실패했습니다.')),
-                                );
-                              }
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey, // 회색 버튼
