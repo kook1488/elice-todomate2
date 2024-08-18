@@ -189,19 +189,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                         borderRadius:
                                             BorderRadius.circular(8.0),
                                         child: GestureDetector(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) => DiaryWorkScreen(addScreen: false, diaryDTO: _selectedDiaryList[index], date: _selectedDiaryList[index].createAt,)),
-                                            ).then((result) {
-                                              if (result != null) {
-                                                // 데이터를 받아서 처리
-                                                print('loaddiarydatelist');
-                                                loadDiaryDateList(); // 데이터베이스에서 다시 데이터를 불러오는 메서드
-                                              }
-                                            });
-                                          },
+                                          onTap: () => moveDetailScreen(index),
                                           child: Chip(
                                             backgroundColor: Colors.white,
                                             elevation: 5.0,
@@ -324,5 +312,18 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     } catch (e) {
       showAlertDialog(context, '오류', '삭제 중 오류가 발생했습니다.');
     }
+  }
+
+  void moveDetailScreen(int index){
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => DiaryWorkScreen(addScreen: false, diaryDTO: _selectedDiaryList[index], date: _selectedDiaryList[index].createAt,)),
+    ).then((result) {
+      if (result != null) {
+        // 데이터를 받아서 처리
+        loadDiaryDateList(); // 데이터베이스에서 다시 데이터를 불러오는 메서드
+      }
+    });
   }
 }

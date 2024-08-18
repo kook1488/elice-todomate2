@@ -310,7 +310,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
                     
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.deepOrangeAccent,
                     padding:
                     EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
@@ -330,7 +330,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
                     _deleteDiary();
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orange,
+                    backgroundColor: Colors.deepOrangeAccent,
                     padding:
                     EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
