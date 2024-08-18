@@ -6,6 +6,12 @@ import 'password_change.dart';
 import 'profile_change.dart';
 
 class profile_screen extends StatelessWidget {
+  String loginId = 'qqq'; //에러를 볼 줄 알아야 한다.
+  // 티스토리 정리 개념에 집중하라.
+  // 생성자가 뭔지 꼬리질문 팩토리의 개념이 뭔지 인스턴스가 왜 하나가 나와?
+  //유저 객체를 가져와서 유저의 로그인 아이디를 빼와서 로그인한 유저의 정보를 삭제해야한다.
+  // 둘중에 내가 쓴게 왜 이걸 썼는지 명확한 이유가 있어야 한다.
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -196,7 +202,8 @@ class profile_screen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => delete_account()),
+                                builder: (context) =>
+                                    DeleteAccount(loginId: 'qqq')),
                           );
                         },
                         child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
