@@ -22,16 +22,19 @@ class DatabaseHelper {
   }
 
   Future<Database> _initDatabase() async {
+
     String path = join(await getDatabasesPath(), 'user_database.db');
+
     return await openDatabase(
       path,
-      version: 2,// 버전증가
+      version: 1,// 버전증가
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
   }
 
   Future<void> _onCreate(Database db, int version) async {
+    print('Creating tables in version $version');
     await db.execute('''
       CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -41,22 +44,23 @@ class DatabaseHelper {
         avatar_path TEXT
       )
     ''');
-  }
 
-  // 데이터베이스 버전이 2로 업데이트 되었을 때 Diarys 테이블 생성
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    if (oldVersion < 2) {
-      print('oldversion : $oldVersion , newVersion : $newVersion ');
-      await db.execute('''
+    await db.execute('''
       CREATE TABLE diary (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         userId TEXT,
+        title TEXT,
         description TEXT,
         imageUrl TEXT,
         createAt TEXT
       )
     ''');
-    }
+
+  }
+
+  // 데이터베이스 버전이 업데이트 되었을 때 Diarys 테이블 생성
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    print('oldversion : $oldVersion , newVersion : $newVersion ');
   }
 
   String _hashPassword(String password) {
@@ -217,13 +221,20 @@ class DatabaseHelper {
 
 
   //Diary Insert
-  Future<void> insertDiary(DiaryDTO diary) async {
+  Future<bool> insertDiary(DiaryDTO diary) async {
     final db = await database;
-    await db.insert(
-      'diary',
-      diary.toJson(),
-      conflictAlgorithm: ConflictAlgorithm.fail //primary 키 중복일 경우 에러
-    );
+    try{
+      await db.insert(
+          'diary',
+          diary.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.fail //primary 키 중복일 경우 에러
+      );
+      return true;
+    }catch (e){
+      print('Insert error $e');
+      return false;
+    }
+
   }
 
 
@@ -233,7 +244,7 @@ class DatabaseHelper {
 
     final List<Map<String, dynamic>> maps = await db.query(
       'diary',
-      columns: ['id','userId', 'description', 'imageUrl', 'createAt'], // dateTime 필드만 선택
+      columns: ['id','userId', 'title', 'description', 'imageUrl', 'createAt'], // dateTime 필드만 선택
     );
 
     // Map을 DiaryDTO list로 반환
@@ -251,6 +262,21 @@ class DatabaseHelper {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+
+  //테이블 만들어졌는지 확인
+  Future<void> checkTables() async {
+    final Database db = await database;
+
+    // 테이블 목록 가져오기
+    final List<Map<String, dynamic>> tables = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table';"
+    );
+
+    // 테이블 목록 출력
+    for (var table in tables) {
+      print('Table: ${table['name']}');
+    }
   }
 
 

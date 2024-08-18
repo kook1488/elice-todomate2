@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todomate/models/signup_model.dart';
@@ -61,11 +63,18 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16.0)),
                           child: GestureDetector(
-                            onDoubleTap: (){
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(builder: (context) => DiaryWorkScreen(addScreen: true,))
-                                );
+                            onDoubleTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        DiaryWorkScreen(addScreen: true, date: _selectedDay)),
+                              ).then((result) {
+                                if (result != null) {
+                                  // 데이터를 받아서 처리
+                                  loadDiaryDateList(); // 데이터베이스에서 다시 데이터를 불러오는 메서드
+                                }
+                              });
                             },
                             child: TableCalendar(
                               focusedDay: _focusDay,
@@ -88,7 +97,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                                 headerPadding:
-                                EdgeInsets.symmetric(vertical: 4.0),
+                                    EdgeInsets.symmetric(vertical: 4.0),
                                 leftChevronIcon: Icon(
                                   Icons.arrow_left,
                                   size: 30,
@@ -105,10 +114,10 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                     color: Colors.orangeAccent,
                                     shape: BoxShape.circle,
                                   ),
-                                  selectedDecoration:const BoxDecoration(
+                                  selectedDecoration: const BoxDecoration(
                                     color: Colors.deepOrangeAccent,
                                     shape: BoxShape.circle,
-                                  ) ,
+                                  ),
                                   markerDecoration: BoxDecoration(
                                     color: Colors.deepOrangeAccent,
                                     shape: BoxShape.rectangle,
@@ -116,7 +125,8 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                   ),
                                   markersAlignment: Alignment.bottomCenter),
                               eventLoader: (day) {
-                                if (checkDiaryDay(DateTime(day.year, day.month, day.day))) {
+                                if (checkDiaryDay(
+                                    DateTime(day.year, day.month, day.day))) {
                                   return [1];
                                 } else {
                                   return [];
@@ -124,24 +134,24 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                               },
                               calendarBuilders: CalendarBuilders(
                                   markerBuilder: (context, date, events) {
-                                    if (events.isNotEmpty) {
-                                      return Positioned(
-                                          right: 5,
-                                          bottom: 1,
-                                          left: 5,
-                                          child: Container(
-                                            width: double.infinity,
-                                            height: 4.0,
-                                            decoration: BoxDecoration(
-                                              color: Colors.deepOrangeAccent,
-                                              borderRadius:
+                                if (events.isNotEmpty) {
+                                  return Positioned(
+                                      right: 5,
+                                      bottom: 1,
+                                      left: 5,
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: 4.0,
+                                        decoration: BoxDecoration(
+                                          color: Colors.deepOrangeAccent,
+                                          borderRadius:
                                               BorderRadius.circular(4.0),
-                                            ),
-                                          ));
-                                    } else {
-                                      return const SizedBox();
-                                    }
-                                  }),
+                                        ),
+                                      ));
+                                } else {
+                                  return const SizedBox();
+                                }
+                              }),
                             ),
                           ),
                         )),
@@ -164,8 +174,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                     });
 
                                     ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(
-                                          content: Text('삭제되었습니다')),
+                                      const SnackBar(content: Text('삭제되었습니다')),
                                     );
                                   },
                                   background: Container(
@@ -180,44 +189,53 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0),
                                     child: Material(
-                                      elevation: 5.0,
-                                      borderRadius: BorderRadius.circular(8.0),
-                                      child: InkWell(
-                                        onTap: (){
-                                          Navigator.push(context, MaterialPageRoute(builder: (context) => DiaryWorkScreen(addScreen: true,)));  //todo 잘 넘어가나 확인
-                                        },
-                                        child: Chip(
-                                          backgroundColor: Colors.white,
-                                          elevation: 5.0,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(8),
-                                            side: const BorderSide(color: Colors.white),
-                                          ),
-                                          label: Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  const Icon(Icons.circle,
-                                                      color:
-                                                      Colors.deepOrangeAccent,
-                                                      size: 12),
-                                                  const SizedBox(width: 10),
-                                                  Text(
-                                                    dateToString(diary.createAt),
-                                                    style: const TextStyle(
+                                        elevation: 5.0,
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        child: InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DiaryWorkScreen(
+                                                          addScreen: false, diaryDTO: _selectedDiaryList[index], date: _selectedDiaryList[index].createAt,
+                                                        ))); //todo 잘 넘어가나 확인
+                                          },
+                                          child: Chip(
+                                            backgroundColor: Colors.white,
+                                            elevation: 5.0,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
+                                              side: const BorderSide(
+                                                  color: Colors.white),
+                                            ),
+                                            label: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    const Icon(Icons.circle,
                                                         color: Colors
-                                                            .deepOrangeAccent),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
+                                                            .deepOrangeAccent,
+                                                        size: 12),
+                                                    const SizedBox(width: 10),
+                                                    Text(
+                                                      dateToString(
+                                                          diary.createAt),
+                                                      style: const TextStyle(
+                                                          color: Colors
+                                                              .deepOrangeAccent),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    ),
+                                        )),
                                   ),
                                 );
                               },
@@ -231,11 +249,21 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
           heroTag: 'tag', //todo hero tag 뭐지?
           onPressed: () {
             // 다이어리 추가
-            Navigator.push(context, MaterialPageRoute(builder: (context) => DiaryWorkScreen(addScreen: true,)));
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => DiaryWorkScreen(addScreen: true)),
+            ).then((result) {
+              if (result != null) {
+                // 데이터를 받아서 처리
+                loadDiaryDateList(); // 데이터베이스에서 다시 데이터를 불러오는 메서드
+              }
+            });
           },
           backgroundColor: Colors.deepOrangeAccent,
-          child: const Icon(Icons.add,
-          color: Colors.white,
+          child: const Icon(
+            Icons.add,
+            color: Colors.white,
           ),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
@@ -246,17 +274,22 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
 
   //모든 일기 리스트 가져오기
   Future<void> loadDiaryDateList() async {
+    _isLoading = true;
+
     _diaryList = await DatabaseHelper().getDiaryList();
+    for (DiaryDTO diaryDTO in _diaryList) {
+      print(diaryDTO.createAt);
+    }
     setState(() {
       _isLoading = false;
+      setSelectedDiaryList();
     });
   }
 
-  //
-  bool checkDiaryDay(DateTime date){
-    print(date);
-    for(DiaryDTO diaryDTO in _diaryList){
-      if(diaryDTO.createAt == date){
+  //다이어리 쓴 날
+  bool checkDiaryDay(DateTime date) {
+    for (DiaryDTO diaryDTO in _diaryList) {
+      if (diaryDTO.createAt == date) {
         return true;
       }
     }
@@ -269,7 +302,8 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     _selectedDiaryList = [];
 
     for (DiaryDTO diary in _diaryList) {
-      if (diary.createAt == _selectedDay) {
+      if (diary.createAt ==
+          DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)) {
         _selectedDiaryList.add(diary);
       }
     }

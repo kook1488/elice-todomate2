@@ -1,13 +1,15 @@
 class DiaryDTO{
   int? id;
   String userId;
+  String title;
   String description;
-  String imageUrl;
+  String? imageUrl;
   DateTime createAt;
 
   DiaryDTO({
     this.id,
     required this.userId,
+    required this.title,
     required this.description,
     required this.imageUrl,
     required this.createAt});
@@ -17,6 +19,7 @@ class DiaryDTO{
     return DiaryDTO(
       id: json['id'],
       userId: json['userId'],
+      title: json['title'],
       description: json['description'],
       imageUrl: json['imageUrl'],
       createAt: DateTime.parse(json['createAt']),
@@ -28,6 +31,7 @@ class DiaryDTO{
     return {
       'id': id,
       'userId': userId,
+      'title': title,
       'description': description,
       'imageUrl': imageUrl,
       'createAt': createAt.toIso8601String(),
