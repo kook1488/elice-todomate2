@@ -74,7 +74,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
       _buildChatList(),
       _buildContacts(),
       _buildNotifications(),
-      profile_screen(),
+      profile_screen(loginId: widget.userInfo.loginId),
     ];
 
     return Scaffold(

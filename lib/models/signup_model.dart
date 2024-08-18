@@ -4,41 +4,22 @@ import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
-//클래스(틀) ,객체=인스턴스 (한국어와 외국어차이:실행중인게 인스턴스라는데 모르겠다)
+//싱글톤으로 선언
 class DatabaseHelper {
-  //클래스(붕어빵) 객체=인스턴스 였다...!
-  //예를들어 회사 복사기= 객체 모두가 이 복사기를 쓰니깐
-  //  복사기만드는 기계(디비헬퍼)-복사기(객체=instance)1개로 가져다 쓴다- 회사에서 사람마다 다르게 복사해줌
-  //  복사기 1개로 가져다 쓰는게 싱글톤 패턴- 큰 기계 하나로 모든 일을 처리하는것
-
-  //인스턴스 이름이 인스턴스 이다. 싱글톤패턴이라 1개만 쓰니깐.
-  static final DatabaseHelper _instance1 = DatabaseHelper._internal();
-  //static final 데이터베이스를 여러개를 만들지 않고 하나만 쓰려고 한다.
-  //static : static 이후의 변수가  DatabaseHelper 클래스자체에 속한다고
-  // 클래스의 인스턴스가 공유한다 복사기 공용으로 쓰듯이
-
-  //final : 데이터베이스 이거 하나만 쓰려고 한다.
-  //그렇기에 한번만 초기화 될 수 있고 처음 할당된 이후에는 값이 변경되지 않는다
-  // _instance1 이게 그 변수 이름이다. DatabaseHelper클래스가 사용하는 딱 하나의 인스턴스 이름.
-  //호출할때 클래스를 부른다는데, 이거를 불러도 되지 않을까 싶다
-
-  factory DatabaseHelper() => _instance1;
-  //생성자이름이 instance1 이다
-  //싱글톤을 실제로 구현하면 factory를 쓴다
-  //항상동일한 객체를 내보내려고
-
+  static final DatabaseHelper _instance = DatabaseHelper._internal();
+  factory DatabaseHelper() => _instance; //객체를 다시쓴다! 주의 다시 공부하기
   static Database? _database;
-  DatabaseHelper._internal(); //생성자 정의 _이거 의미는
-  // 프라이빗 생성자로써 이 생성자가 외부에서 호출될 수 없음을 의미한다.
-// 다른 클래스에서 DatabaseHelper 를 생성하거나 새로운 인스턴스를
-  // 생성하지 못하도록 제한하는것
 
+  DatabaseHelper._internal(); //명명된 생성자로 사용함
+
+  //DB 1개만 쓰려고
   Future<Database> get database async {
     if (_database != null) return _database!;
     _database = await _initDatabase();
     return _database!;
   }
 
+  //회원가입시 초기화
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'user_database.db');
     return await openDatabase(
@@ -48,6 +29,7 @@ class DatabaseHelper {
     );
   }
 
+  //해커 침입 방지로 해시화
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE users(
@@ -66,6 +48,7 @@ class DatabaseHelper {
     return digest.toString();
   }
 
+// 아이디 중복확인
   Future<int> insertUser(Map<String, dynamic> user) async {
     Database db = await database;
     user['password'] = _hashPassword(user['password']);

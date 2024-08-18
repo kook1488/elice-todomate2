@@ -3,6 +3,10 @@ import 'package:todomate/screens/my/profile_screen.dart';
 //밑에 4개는 자고 나서 하자
 
 class nickname_change extends StatelessWidget {
+  final String loginId;
+
+  nickname_change({required this.loginId});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -187,7 +191,8 @@ class nickname_change extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => profile_screen()),
+                                builder: (context) =>
+                                    profile_screen(loginId: loginId)),
                           );
                         },
                         style: ElevatedButton.styleFrom(

@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'profile_screen.dart';
 
 class image_change extends StatelessWidget {
+  final String loginId;
+
+  image_change({required this.loginId});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -177,7 +181,8 @@ class image_change extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => profile_screen()),
+                                builder: (context) =>
+                                    profile_screen(loginId: loginId)),
                           );
                         },
                         style: ElevatedButton.styleFrom(

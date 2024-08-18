@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 
 class avatar_change extends StatelessWidget {
+  final String loginId;
+
+  avatar_change({required this.loginId});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -176,8 +180,9 @@ class avatar_change extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => profile_screen()),
-                          );
+                                builder: (context) =>
+                                    profile_screen(loginId: loginId)),
+                          ); // loginId 전달
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색

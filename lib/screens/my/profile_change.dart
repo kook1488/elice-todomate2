@@ -4,6 +4,10 @@ import 'avatar_change.dart';
 import 'image_change.dart';
 
 class profile_change extends StatelessWidget {
+  final String loginId;
+
+  profile_change({required this.loginId});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -163,7 +167,8 @@ class profile_change extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => image_change()),
+                                builder: (context) =>
+                                    image_change(loginId: loginId)),
                           );
                         },
                         child: buildMenuItemWithImage(
@@ -176,7 +181,8 @@ class profile_change extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => avatar_change()),
+                                builder: (context) =>
+                                    avatar_change(loginId: loginId)),
                           );
                         },
                         child: buildMenuItemWithImage(

@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 
 class new_password extends StatelessWidget {
+  final String loginId;
+
+  new_password({required this.loginId});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -242,7 +246,8 @@ class new_password extends StatelessWidget {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => profile_screen()),
+                                  builder: (context) =>
+                                      profile_screen(loginId: loginId)),
                             );
                           },
                           style: ElevatedButton.styleFrom(

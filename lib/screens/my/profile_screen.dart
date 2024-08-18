@@ -6,6 +6,14 @@ import 'password_change.dart';
 import 'profile_change.dart';
 
 class profile_screen extends StatelessWidget {
+  //String loginId = 'qqq'; //에러를 볼 줄 알아야 한다.
+  //final String loginId; // 이 부분을 로그인한 사용자의 ID로 설정
+  //유저 객체를 가져와서 유저의 로그인 아이디를 빼와서 로그인한 유저의 정보를 삭제해야한다.
+  final String loginId; // final 변수이므로 반드시 생성자에서 초기화해야 함
+
+  // 생성자에서 loginId를 받아 초기화
+  profile_screen({required this.loginId});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -161,7 +169,8 @@ class profile_screen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => profile_change()),
+                                builder: (context) =>
+                                    profile_change(loginId: loginId)),
                           );
                         },
                         child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
@@ -172,7 +181,8 @@ class profile_screen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => nickname_change()),
+                                builder: (context) =>
+                                    nickname_change(loginId: loginId)),
                           );
                         },
                         child: buildMenuItem(Icons.sync, "닉네임 변경"),
@@ -184,7 +194,8 @@ class profile_screen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => password_change()),
+                                builder: (context) =>
+                                    password_change(loginId: loginId)),
                           );
                         },
                         child: buildMenuItem(Icons.lock, "비밀번호 변경"),
@@ -196,7 +207,8 @@ class profile_screen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => delete_account()),
+                                builder: (context) => // loginId 전달
+                                    DeleteAccount(loginId: loginId)),
                           );
                         },
                         child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),

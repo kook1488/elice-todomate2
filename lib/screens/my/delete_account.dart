@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/screens/account/loginscreen.dart';
 
-class delete_account extends StatelessWidget {
+class DeleteAccount extends StatelessWidget {
   //178번째 줄
   final String loginId; // 사용자의 loginId를 받아서 처리
-  DeleteAccount({required this.loginId}); // 생성자에서 loginId를 전달받음
+  DeleteAccount({required this.loginId});
+  // 생성자에서 loginId 를 전달받음
+  // required 는 어떤변수에 어떤 값을 넣을지 설정해줘야한다
 
   @override
   Widget build(BuildContext context) {
@@ -179,8 +182,14 @@ class delete_account extends StatelessWidget {
                               final dbHelper = DatabaseHelper();
 
                               // loginId를 기반으로 사용자 삭제
-                              int result =
-                                  await dbHelper.deleteUserByLoginId(loginId);
+                              await dbHelper.deleteUserByLoginId(loginId);
+
+                              // 로그인 화면으로 이동 및 이전 페이지 스택 제거
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => LoginScreen()),
+                                (Route<dynamic> route) => false,
+                              );
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.grey, // 회색 버튼
