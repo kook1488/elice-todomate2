@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/diary/diary_work_screen.dart';
+import 'package:todomate/util/navigator_observer.dart';
 import 'package:todomate/util/string_utils.dart';
 
 import '../../models/diary_model.dart';
+import '../../util/alert_dialog.dart';
 
 class DiaryCalendarScreen extends StatefulWidget {
   const DiaryCalendarScreen({super.key});
@@ -35,6 +37,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [MyNavigatorObserver()],
       home: Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -163,19 +166,12 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                               itemBuilder: (context, index) {
                                 final diary = _selectedDiaryList[index];
                                 return Dismissible(
-                                  key: Key(diary.createAt.toIso8601String()),
+                                  key: Key(diary.id.toString()),
                                   // 고유한 키를 부여
                                   direction: DismissDirection.endToStart,
                                   // 항목을 오른쪽에서 왼쪽으로 밀어서 제거
-                                  onDismissed: (direction) {
-                                    setState(() {
-                                      _selectedDiaryList
-                                          .removeAt(index); // 항목을 리스트에서 제거
-                                    });
-
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('삭제되었습니다')),
-                                    );
+                                  onDismissed: (direction) async {
+                                    await _deleteDiary(_selectedDiaryList[index]);
                                   },
                                   background: Container(
                                     color: Colors.redAccent,
@@ -192,15 +188,19 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                         elevation: 5.0,
                                         borderRadius:
                                             BorderRadius.circular(8.0),
-                                        child: InkWell(
+                                        child: GestureDetector(
                                           onTap: () {
                                             Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        DiaryWorkScreen(
-                                                          addScreen: false, diaryDTO: _selectedDiaryList[index], date: _selectedDiaryList[index].createAt,
-                                                        ))); //todo 잘 넘어가나 확인
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => DiaryWorkScreen(addScreen: false, diaryDTO: _selectedDiaryList[index], date: _selectedDiaryList[index].createAt,)),
+                                            ).then((result) {
+                                              if (result != null) {
+                                                // 데이터를 받아서 처리
+                                                print('loaddiarydatelist');
+                                                loadDiaryDateList(); // 데이터베이스에서 다시 데이터를 불러오는 메서드
+                                              }
+                                            });
                                           },
                                           child: Chip(
                                             backgroundColor: Colors.white,
@@ -306,6 +306,23 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
           DateTime(_selectedDay.year, _selectedDay.month, _selectedDay.day)) {
         _selectedDiaryList.add(diary);
       }
+    }
+  }
+
+  Future<void> _deleteDiary(DiaryDTO selectedDiaryDTO) async {
+    try {
+      bool isSuccessDeleteDiary = await DatabaseHelper().deleteDiary(selectedDiaryDTO.id ?? 0);
+
+      if(isSuccessDeleteDiary){
+        showAlertDialog(context, '알림', '삭제 되었습니다.');
+        setState(() {
+          loadDiaryDateList();
+        });
+      }else{
+        showAlertDialog(context, "알림", "삭제 실패했습니다.");
+      }
+    } catch (e) {
+      showAlertDialog(context, '오류', '삭제 중 오류가 발생했습니다.');
     }
   }
 }

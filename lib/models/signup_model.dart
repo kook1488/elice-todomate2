@@ -24,7 +24,7 @@ class DatabaseHelper {
   Future<Database> _initDatabase() async {
 
     String path = join(await getDatabasesPath(), 'user_database.db');
-
+    // deleteDatabase(path);
     return await openDatabase(
       path,
       version: 1,// 버전증가
@@ -231,7 +231,7 @@ class DatabaseHelper {
       );
       return true;
     }catch (e){
-      print('Insert error $e');
+      print('Insert Database error $e');
       return false;
     }
 
@@ -255,13 +255,19 @@ class DatabaseHelper {
 
 
   //Diary Delete
-  Future<void> deleteDiary(int id) async {
-    Database db = await database;
-    await db.delete(
-      'diary',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+  Future<bool> deleteDiary(int id) async {
+    try{
+      Database db = await database;
+      await db.delete(
+        'diary',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      return true;
+    }catch (e){
+      print('Delete Database error $e');
+      return false;
+    }
   }
 
   //테이블 만들어졌는지 확인

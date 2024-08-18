@@ -8,15 +8,15 @@ import 'package:todomate/util/alert_dialog.dart';
 import 'package:todomate/util/string_utils.dart';
 
 class DiaryWorkScreen extends StatefulWidget {
-  DiaryDTO? diaryDTO;
-  DateTime? date;
-  bool addScreen; //true -> 추가 화면, false -> 수정 삭제 화면
+  final DiaryDTO? diaryDTO;
+  final DateTime? date;
+  final bool addScreen; //true -> 추가 화면, false -> 수정 삭제 화면
 
-  DiaryWorkScreen(
+  const DiaryWorkScreen(
       {super.key, this.diaryDTO, this.date, required this.addScreen});
 
   @override
-  _DiaryWorkScreenState createState() => _DiaryWorkScreenState();
+  State<StatefulWidget> createState() => _DiaryWorkScreenState();
 }
 
 class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
@@ -36,12 +36,11 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
       _titleController = TextEditingController();
       _contentController = TextEditingController();
     } else {
-      //todo 데이터바꾸기
-      _titleController = TextEditingController(text: widget.diaryDTO?.userId);
+      _titleController = TextEditingController(text: widget.diaryDTO?.title);
       if(widget.diaryDTO?.imageUrl != null){
         _selectedImage = File(widget.diaryDTO!.imageUrl!);
       }
-      _contentController = TextEditingController(text: widget.diaryDTO?.userId);
+      _contentController = TextEditingController(text: widget.diaryDTO?.description);
     }
     _selectedDate = widget.date ?? DateTime.now();
     _picker = ImagePicker();
@@ -81,6 +80,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
     if (widget.addScreen) {
       //추가화면
       return Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -181,24 +181,11 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
           padding: EdgeInsets.all(16.0),
           width: double.infinity,
           child: ElevatedButton(
-            onPressed: () async {
-              // 등록 버튼 클릭 시 처리할 로직 db에 넣고 완료되면 등록되었습니다 팝업 후 종료
-              if(checkInsert()){
-                DiaryDTO diary = DiaryDTO(userId: '1', title: _titleController.text,
-                    description: _contentController.text, imageUrl: imageFilePath, createAt: DateTime(_selectedDate.year,_selectedDate.month,_selectedDate.day));
-                bool isSucessInsert = await DatabaseHelper().insertDiary(diary);
-
-                if(isSucessInsert){ //등록성공
-                  showAlertDialog(context, '알림', '등록되었습니다.',shouldPop: true);
-                }else { //등록실패
-                  showAlertDialog(context, '알림', '등록에 실패했습니다.');
-                }
-              }else{
-                showAlertDialog(context, '알림', '일기 제목과 내용을 입력해주세요.');
-              }
+            onPressed: () {
+             _insertDiary();
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
+              backgroundColor: Colors.deepOrangeAccent,
               padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -214,6 +201,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
     } else {
       //수정삭제 화면
       return Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
@@ -318,7 +306,9 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     padding:
@@ -336,7 +326,9 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
               const SizedBox(width: 10),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    _deleteDiary();
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.orange,
                     padding:
@@ -364,5 +356,44 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
       }else{
         return false;
       }
+  }
+
+  Future<void> _insertDiary() async {
+    try {
+      if (checkInsert()) {
+        DiaryDTO diary = DiaryDTO(
+          userId: '1',
+          title: _titleController.text,
+          description: _contentController.text,
+          imageUrl: imageFilePath,
+          createAt: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day),
+        );
+
+        bool isSuccessInsert = await DatabaseHelper().insertDiary(diary);
+
+        if (isSuccessInsert) { // 등록 성공
+          showAlertDialog(context, '알림', '등록되었습니다.', shouldPop: true);
+        } else { // 등록 실패
+          showAlertDialog(context, '알림', '등록에 실패했습니다.');
+        }
+      } else {
+        showAlertDialog(context, '알림', '일기 제목과 내용을 입력해주세요.');
+      }
+    } catch (e) {
+      showAlertDialog(context, '오류', '등록 중 오류가 발생했습니다.');
+    }
+  }
+
+  Future<void> _deleteDiary() async {
+    try {
+      bool isSuccessDeleteDiary = await DatabaseHelper().deleteDiary(widget.diaryDTO?.id ?? 0);
+      if(isSuccessDeleteDiary){
+        showAlertDialog(context, '알림', '삭제 되었습니다.', shouldPop: true);
+      }else{
+        showAlertDialog(context, "알림", "삭제 실패했습니다.");
+      }
+    } catch (e) {
+      showAlertDialog(context, '오류', '삭제 중 오류가 발생했습니다.');
+    }
   }
 }
