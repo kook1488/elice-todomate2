@@ -35,7 +35,6 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await _databaseHelper.printAllUsers();
 
       final loginResult = await _databaseHelper.loginUser(
         _loginIdController.text,

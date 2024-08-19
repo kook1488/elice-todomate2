@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todomate/screens/account/loginscreen.dart';
 import 'package:todomate/screens/account/pwresetting.dart';
 
 class FindPwScreen extends StatelessWidget {
@@ -19,9 +18,9 @@ class FindPwScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 20, 0, 0),
                 child: Text("가입한 아이디를 입력해주세요",
-                style: TextStyle(
-                  fontSize: 17
-                ),),
+                  style: TextStyle(
+                      fontSize: 17
+                  ),),
               ),
             ],
           ),
@@ -46,16 +45,16 @@ class FindPwScreen extends StatelessWidget {
                 child: TextButton(
                   onPressed: () {},
                   child: Text("전송",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                  ),),
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                    ),),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(Color(0XFFF55721)), // 수정된 부분
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      )
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        )
                     ),
                   ),
                 ),
