@@ -1,11 +1,18 @@
+
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
+
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
 import 'package:todomate/screens/todo/todo_model.dart'; // Todo 모델의 경로를 올바르게 수정하세요
+
+
+import 'package:todomate/models/diary_model.dart';
+
 
 //싱글톤으로 선언
 class DatabaseHelper {
@@ -24,7 +31,9 @@ class DatabaseHelper {
 
   //회원가입시 초기화
   Future<Database> _initDatabase() async {
+
     String path = join(await getDatabasesPath(), 'user_database.db');
+    // deleteDatabase(path);
     return await openDatabase(
       path,
       version: 3, // 데이터베이스 버전 업데이트
@@ -35,6 +44,7 @@ class DatabaseHelper {
 
   //데이터 베이스 테이블 만듬
   Future<void> _onCreate(Database db, int version) async {
+    print('Creating tables in version $version');
     await db.execute('''
       CREATE TABLE users(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,6 +56,21 @@ class DatabaseHelper {
     ''');
 
     await db.execute('''
+      CREATE TABLE diary (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        userId TEXT,
+        title TEXT,
+        description TEXT,
+        imageUrl TEXT,
+        createAt TEXT
+      )
+    ''');
+
+  }
+
+  // 데이터베이스 버전이 업데이트 되었을 때 Diarys 테이블 생성
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    print('oldversion : $oldVersion , newVersion : $newVersion ');
       CREATE TABLE friend_requests(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         sender_id INTEGER,
@@ -298,6 +323,75 @@ class DatabaseHelper {
   Future<void> ensurePasswordsAreHashed() async {
     await updatePasswordToHash();
   }
+
+
+  //Diary Insert
+  Future<bool> insertDiary(DiaryDTO diary) async {
+    final db = await database;
+    try{
+      await db.insert(
+          'diary',
+          diary.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.fail //primary 키 중복일 경우 에러
+      );
+      return true;
+    }catch (e){
+      print('Insert Database error $e');
+      return false;
+    }
+
+  }
+
+
+  //전체 Diary 날짜 리스트
+  Future<List<DiaryDTO>> getDiaryList() async {
+    Database db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.query(
+      'diary',
+      columns: ['id','userId', 'title', 'description', 'imageUrl', 'createAt'], // dateTime 필드만 선택
+    );
+
+    // Map을 DiaryDTO list로 반환
+    return List<DiaryDTO>.from(
+      maps.map((map) => DiaryDTO.fromJson(map)),
+    );
+  }
+
+
+  //Diary Delete
+  Future<bool> deleteDiary(int id) async {
+    try{
+      Database db = await database;
+      await db.delete(
+        'diary',
+        where: 'id = ?',
+        whereArgs: [id],
+      );
+      return true;
+    }catch (e){
+      print('Delete Database error $e');
+      return false;
+    }
+  }
+
+  //테이블 만들어졌는지 확인
+  Future<void> checkTables() async {
+    final Database db = await database;
+
+    // 테이블 목록 가져오기
+    final List<Map<String, dynamic>> tables = await db.rawQuery(
+        "SELECT name FROM sqlite_master WHERE type='table';"
+    );
+
+    // 테이블 목록 출력
+    for (var table in tables) {
+      print('Table: ${table['name']}');
+    }
+  }
+
+
+}
 
   Future<List<Map<String, dynamic>>> getFriendRequests(String userId) async {
     Database db = await database;
