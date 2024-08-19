@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "sender": "디디",
+        "userId": 2,
+        "image": "assets/images/avata_3.png",
+        "message": "어제 배웅해줘서 고마워",
+        "timestamp": "2024-08-14T11:00:00Z",
+        "read": true
+    },
+    {
+        "id": 2,
+        "sender": "플로터",
+        "userId": 1,
+        "image": "assets/images/avata_1.png",
+        "message": "아니뭘",
+        "timestamp": "2024-08-14T11:02:00Z",
+        "read": true
+    },
+    {
+        "id": 3,
+        "sender": "디디",
+        "userId": 2,
+        "image": "assets/images/avata_3.png",
+        "message": "오늘 맥주한잔 하자",
+        "timestamp": "2024-08-14T16:15:00Z",
+        "read": false
+    }
+]
