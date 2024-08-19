@@ -5,9 +5,10 @@ import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
+import 'package:todomate/screens/diary/diary.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
-
 import 'package:todomate/screens/todo/todo_list_screen.dart';
+
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
@@ -79,7 +80,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     List<Widget> _pages = [
       _buildChatList(),
       TodoListScreen(userId: widget.userInfo.id.toString()),
-      _buildNotifications(),
+      DiaryCalendarScreen(),
       ProfileScreen(loginId: loginId) //required로 필수로 지정하다보니
     ];
     //프로필 스크린으로 가는 와중에 위젯문제로 에러가 난다
