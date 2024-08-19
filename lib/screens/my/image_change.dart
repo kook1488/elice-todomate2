@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:todomate/screens/my/profile_screen.dart';
 
-import 'profile_screen.dart';
-
-class image_change extends StatelessWidget {
+class ImageChange extends StatelessWidget {
   final String loginId;
 
-  image_change({required this.loginId});
+  ImageChange({required this.loginId});
 
   @override
   Widget build(BuildContext context) {
@@ -182,7 +181,7 @@ class image_change extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    profile_screen(loginId: loginId)),
+                                    ProfileScreen(loginId: loginId)),
                           );
                         },
                         style: ElevatedButton.styleFrom(

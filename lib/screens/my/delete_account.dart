@@ -3,12 +3,13 @@ import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/account/loginscreen.dart';
 
 class DeleteAccount extends StatelessWidget {
-  //178번째 줄
+  //탈퇴작업 178번째 줄
   final String loginId; // 사용자의 loginId를 받아서 처리
   DeleteAccount({required this.loginId});
   // 생성자에서 loginId 를 전달받음
   // required 는 어떤변수에 어떤 값을 넣을지 설정해줘야한다
-
+//{}안에 매게변수는 원래는 선택적인데,
+// requiered 로 삭제시 코드 안에서 loginId꼭 넣어주도록 한다.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -177,8 +178,9 @@ class DeleteAccount extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
                           ElevatedButton(
+                            //탈퇴작업
                             onPressed: () async {
-                              // DatabaseHelper 인스턴스 가져오기
+                              // final : 불변변수  ,DatabaseHelper 인스턴스 가져오기
                               final dbHelper = DatabaseHelper();
 
                               // loginId를 기반으로 사용자 삭제

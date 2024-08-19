@@ -14,6 +14,7 @@ class ChatsScreen extends StatefulWidget {
   final UserInfo userInfo;
 
   const ChatsScreen({super.key, required this.userInfo});
+  //String loginId = widget.userInfo.loginId;
 
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
@@ -70,12 +71,17 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
   @override
   Widget build(BuildContext context) {
+    // userInfo에서 loginId 가져오기
+    String loginId = widget.userInfo.loginId; // loginId 변수 선언 및 초기화 //*
+
     List<Widget> _pages = [
       _buildChatList(),
       _buildContacts(),
       _buildNotifications(),
-      profile_screen(loginId: widget.userInfo.loginId),
+      ProfileScreen(loginId: loginId) //required로 필수로 지정하다보니
     ];
+    //프로필 스크린으로 가는 와중에 위젯문제로 에러가 난다
+    //아이디 삭제는 따로 잘되는거 같다 페이지 이동에 문제가 있을 뿐
 
     return Scaffold(
       appBar: AppBar(

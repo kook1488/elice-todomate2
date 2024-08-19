@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:todomate/screens/my/avatar_change.dart';
+import 'package:todomate/screens/my/image_change.dart';
 
-import 'avatar_change.dart';
-import 'image_change.dart';
-
-class profile_change extends StatelessWidget {
+class ProfileChange extends StatelessWidget {
   final String loginId;
 
-  profile_change({required this.loginId});
+  ProfileChange({required this.loginId});
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +167,7 @@ class profile_change extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    image_change(loginId: loginId)),
+                                    ImageChange(loginId: loginId)),
                           );
                         },
                         child: buildMenuItemWithImage(
@@ -182,7 +181,7 @@ class profile_change extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    avatar_change(loginId: loginId)),
+                                    AvatarChange(loginId: loginId)),
                           );
                         },
                         child: buildMenuItemWithImage(

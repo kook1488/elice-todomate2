@@ -48,6 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
           id: user['id'],
           nickName: user['nickname'],
           avatarPath: user['avatar_path'],
+          loginId: _loginIdController.text, // loginId를 추가합니다.
         );
 
         Navigator.pushReplacement(
@@ -134,7 +135,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ..onTap = () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => FindPwScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => FindPwScreen()),
                             );
                           },
                       ),
@@ -200,7 +202,8 @@ class _LoginScreenState extends State<LoginScreen> {
                               ..onTap = () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (context) => SignupScreen()),
+                                  MaterialPageRoute(
+                                      builder: (context) => SignupScreen()),
                                 );
                               },
                           ),
@@ -247,7 +250,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ..onTap = () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => UserListScreen()),
+                              MaterialPageRoute(
+                                  builder: (context) => UserListScreen()),
                             );
                           },
                       ),

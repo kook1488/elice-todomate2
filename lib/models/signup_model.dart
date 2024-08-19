@@ -29,7 +29,7 @@ class DatabaseHelper {
     );
   }
 
-  //해커 침입 방지로 해시화
+  //데이터 베이스 테이블 만듬
   Future<void> _onCreate(Database db, int version) async {
     await db.execute('''
       CREATE TABLE users(
@@ -42,6 +42,7 @@ class DatabaseHelper {
     ''');
   }
 
+//해시화
   String _hashPassword(String password) {
     var bytes = utf8.encode(password);
     var digest = sha256.convert(bytes);
@@ -63,11 +64,16 @@ class DatabaseHelper {
     }
   }
 
+  //데이터베이스에 비동기 인데 기다려야 한다???
+  //데이터베이스 쿼리가 완료되어 결과가 반환될 때까지 코드를 일시 중단하고,
+  // 작업이 끝나면 그 결과를 사용하여 다음 작업을 계속 진행
+  //즉 쿼리 다 작성되는데까지 기다린다는 뜻
   Future<List<Map<String, dynamic>>> getUsers() async {
-    Database db = await database;
-    return await db.query('users');
+    Database db = await database; //await 로 기다려야 한다.
+    return await db.query('users'); //
   }
 
+  //로그인시 아이디 중복 확인
   Future<Map<String, dynamic>?> getUser(String loginId, String password) async {
     Database db = await database;
     String hashedPassword = _hashPassword(password);
@@ -109,6 +115,7 @@ class DatabaseHelper {
     }
   }
 
+  //로그인 과정
   Future<Map<String, dynamic>> loginUser(
       String loginId, String password) async {
     try {
@@ -137,6 +144,7 @@ class DatabaseHelper {
     }
   }
 
+  //비번 검사
   Future<void> printAllUsers() async {
     Database db = await database;
     List<Map<String, dynamic>> users = await db.query('users');
@@ -155,6 +163,7 @@ class DatabaseHelper {
     }
   }
 
+  //DB에 유저정보 업데이트
   Future<int> updateUser(Map<String, dynamic> user) async {
     Database db = await database;
     return await db.update(
@@ -165,6 +174,7 @@ class DatabaseHelper {
     );
   }
 
+  // 여기 왜 삭제가 또 있지? 불안하게....?
   Future<int> deleteUser(int id) async {
     Database db = await database;
     return await db.delete(
@@ -181,12 +191,14 @@ class DatabaseHelper {
     // login_id를 기반으로 사용자를 삭제
     return await db.delete(
       'users',
-      where: 'login_id = ?',
-      whereArgs: [loginId],
+      where: 'login_id = ?', // 'login_id' 열이 특정 값과 일치하는 행을 찾음
+      whereArgs: [loginId], // '?'를 'loginId' 값으로 대체함
     );
   }
 
   /////////////////////////////////////
+
+  //해시 패스워드 업데이트
   Future<void> updatePasswordToHash() async {
     Database db = await database;
     List<Map<String, dynamic>> users = await db.query('users');

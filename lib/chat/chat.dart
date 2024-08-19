@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:todomate/chat/view/chats_screen.dart';
 import 'package:todomate/chat/models/user_info.dart';
-
-
+import 'package:todomate/chat/view/chats_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,6 +21,7 @@ class MyApp extends StatelessWidget {
       id: 1,
       nickName: '플로터',
       avatarPath: 'assets/images/avata_1.png',
+      loginId: 'user123', // loginId를 추가
     );
 
     return MaterialApp(
