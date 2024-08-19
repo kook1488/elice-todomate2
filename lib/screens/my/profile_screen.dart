@@ -1,18 +1,40 @@
 import 'package:flutter/material.dart';
+import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/my/nickname_change.dart';
 import 'package:todomate/screens/my/password_change.dart';
 import 'package:todomate/screens/my/profile_change.dart';
 
 import 'delete_account.dart';
 
-class ProfileScreen extends StatelessWidget {
-  //String loginId = 'qqq'; //에러를 볼 줄 알아야 한다.
-  //final String loginId; // 이 부분을 로그인한 사용자의 ID로 설정
-  //유저 객체를 가져와서 유저의 로그인 아이디를 빼와서 로그인한 유저의 정보를 삭제해야한다.
-  final String loginId; // final 변수이므로 반드시 생성자에서 초기화해야 함
-
-  // 생성자에서 loginId를 받아 초기화
+//유저 객체를 가져와서 유저의 로그인 아이디를 빼와서
+// 로그인한 유저의 정보를 삭제해야한다.
+// final 변수이므로 반드시 생성자에서 초기화해야 함
+// 생성자에서 loginId를 받아 초기화
+class ProfileScreen extends StatefulWidget {
+  final String loginId;
   ProfileScreen({required this.loginId});
+
+  @override
+  _ProfileScreenState createState() => _ProfileScreenState(); //* State 클래스 생성
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  String? _nickname; //* 닉네임을 저장할 변수 추가
+  final DatabaseHelper _dbHelper = DatabaseHelper(); //* DatabaseHelper 인스턴스 추가
+
+  @override
+  void initState() {
+    super.initState();
+    _loadNickname(); //* 닉네임을 불러오는 메서드 호출
+  }
+
+  void _loadNickname() async {
+    //* 닉네임을 불러오는 메서드 추가
+    String? nickname = await _dbHelper.getNickname(widget.loginId);
+    setState(() {
+      _nickname = nickname ?? 'Unknown User';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,7 +73,7 @@ class ProfileScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'bluetux',
+                              _nickname ?? 'Loading...', //* 닉네임 표시 부분 수정
                               style: TextStyle(
                                 fontSize: 24.0,
                                 fontWeight: FontWeight.bold,
@@ -169,8 +191,9 @@ class ProfileScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfileChange(loginId: loginId)),
+                                builder: (context) => ProfileChange(
+                                    loginId:
+                                        widget.loginId)), //* widget.loginId로 수정
                           );
                         },
                         child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
@@ -181,8 +204,9 @@ class ProfileScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    NicknameChange(loginId: loginId)),
+                                builder: (context) => NicknameChange(
+                                    loginId:
+                                        widget.loginId)), //* widget.loginId로 수정
                           );
                         },
                         child: buildMenuItem(Icons.sync, "닉네임 변경"),
@@ -195,7 +219,7 @@ class ProfileScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) =>
-                                    PasswordChange(loginId: loginId)),
+                                    PasswordChange(loginId: widget.loginId)),
                           );
                         },
                         child: buildMenuItem(Icons.lock, "비밀번호 변경"),
@@ -208,7 +232,7 @@ class ProfileScreen extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => // loginId 전달
-                                    DeleteAccount(loginId: loginId)),
+                                    DeleteAccount(loginId: widget.loginId)),
                           );
                         },
                         child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),

@@ -185,6 +185,24 @@ class DatabaseHelper {
   }
 
 //////////////////////////////////////////
+  //닉네임 연동
+  Future<String?> getNickname(String loginId) async {
+    //* 약 118~127번째 줄
+    Database db = await database;
+    List<Map<String, dynamic>> results = await db.query(
+      'users',
+      columns: ['nickname'],
+      where: 'login_id = ?',
+      whereArgs: [loginId],
+    );
+
+    if (results.isNotEmpty) {
+      return results.first['nickname'] as String?;
+    } else {
+      return null;
+    }
+  }
+
   // 회원 탈퇴 기능 추가
   Future<int> deleteUserByLoginId(String loginId) async {
     Database db = await database;
