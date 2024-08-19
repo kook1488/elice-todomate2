@@ -37,14 +37,14 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
       _contentController = TextEditingController();
     } else {
       _titleController = TextEditingController(text: widget.diaryDTO?.title);
-      if(widget.diaryDTO?.imageUrl != null){
+      if (widget.diaryDTO?.imageUrl != null) {
         _selectedImage = File(widget.diaryDTO!.imageUrl!);
       }
-      _contentController = TextEditingController(text: widget.diaryDTO?.description);
+      _contentController =
+          TextEditingController(text: widget.diaryDTO?.description);
     }
     _selectedDate = widget.date ?? DateTime.now();
     _picker = ImagePicker();
-
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -62,7 +62,6 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
     }
   }
 
-
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
 
@@ -73,7 +72,6 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
       });
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +96,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
           children: [
             Expanded(
               child: SingleChildScrollView(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     Material(
@@ -117,41 +115,70 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Container(
+                    const SizedBox(height: 10),
+                    SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () => _selectDate(context),
                         style: ElevatedButton.styleFrom(
                           elevation: 3.0,
                           backgroundColor: Colors.white,
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        child: Text(dateToString(_selectedDate)),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          // 텍스트와 아이콘을 양쪽 끝으로 배치
+                          children: [
+                            Text(
+                              dateToString(_selectedDate),
+                              style: const TextStyle(
+                                  color: Colors.black), // 원하는 텍스트 스타일 적용
+                            ),
+                            const Icon(
+                              Icons.calendar_today, // 달력 아이콘
+                              color: Colors.black, // 아이콘 색상
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Container(
+                    const SizedBox(height: 10),
+                    SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () => _pickImage(),
                         style: ElevatedButton.styleFrom(
                           elevation: 3.0,
                           backgroundColor: Colors.white,
-                          padding: EdgeInsets.all(16.0),
+                          padding: const EdgeInsets.all(16.0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
                         child: _selectedImage == null
-                            ? Text('이미지를 넣어보세요')
+                            ? const Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                // 텍스트와 아이콘을 양쪽 끝으로 배치
+                                children: [
+                                  Text(
+                                    '사진을 넣어보세요.',
+                                    style: TextStyle(
+                                        color: Colors.black), // 원하는 텍스트 스타일 적용
+                                  ),
+                                  Icon(
+                                    Icons.image, // 달력 아이콘
+                                    color: Colors.black, // 아이콘 색상
+                                  ),
+                                ],
+                              )
                             : Image.file(_selectedImage!, fit: BoxFit.cover),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Material(
                       elevation: 3.0,
                       borderRadius: BorderRadius.circular(8),
@@ -182,7 +209,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () {
-             _insertDiary();
+              _insertDiary();
             },
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.deepOrangeAccent,
@@ -254,8 +281,8 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
                         child: Text(dateToString(_selectedDate)),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    Container(
+                    const SizedBox(height: 10),
+                    SizedBox(
                       width: double.infinity,
                       child: ElevatedButton(
                         onPressed: () => _pickImage(),
@@ -272,7 +299,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
                             : Image.file(_selectedImage!, fit: BoxFit.cover),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     Material(
                       elevation: 3.0,
                       borderRadius: BorderRadius.circular(8),
@@ -306,13 +333,10 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {
-                    
-                  },
+                  onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepOrangeAccent,
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -331,8 +355,7 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.deepOrangeAccent,
-                    padding:
-                    EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -349,13 +372,15 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
       );
     }
   }
- //디비 넣기전 변수 검증
+
+  //디비 넣기전 변수 검증
   bool checkInsert() {
-      if(_titleController.text.isNotEmpty && _contentController.text.isNotEmpty){
-        return true;
-      }else{
-        return false;
-      }
+    if (_titleController.text.isNotEmpty &&
+        _contentController.text.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   Future<void> _insertDiary() async {
@@ -366,14 +391,17 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
           title: _titleController.text,
           description: _contentController.text,
           imageUrl: imageFilePath,
-          createAt: DateTime(_selectedDate.year, _selectedDate.month, _selectedDate.day),
+          createAt: DateTime(
+              _selectedDate.year, _selectedDate.month, _selectedDate.day),
         );
 
         bool isSuccessInsert = await DatabaseHelper().insertDiary(diary);
 
-        if (isSuccessInsert) { // 등록 성공
+        if (isSuccessInsert) {
+          // 등록 성공
           showAlertDialog(context, '알림', '등록되었습니다.', shouldPop: true);
-        } else { // 등록 실패
+        } else {
+          // 등록 실패
           showAlertDialog(context, '알림', '등록에 실패했습니다.');
         }
       } else {
@@ -386,10 +414,11 @@ class _DiaryWorkScreenState extends State<DiaryWorkScreen> {
 
   Future<void> _deleteDiary() async {
     try {
-      bool isSuccessDeleteDiary = await DatabaseHelper().deleteDiary(widget.diaryDTO?.id ?? 0);
-      if(isSuccessDeleteDiary){
+      bool isSuccessDeleteDiary =
+          await DatabaseHelper().deleteDiary(widget.diaryDTO?.id ?? 0);
+      if (isSuccessDeleteDiary) {
         showAlertDialog(context, '알림', '삭제 되었습니다.', shouldPop: true);
-      }else{
+      } else {
         showAlertDialog(context, "알림", "삭제 실패했습니다.");
       }
     } catch (e) {

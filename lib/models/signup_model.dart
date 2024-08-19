@@ -294,6 +294,22 @@ class DatabaseHelper {
     }
   }
 
+  Future<bool> updateDiary(DiaryDTO diary) async {
+    try {
+      Database db = await database;
+      await db.update(
+        'diary',
+        diary.toJson(),
+        where: 'id = ?',
+        whereArgs: [diary.id],
+      );
+      return true;
+    } catch (e) {
+      print('Update Database error: $e');
+      return false;
+    }
+  }
+
   Future<void> checkTables() async {
     final Database db = await database;
     final List<Map<String, dynamic>> tables = await db.rawQuery(

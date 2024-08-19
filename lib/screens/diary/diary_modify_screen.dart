@@ -6,6 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import '../../models/diary_model.dart';
 
 
+import '../../models/signup_model.dart';
+import '../../util/alert_dialog.dart';
 import '../../util/string_utils.dart';
 
 class DiaryModifyScreen extends StatefulWidget {
@@ -61,7 +63,7 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: Column(
                 children: [
                   Material(
@@ -80,41 +82,70 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Container(
+                  const SizedBox(height: 10),
+                  SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () => _selectDate(context),
                       style: ElevatedButton.styleFrom(
                         elevation: 3.0,
                         backgroundColor: Colors.white,
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: Text(dateToString(_selectedDate)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        // 텍스트와 아이콘을 양쪽 끝으로 배치
+                        children: [
+                          Text(
+                            dateToString(_selectedDate),
+                            style: const TextStyle(
+                                color: Colors.black), // 원하는 텍스트 스타일 적용
+                          ),
+                          const Icon(
+                            Icons.calendar_today, // 달력 아이콘
+                            color: Colors.black, // 아이콘 색상
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  SizedBox(height: 10),
-                  Container(
+                  const SizedBox(height: 10),
+                  SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () => _pickImage(),
                       style: ElevatedButton.styleFrom(
                         elevation: 3.0,
                         backgroundColor: Colors.white,
-                        padding: EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(16.0),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
                       child: _selectedImage == null
-                          ? Text('이미지를 넣어보세요')
+                          ? const Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        // 텍스트와 아이콘을 양쪽 끝으로 배치
+                        children: [
+                          Text(
+                            '사진을 넣어보세요.',
+                            style: TextStyle(
+                                color: Colors.black), // 원하는 텍스트 스타일 적용
+                          ),
+                          Icon(
+                            Icons.image, // 달력 아이콘
+                            color: Colors.black, // 아이콘 색상
+                          ),
+                        ],
+                      )
                           : Image.file(_selectedImage!, fit: BoxFit.cover),
                     ),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   Material(
                     elevation: 3.0,
                     borderRadius: BorderRadius.circular(8),
@@ -132,7 +163,7 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 16),
+                  const SizedBox(height: 16),
                 ],
               ),
             ),
@@ -141,15 +172,15 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
       ),
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () {
-            //todo 수정 디비로직
+
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.deepOrangeAccent,
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -161,6 +192,20 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _updateDiary() async {
+    try {
+      bool isSuccessDeleteDiary =
+      await DatabaseHelper().deleteDiary(widget.diaryDTO.id ?? 0);
+      if (isSuccessDeleteDiary) {
+        showAlertDialog(context, '알림', '삭제 되었습니다.', shouldPop: true);
+      } else {
+        showAlertDialog(context, "알림", "삭제 실패했습니다.");
+      }
+    } catch (e) {
+      showAlertDialog(context, '오류', '삭제 중 오류가 발생했습니다.');
+    }
   }
 
   //달력에서 날짜 선택
