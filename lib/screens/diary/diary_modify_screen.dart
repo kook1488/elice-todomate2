@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../models/diary_model.dart';
-import '../../models/signup_model.dart';
-import '../../util/alert_dialog.dart';
+
+
 import '../../util/string_utils.dart';
 
 class DiaryModifyScreen extends StatefulWidget {

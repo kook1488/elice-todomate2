@@ -24,14 +24,14 @@ class DiaryDetailScreenState extends State<DiaryDetailScreen> {
   String? imageFilePath;
   File? _selectedImage;
 
-  late ImagePicker _picker;
+  
 
   @override
   void initState() {
     super.initState();
 
     _selectedDate = widget.diaryDTO.createAt;
-    _picker = ImagePicker();
+
 
   }
 
@@ -191,7 +191,7 @@ class DiaryDetailScreenState extends State<DiaryDetailScreen> {
 
   Future<void> _deleteDiary() async {
     try {
-      bool isSuccessDeleteDiary = await DatabaseHelper().deleteDiary(widget.diaryDTO?.id ?? 0);
+      bool isSuccessDeleteDiary = await DatabaseHelper().deleteDiary(widget.diaryDTO.id ?? 0);
       if(isSuccessDeleteDiary){
         showAlertDialog(context, '알림', '삭제 되었습니다.', shouldPop: true);
       }else{
