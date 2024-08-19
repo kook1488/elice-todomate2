@@ -1,33 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:todomate/screens/chat_room/test_models.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
 
-class ChatRoomDetailScreen extends StatefulWidget {
-  final ChatRoomModel chatRoomDetail;
-
-  const ChatRoomDetailScreen({
+class CreateChatRoomScreen extends StatefulWidget {
+  const CreateChatRoomScreen({
     super.key,
-    required this.chatRoomDetail,
   });
 
   @override
-  State<ChatRoomDetailScreen> createState() => _ChatRoomDetailScreenState();
+  State<CreateChatRoomScreen> createState() => _CreateChatRoomScreenState();
 }
 
-class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
-  late TextEditingController _nameController = TextEditingController();
+class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
+  final TextEditingController _nameController = TextEditingController();
+
+  final DatabaseHelper db = DatabaseHelper();
   late Future<List<ChatRoomModel>> chatRooms;
   late Future<List<TopicModel>> topics;
-  String _name = '';
-  late String _selectedDate;
-  late String _selectedTime;
-  TimeOfDay a = TimeOfDay.now();
-  late int topicId;
   late Future<String> topicName;
-  String topicNameString = '';
-  final DatabaseHelper db = DatabaseHelper();
+  late int topicId;
+
+  String _name = '';
+  String topicNameString = '선택하기';
+  DateTime _selectedDate = DateTime.now();
+  TimeOfDay _selectedTime = TimeOfDay.now();
 
   void _onClosePressed() {
     Navigator.of(context).pop();
@@ -38,19 +35,13 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
     return stringDate;
   }
 
-  TimeOfDay _setStringToTime(String time) {
-    DateTime dateTime = DateFormat("HH:mm").parse(time);
-    return TimeOfDay(hour: dateTime.hour, minute: dateTime.minute);
-  }
-
   String _setStartTimeToString(TimeOfDay time) {
     final stringTime = '${time.hour}:${time.minute}';
     return stringTime;
   }
 
-  String _setEndTimeToString(String time) {
-    DateTime endTime = DateFormat("HH:mm").parse(time);
-    final stringTime = '${endTime.hour + 1}:${endTime.minute}';
+  String _setEndTimeToString(TimeOfDay time) {
+    final stringTime = '${time.hour + 1}:${time.minute}';
     return stringTime;
   }
 
@@ -58,22 +49,17 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   void initState() {
     super.initState();
 
-    _nameController = TextEditingController(text: widget.chatRoomDetail.name);
-    _selectedDate = widget.chatRoomDetail.startDate.split(' ').first;
-    _selectedTime = widget.chatRoomDetail.startDate.split(' ')[1];
-    topicId = widget.chatRoomDetail.topicId.toInt();
+    // 채팅방 DB 초기화
+    db.initDatabase();
+
+    chatRooms = db.getChatRoom();
+    topics = db.getTopic();
 
     _nameController.addListener(() {
       setState(() {
-        if (_nameController.text.isEmpty) {
-          _name = _nameController.text;
-        }
+        _name = _nameController.text;
       });
     });
-
-    db.initDatabase();
-    chatRooms = db.getChatRoom();
-    topics = db.getTopic();
   }
 
   @override
@@ -82,45 +68,27 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
     super.dispose();
   }
 
-  void _updateChatRoom(ChatRoomModel chatRoom) async {
-    if (_nameController.text.isEmpty) {
-      _name = widget.chatRoomDetail.name;
-    } else {
-      _name = _nameController.text;
+  void _addChatRoom() async {
+    if (_nameController.text.isNotEmpty) {
+      await db.insertChatRoomModel(ChatRoomModel(
+        name: _name,
+        topicId: topicId,
+        userId: 1,
+        startDate:
+            '${_setDateToString(_selectedDate)} ${_setStartTimeToString(_selectedTime)}',
+        endDate:
+            '${_setDateToString(_selectedDate)} ${_setEndTimeToString(_selectedTime)}',
+      ));
+      _nameController.clear();
+
+      if (mounted) {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => const ChatRoomScreen(),
+          ),
+        );
+      }
     }
-
-    await db.updateChatRoomModel(ChatRoomModel(
-      id: chatRoom.id,
-      name: _name,
-      topicId: topicId,
-      userId: 1,
-      startDate: '$_selectedDate $_selectedTime',
-      endDate: '$_selectedDate ${_setEndTimeToString(_selectedTime)}',
-    ));
-
-    if (mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const ChatRoomScreen(),
-        ),
-      );
-    }
-  }
-
-  // 토픽 선택
-  void _onTopicDetailTap(TopicModel detail) {
-    topicId = detail.id!.toInt();
-  }
-
-  Future<String> _topicName(int id) async {
-    topicName = db.getTopicDetailName(topicId: id);
-    topicNameString = await topicName;
-    return topicNameString.toString();
-  }
-
-  void _onTopicSelectTap() {
-    Navigator.of(context).pop();
-    setState(() {});
   }
 
   // 날짜 선택 함수
@@ -136,7 +104,7 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
               : const SizedBox();
         });
     if (picked != null) {
-      setState(() => _selectedDate = _setDateToString(picked));
+      setState(() => _selectedDate = picked);
     }
   }
 
@@ -144,11 +112,27 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   Future selectTimePicker() async {
     TimeOfDay? picked = await showTimePicker(
         context: context,
-        initialTime: _setStringToTime(_selectedTime),
+        initialTime: TimeOfDay.now(),
         initialEntryMode: TimePickerEntryMode.input);
     if (picked != null) {
-      setState(() => _selectedTime = _setStartTimeToString(picked));
+      setState(() => _selectedTime = picked);
     }
+  }
+
+  Future<String> _topicName(int id) async {
+    topicName = db.getTopicDetailName(topicId: id);
+    topicNameString = await topicName;
+    return topicNameString.toString();
+  }
+
+  // 토픽 선택
+  void _onTopicDetailTap(TopicModel detail) {
+    topicId = detail.id!.toInt();
+  }
+
+  void _onTopicSelectTap() {
+    Navigator.of(context).pop();
+    setState(() {});
   }
 
   @override
@@ -163,7 +147,6 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 30,
-          vertical: 10,
         ),
         child: Column(
           children: [
@@ -177,7 +160,7 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                 ),
                 // 저장 버튼
                 IconButton(
-                  onPressed: () => _updateChatRoom(widget.chatRoomDetail),
+                  onPressed: _addChatRoom,
                   icon: const FaIcon(FontAwesomeIcons.check),
                 ),
               ],
@@ -197,9 +180,6 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
             // 텍스트 입력 필드
             TextField(
               controller: _nameController,
-              onChanged: (value) {
-                _name = value;
-              },
               decoration: InputDecoration(
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 10,
@@ -216,6 +196,9 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                   ),
                 ),
               ),
+              onChanged: (value) {
+                _name = value;
+              },
             ),
             const SizedBox(height: 40),
             const Row(
@@ -345,7 +328,7 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
               width: 400,
               child: ElevatedButton(
                 onPressed: selectDatePicker,
-                child: Text(_selectedDate),
+                child: Text(_setDateToString(_selectedDate)),
               ),
             ),
             const SizedBox(height: 40),
@@ -364,7 +347,7 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
               width: 400,
               child: ElevatedButton(
                 onPressed: selectTimePicker,
-                child: Text(_selectedTime),
+                child: Text(_setStartTimeToString(_selectedTime)),
               ),
             ),
           ],
