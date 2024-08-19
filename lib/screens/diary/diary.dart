@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/screens/diary/diary_detail_screen.dart';
 import 'package:todomate/screens/diary/diary_work_screen.dart';
 import 'package:todomate/util/navigator_observer.dart';
 import 'package:todomate/util/string_utils.dart';
@@ -71,7 +72,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        DiaryWorkScreen(addScreen: true, date: _selectedDay)),
+                                        DiaryWorkScreen(date: _selectedDay)),
                               ).then((result) {
                                 if (result != null) {
                                   // 데이터를 받아서 처리
@@ -240,7 +241,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => DiaryWorkScreen(addScreen: true)),
+                  builder: (context) => DiaryWorkScreen(date: _selectedDay)),
             ).then((result) {
               if (result != null) {
                 // 데이터를 받아서 처리
@@ -318,7 +319,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
     Navigator.push(
       context,
       MaterialPageRoute(
-          builder: (context) => DiaryWorkScreen(addScreen: false, diaryDTO: _selectedDiaryList[index], date: _selectedDiaryList[index].createAt,)),
+          builder: (context) => DiaryDetailScreen(diaryDTO: _selectedDiaryList[index])),
     ).then((result) {
       if (result != null) {
         // 데이터를 받아서 처리

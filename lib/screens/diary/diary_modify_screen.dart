@@ -33,6 +33,7 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
   void initState() {
     _titleController = TextEditingController(text: widget.diaryDTO.title);
     if (widget.diaryDTO.imageUrl != null) {
+      imageFilePath = widget.diaryDTO.imageUrl;
       _selectedImage = File(widget.diaryDTO.imageUrl!);
     }
     _contentController =
@@ -176,6 +177,7 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () {
+            _updateDiary();
 
           },
           style: ElevatedButton.styleFrom(
@@ -196,15 +198,17 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
 
   Future<void> _updateDiary() async {
     try {
-      bool isSuccessDeleteDiary =
-      await DatabaseHelper().deleteDiary(widget.diaryDTO.id ?? 0);
-      if (isSuccessDeleteDiary) {
-        showAlertDialog(context, '알림', '삭제 되었습니다.', shouldPop: true);
+      DiaryDTO modifiedDiary = DiaryDTO(id : widget.diaryDTO.id, userId: widget.diaryDTO.userId, title: _titleController.text, description: _contentController.text, imageUrl: imageFilePath, createAt: _selectedDate);
+      int updateDiaryResult =
+      await DatabaseHelper().updateDiary(modifiedDiary);
+
+      if (updateDiaryResult > 0) {
+        showAlertDialog(context, '알림', '수정 되었습니다.', shouldPop: true);
       } else {
-        showAlertDialog(context, "알림", "삭제 실패했습니다.");
+        showAlertDialog(context, "알림", "수정 실패했습니다.");
       }
     } catch (e) {
-      showAlertDialog(context, '오류', '삭제 중 오류가 발생했습니다.');
+      showAlertDialog(context, '오류', '수정 중 오류가 발생했습니다.');
     }
   }
 

@@ -294,19 +294,19 @@ class DatabaseHelper {
     }
   }
 
-  Future<bool> updateDiary(DiaryDTO diary) async {
+  Future<int> updateDiary(DiaryDTO diary) async {
     try {
       Database db = await database;
-      await db.update(
+      int result = await db.update(
         'diary',
         diary.toJson(),
         where: 'id = ?',
         whereArgs: [diary.id],
       );
-      return true;
+      return result;
     } catch (e) {
       print('Update Database error: $e');
-      return false;
+      return 0;
     }
   }
 

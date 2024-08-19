@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:todomate/models/diary_model.dart';
 import 'package:todomate/screens/diary/diary_modify_screen.dart';
 
@@ -29,7 +28,7 @@ class DiaryDetailScreenState extends State<DiaryDetailScreen> {
   @override
   void initState() {
     super.initState();
-
+    _selectedImage = File(widget.diaryDTO.imageUrl ?? '');
     _selectedDate = widget.diaryDTO.createAt;
 
 
@@ -38,6 +37,7 @@ class DiaryDetailScreenState extends State<DiaryDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
@@ -45,7 +45,7 @@ class DiaryDetailScreenState extends State<DiaryDetailScreen> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          '일기 수정',
+          '일기',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -60,74 +60,104 @@ class DiaryDetailScreenState extends State<DiaryDetailScreen> {
               padding: EdgeInsets.all(16.0),
               child: Column(
                 children: [
-                  Material(
-                    elevation: 3.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: TextField(
-                      // controller: _titleController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white,
-                        hintText: '제목',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide.none,
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: const Offset(0, 2),
                         ),
+                      ],
+                    ),
+                    child: Text(
+                      widget.diaryDTO.title,
+                      style: const TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black, // 텍스트 색상
                       ),
+                      textAlign: TextAlign.left, // 텍스트를 중앙에 배치합니다.
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.all(16.0), // 버튼에서 padding이 빠졌으니, 여기에 추가합니다.
+                    decoration: BoxDecoration(
+                      color: Colors.white, // 버튼의 배경색을 유지하기 위해 색상을 지정합니다.
+                      borderRadius: BorderRadius.circular(8), // 버튼의 모서리 둥글기를 유지합니다.
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 2), // 그림자 위치를 설정합니다.
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      dateToString(_selectedDate),
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        color: Colors.black, // 텍스트 색상
+                      ),
+                      textAlign: TextAlign.left, // 텍스트를 중앙에 배치합니다.
                     ),
                   ),
                   SizedBox(height: 10),
                   Container(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () => {
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 3.0,
-                        backgroundColor: Colors.white,
-                        padding: EdgeInsets.all(16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    padding: EdgeInsets.all(16.0), // 버튼의 padding을 유지합니다.
+                    decoration: BoxDecoration(
+                      color: Colors.white, // 배경색을 설정합니다.
+                      borderRadius: BorderRadius.circular(8), // 모서리를 둥글게 만듭니다.
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 2), // 그림자 효과를 줍니다.
                         ),
+                      ],
+                    ),
+                    child: _selectedImage == null
+                        ? Text(
+                      '이미지를 넣어보세요',
+                      style: TextStyle(
+                        color: Colors.black, // 텍스트 색상
+                        fontSize: 16.0,
                       ),
-                      child: Text(dateToString(_selectedDate)),
+                      textAlign: TextAlign.center,
+                    )
+                        : Image.file(
+                      _selectedImage!,
+                      fit: BoxFit.cover,
                     ),
                   ),
                   SizedBox(height: 10),
                   Container(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () =>{
-
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 3.0,
-                        backgroundColor: Colors.white,
-                        padding: EdgeInsets.all(16.0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                    padding: EdgeInsets.all(16.0), // 패딩 추가
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 2), // 그림자 위치를 설정합니다.
                         ),
-                      ),
-                      child: _selectedImage == null
-                          ? Text('이미지를 넣어보세요')
-                          : Image.file(_selectedImage!, fit: BoxFit.cover),
+                      ],
                     ),
-                  ),
-                  SizedBox(height: 10),
-                  Material(
-                    elevation: 3.0,
-                    borderRadius: BorderRadius.circular(8),
-                    child: Container(
-                      padding: EdgeInsets.all(16.0), // 패딩 추가
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Text(
-                        "내용",
-                        style: TextStyle(fontSize: 16),
-                      ),
+                    child: Text(
+                      widget.diaryDTO.description,
+                      style: TextStyle(fontSize: 16),
                     ),
                   ),
                   SizedBox(height: 16),
@@ -147,7 +177,17 @@ class DiaryDetailScreenState extends State<DiaryDetailScreen> {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => DiaryModifyScreen(diaryDTO: widget.diaryDTO)));
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            DiaryModifyScreen(diaryDTO: widget.diaryDTO)),
+                  ).then((result) {
+                    if (result != null) {
+                      // 데이터를 받아서 처리
+                      Navigator.pop(context,true); // 데이터베이스에서 다시 데이터를 불러오는 메서드
+                    }
+                  });
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.deepOrangeAccent,
