@@ -19,7 +19,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
   late Future<List<ChatRoomModel>> chatRooms;
   late Future<List<TopicModel>> topics;
   late Future<String> topicName;
-  late int topicId;
+  int topicId = 0;
 
   String _name = '';
   String topicNameString = '선택하기';
@@ -122,6 +122,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
   Future<String> _topicName(int id) async {
     topicName = db.getTopicDetailName(topicId: id);
     topicNameString = await topicName;
+    print(topicNameString);
     return topicNameString.toString();
   }
 
@@ -221,7 +222,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
                         ConnectionState.waiting) {
                       return const Text('주제: 불러오는 중...');
                     } else if (topicSnapshot.hasError) {
-                      return Text('주제: 오류 발생 - ${topicSnapshot.error}');
+                      return const Text('선택하기');
                     } else if (topicSnapshot.hasData) {
                       return Text('${topicSnapshot.data}');
                     } else {

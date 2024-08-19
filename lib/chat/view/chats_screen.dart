@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
+import 'package:todomate/screens/chat_room/chat_room.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/diary/diary.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
@@ -15,9 +16,7 @@ import 'widgets/chats_item_widget.dart';
 class ChatsScreen extends StatefulWidget {
   final UserInfo userInfo;
 
-
-  const ChatsScreen({Key? key, required this.userInfo}) : super(key: key);
-
+  const ChatsScreen({super.key, required this.userInfo});
 
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
@@ -77,10 +76,11 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     // userInfo에서 loginId 가져오기
     String loginId = widget.userInfo.loginId; // loginId 변수 선언 및 초기화 //*
 
-    List<Widget> _pages = [
-      _buildChatList(),
+    List<Widget> pages = [
+      // _buildChatList(),
+      const ChatRoomScreen(),
       TodoListScreen(userId: widget.userInfo.id.toString()),
-      DiaryCalendarScreen(),
+      const DiaryCalendarScreen(),
       ProfileScreen(loginId: loginId) //required로 필수로 지정하다보니
     ];
     //프로필 스크린으로 가는 와중에 위젯문제로 에러가 난다
@@ -88,26 +88,28 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("채팅방 리스트"),
+        title: const Text("채팅방 리스트"),
         backgroundColor: Colors.blue,
       ),
-      body: _pages[_selectedIndex],
-      floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
-        onPressed: () async {
-          final newChat = await Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ChatDetailScreen(userInfo: widget.userInfo),
-            ),
-          );
-          if (newChat != null) {
-            updateChatList(newChat);
-          }
-        },
-        backgroundColor: Colors.white,
-        elevation: 2,
-        child: const Icon(Icons.add),
-      ) : null,
+      body: pages[_selectedIndex],
+      // floatingActionButton: _selectedIndex == 0
+      //     ? FloatingActionButton(
+      //         onPressed: () async {
+      //           final newChat = await Navigator.push(
+      //             context,
+      //             MaterialPageRoute(
+      //               builder: (context) => ChatDetailScreen(userInfo: widget.userInfo),
+      //             ),
+      //           );
+      //           if (newChat != null) {
+      //             updateChatList(newChat);
+      //           }
+      //         },
+      //         backgroundColor: Colors.white,
+      //         elevation: 2,
+      //         child: const Icon(Icons.add),
+      //       )
+      //     : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blue,
@@ -115,7 +117,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         onTap: _onItemTapped,
         selectedItemColor: Colors.black,
         unselectedItemColor: Colors.grey,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.chat),
             label: '채팅',
@@ -139,7 +141,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
   Widget _buildChatList() {
     return Container(
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.centerLeft,
           end: Alignment.centerRight,
@@ -153,7 +155,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         children: [
           Container(
             width: double.infinity,
-            margin: EdgeInsets.only(
+            margin: const EdgeInsets.only(
               top: 71,
               left: 16,
               right: 16,
@@ -175,7 +177,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
                 final chats = snapshot.data ?? [];
                 if (chats.isEmpty) {
-                  return Center(child: Text('채팅이 없습니다.'));
+                  return const Center(child: Text('채팅이 없습니다.'));
                 }
 
                 return ListView.builder(
@@ -211,10 +213,10 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
   }
 
   Widget _buildNotifications() {
-    return Center(child: Text('다이어리'));
+    return const Center(child: Text('다이어리'));
   }
 
   Widget _buildAccount() {
-    return Center(child: Text('마이페이지'));
+    return const Center(child: Text('마이페이지'));
   }
 }
