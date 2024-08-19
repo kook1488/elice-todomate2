@@ -7,14 +7,16 @@ import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 
+import 'package:todomate/screens/todo/todo_list_screen.dart';
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
 class ChatsScreen extends StatefulWidget {
   final UserInfo userInfo;
 
-  const ChatsScreen({super.key, required this.userInfo});
-  //String loginId = widget.userInfo.loginId;
+
+  const ChatsScreen({Key? key, required this.userInfo}) : super(key: key);
+
 
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
@@ -40,7 +42,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
   void loadChats() async {
     try {
-      // 채팅 데이터 로드
+      // 채팅 데이터 로드 (실제 구현 필요)
       _chatList = []; // 실제 데이터 로딩 로직으로 대체
       _chatListController.add(_chatList);
       WidgetsBinding.instance.addPostFrameCallback((_) => scrollToTop());
@@ -76,7 +78,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
     List<Widget> _pages = [
       _buildChatList(),
-      _buildContacts(),
+      TodoListScreen(userId: widget.userInfo.id.toString()),
       _buildNotifications(),
       ProfileScreen(loginId: loginId) //required로 필수로 지정하다보니
     ];
@@ -89,7 +91,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         backgroundColor: Colors.blue,
       ),
       body: _pages[_selectedIndex],
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
         onPressed: () async {
           final newChat = await Navigator.push(
             context,
@@ -104,7 +106,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         backgroundColor: Colors.white,
         elevation: 2,
         child: const Icon(Icons.add),
-      ),
+      ) : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blue,
@@ -118,11 +120,11 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
             label: '채팅',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.contacts),
+            icon: Icon(Icons.list),
             label: '투두리스트',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.book),
             label: '다이어리',
           ),
           BottomNavigationBarItem(
@@ -205,10 +207,6 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         ],
       ),
     );
-  }
-
-  Widget _buildContacts() {
-    return Center(child: Text('투두리스트'));
   }
 
   Widget _buildNotifications() {
