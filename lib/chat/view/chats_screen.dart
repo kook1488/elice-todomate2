@@ -5,6 +5,7 @@ import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
+import 'package:todomate/screens/chat_room/test_models.dart';
 import 'package:todomate/screens/diary/diary.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/todo/todo_list_screen.dart';
@@ -97,7 +98,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
           final newChat = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => ChatDetailScreen(userInfo: widget.userInfo),
+              builder: (context) => ChatRoomDetailScreen(chatRoomDetail: ChatRoomModel(name: 'name', topicId: 1, userId: 2, startDate: 'startDate', endDate: 'endDate')),
             ),
           );
           if (newChat != null) {
@@ -208,13 +209,5 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         ],
       ),
     );
-  }
-
-  Widget _buildNotifications() {
-    return Center(child: Text('다이어리'));
-  }
-
-  Widget _buildAccount() {
-    return Center(child: Text('마이페이지'));
   }
 }

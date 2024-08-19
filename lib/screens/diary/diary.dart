@@ -61,7 +61,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                         elevation: 5.0,
                         borderRadius: BorderRadius.circular(16.0),
                         child: Container(
-                          padding: EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.all(10.0),
                           decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(16.0)),
@@ -254,7 +254,7 @@ class DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
             color: Colors.white,
           ),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+        floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         backgroundColor: Colors.white,
       ),
     );
