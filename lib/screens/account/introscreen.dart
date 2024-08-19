@@ -24,7 +24,7 @@ class _IntroScreenState extends State<IntroScreen> {
   void _startAnimation() {
     _fillRatio = 0.0;
     _isCompleted = false;
-    _timer = Timer.periodic(const Duration(milliseconds: 20), (timer) {
+    _timer = Timer.periodic(const Duration(milliseconds: 10), (timer) {
       setState(() {
         if (_fillRatio < 1.0) {
           _fillRatio += 0.01;
