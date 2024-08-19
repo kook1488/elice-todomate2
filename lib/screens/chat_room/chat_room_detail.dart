@@ -221,7 +221,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
             const Row(
               children: [
                 Text(
-                  '주제 선택(일단 topicId 출력..)',
+                  '주제 선택',
                   style: TextStyle(
                     fontSize: 17,
                   ),
