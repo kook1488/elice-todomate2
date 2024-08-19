@@ -1,24 +1,31 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/diary/diary.dart';
+import 'package:todomate/screens/my/profile_screen.dart';
+import 'package:todomate/screens/todo/todo_list_screen.dart';
+
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
 class ChatsScreen extends StatefulWidget {
   final UserInfo userInfo;
 
-  const ChatsScreen({super.key, required this.userInfo});
+
+  const ChatsScreen({Key? key, required this.userInfo}) : super(key: key);
+
 
   @override
   _ChatsScreenState createState() => _ChatsScreenState();
 }
 
 class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
-  final StreamController<List<ChatModel>> _chatListController = StreamController<List<ChatModel>>.broadcast();
+  final StreamController<List<ChatModel>> _chatListController =
+      StreamController<List<ChatModel>>.broadcast();
   List<ChatModel> _chatList = [];
   int _selectedIndex = 0;
 
@@ -36,7 +43,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
   void loadChats() async {
     try {
-      // 채팅 데이터 로드
+      // 채팅 데이터 로드 (실제 구현 필요)
       _chatList = []; // 실제 데이터 로딩 로직으로 대체
       _chatListController.add(_chatList);
       WidgetsBinding.instance.addPostFrameCallback((_) => scrollToTop());
@@ -67,12 +74,17 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
   @override
   Widget build(BuildContext context) {
+    // userInfo에서 loginId 가져오기
+    String loginId = widget.userInfo.loginId; // loginId 변수 선언 및 초기화 //*
+
     List<Widget> _pages = [
       _buildChatList(),
-      _buildContacts(),
+      TodoListScreen(userId: widget.userInfo.id.toString()),
       DiaryCalendarScreen(),
-      _buildAccount(),
+      ProfileScreen(loginId: loginId) //required로 필수로 지정하다보니
     ];
+    //프로필 스크린으로 가는 와중에 위젯문제로 에러가 난다
+    //아이디 삭제는 따로 잘되는거 같다 페이지 이동에 문제가 있을 뿐
 
     return Scaffold(
       appBar: AppBar(
@@ -80,7 +92,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         backgroundColor: Colors.blue,
       ),
       body: _pages[_selectedIndex],
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: _selectedIndex == 0 ? FloatingActionButton(
         onPressed: () async {
           final newChat = await Navigator.push(
             context,
@@ -95,7 +107,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         backgroundColor: Colors.white,
         elevation: 2,
         child: const Icon(Icons.add),
-      ),
+      ) : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.blue,
@@ -109,11 +121,11 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
             label: '채팅',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.contacts),
+            icon: Icon(Icons.list),
             label: '투두리스트',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.book),
             label: '다이어리',
           ),
           BottomNavigationBarItem(
@@ -168,7 +180,8 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
 
                 return ListView.builder(
                   controller: scrollController,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   itemCount: chats.length,
                   itemBuilder: (context, index) {
                     final chat = chats[index];
@@ -195,10 +208,6 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
         ],
       ),
     );
-  }
-
-  Widget _buildContacts() {
-    return Center(child: Text('투두리스트'));
   }
 
   Widget _buildNotifications() {
