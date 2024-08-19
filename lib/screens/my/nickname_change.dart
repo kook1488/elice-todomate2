@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
-//밑에 4개는 자고 나서 하자
 
 class NicknameChange extends StatelessWidget {
   final String loginId;
@@ -158,7 +157,7 @@ class NicknameChange extends StatelessWidget {
                       // 텍스트 필드 추가된 부분
                       TextField(
                         decoration: InputDecoration(
-                          hintText: 'NEW ID...',
+                          hintText: 'New NickName',
                           hintStyle: TextStyle(
                             color: Colors.grey,
                             fontSize: 35.0,

@@ -203,6 +203,17 @@ class DatabaseHelper {
     }
   }
 
+  //닉네임 변경
+  Future<int> updateNickname(String loginId, String newNickname) async {
+    Database db = await database;
+    return await db.update(
+      'users',
+      {'nickname': newNickname},
+      where: 'login_id = ?',
+      whereArgs: [loginId],
+    );
+  }
+
   // 회원 탈퇴 기능 추가
   Future<int> deleteUserByLoginId(String loginId) async {
     Database db = await database;
