@@ -2,6 +2,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:crypto/crypto.dart';
 import 'dart:convert';
+import 'package:todomate/screens/todo/todo_model.dart'; // Todo 모델의 경로를 올바르게 수정하세요
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -21,8 +22,9 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'user_database.db');
     return await openDatabase(
       path,
-      version: 1,
+      version: 3, // 데이터베이스 버전 업데이트
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
   }
 
@@ -36,6 +38,63 @@ class DatabaseHelper {
         avatar_path TEXT
       )
     ''');
+
+    await db.execute('''
+      CREATE TABLE friend_requests(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        sender_id INTEGER,
+        receiver_id INTEGER,
+        status TEXT,
+        FOREIGN KEY(sender_id) REFERENCES users(id),
+        FOREIGN KEY(receiver_id) REFERENCES users(id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE TABLE todos (
+        id TEXT PRIMARY KEY,
+        user_id TEXT,
+        title TEXT,
+        start_date TEXT,
+        end_date TEXT,
+        color INTEGER,
+        is_completed INTEGER,
+        shared_with_friend INTEGER,
+        friend_id TEXT,
+        FOREIGN KEY(user_id) REFERENCES users(login_id)
+      )
+    ''');
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    if (oldVersion < 2) {
+      await db.execute('''
+        CREATE TABLE todos (
+          id TEXT PRIMARY KEY,
+          user_id TEXT,
+          title TEXT,
+          start_date TEXT,
+          end_date TEXT,
+          color INTEGER,
+          is_completed INTEGER,
+          shared_with_friend INTEGER,
+          friend_id TEXT,
+          FOREIGN KEY(user_id) REFERENCES users(login_id)
+        )
+      ''');
+    }
+    if (oldVersion < 3) {
+      await db.execute('''
+        CREATE TABLE friend_requests(
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          sender_id INTEGER,
+          receiver_id INTEGER,
+          status TEXT,
+          FOREIGN KEY(sender_id) REFERENCES users(id),
+          FOREIGN KEY(receiver_id) REFERENCES users(id)
+        )
+      ''');
+    }
   }
 
   String _hashPassword(String password) {
@@ -67,9 +126,6 @@ class DatabaseHelper {
     Database db = await database;
     String hashedPassword = _hashPassword(password);
 
-    print('Querying database for user: $loginId');
-    print('Hashed password: $hashedPassword');
-
     try {
       List<Map<String, dynamic>> results = await db.query(
         'users',
@@ -77,13 +133,9 @@ class DatabaseHelper {
         whereArgs: [loginId],
       );
 
-      print('Query results: $results');
-
       if (results.isNotEmpty) {
         Map<String, dynamic> user = results.first;
-        print('Stored hashed password: ${user['password']}');
         if (user['password'] == hashedPassword) {
-          print('Password match for user: $loginId');
           return {
             'id': user['id'],
             'login_id': user['login_id'],
@@ -91,11 +143,9 @@ class DatabaseHelper {
             'avatar_path': user['avatar_path'],
           };
         } else {
-          print('Password mismatch for user: $loginId');
           return null;
         }
       } else {
-        print('No user found with login_id: $loginId');
         return null;
       }
     } catch (e) {
@@ -106,12 +156,9 @@ class DatabaseHelper {
 
   Future<Map<String, dynamic>> loginUser(String loginId, String password) async {
     try {
-      print('Attempting login for user: $loginId');
       await ensurePasswordsAreHashed(); // 로그인 전에 비밀번호 해시 확인
       final user = await getUser(loginId, password);
-      print('getUser result: $user');
       if (user != null) {
-        print('User found: ${user['nickname']}');
         return {
           "success": true,
           "user": {
@@ -122,14 +169,12 @@ class DatabaseHelper {
           "message": "로그인에 성공했습니다."
         };
       } else {
-        print('User not found or incorrect password');
         return {
           "success": false,
           "message": "아이디 또는 비밀번호가 올바르지 않습니다."
         };
       }
     } catch (e) {
-      print('Error in loginUser: $e');
       return {
         "success": false,
         "message": "로그인 중 오류가 발생했습니다: $e"
@@ -184,13 +229,104 @@ class DatabaseHelper {
             where: 'id = ?',
             whereArgs: [user['id']]
         );
-        print('Updated password for user: ${user['login_id']}');
       }
     }
   }
 
   Future<void> ensurePasswordsAreHashed() async {
     await updatePasswordToHash();
-    print('All passwords have been checked and hashed if necessary.');
+  }
+
+  Future<List<Map<String, dynamic>>> getFriendRequests(String userId) async {
+    Database db = await database;
+    return await db.query(
+      'friend_requests',
+      where: 'receiver_id = ? AND status = ?',
+      whereArgs: [userId, 'pending'],
+    );
+  }
+
+  Future<List<Map<String, dynamic>>> searchUsers(String query, String userId) async {
+    Database db = await database;
+    return await db.query(
+      'users',
+      where: 'nickname LIKE ? AND id != ?',
+      whereArgs: ['%$query%', userId],
+    );
+  }
+
+  Future<void> sendFriendRequest(String userId, String friendId) async {
+    Database db = await database;
+    try {
+      await db.insert('friend_requests', {
+        'sender_id': userId,
+        'receiver_id': friendId,
+        'status': 'pending',
+      });
+    } catch (e) {
+      print('Error sending friend request: $e');
+    }
+  }
+
+  Future<void> acceptFriendRequest(String userId, String friendId) async {
+    Database db = await database;
+    try {
+      await db.update(
+        'friend_requests',
+        {'status': 'accepted'},
+        where: 'sender_id = ? AND receiver_id = ?',
+        whereArgs: [friendId, userId],
+      );
+    } catch (e) {
+      print('Error accepting friend request: $e');
+    }
+  }
+
+  Future<List<Todo>> getTodos(String userId) async {
+    Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'todos',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
+    return List.generate(maps.length, (i) {
+      return Todo.fromMap(maps[i]);
+    });
+  }
+
+  Future<void> insertTodo(Todo todo) async {
+    Database db = await database;
+    try {
+      await db.insert('todos', todo.toMap());
+    } catch (e) {
+      print('Error inserting todo: $e');
+    }
+  }
+
+  Future<void> updateTodo(Todo todo) async {
+    Database db = await database;
+    try {
+      await db.update(
+        'todos',
+        todo.toMap(),
+        where: 'id = ?',
+        whereArgs: [todo.id],
+      );
+    } catch (e) {
+      print('Error updating todo: $e');
+    }
+  }
+
+  Future<void> deleteTodo(String todoId) async {
+    Database db = await database;
+    try {
+      await db.delete(
+        'todos',
+        where: 'id = ?',
+        whereArgs: [todoId],
+      );
+    } catch (e) {
+      print('Error deleting todo: $e');
+    }
   }
 }
