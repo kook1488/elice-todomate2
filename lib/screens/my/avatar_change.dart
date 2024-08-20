@@ -177,12 +177,7 @@ class AvatarChange extends StatelessWidget {
                       SizedBox(height: 20.0),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfileScreen(loginId: loginId)),
-                          ); // loginId 전달
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색
