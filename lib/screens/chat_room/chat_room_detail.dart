@@ -102,11 +102,9 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
       endDate: '$_selectedDate ${_setEndTimeToString(_selectedTime)}',
     );
 
-    // Provider를 가져와서 상태 변화를 감지하지 않도록 설정
     final chatRoomProvider =
         Provider.of<ChatRoomProvider>(context, listen: false);
 
-    // 새로운 Todo를 TodoProvider에 추가합니다.
     chatRoomProvider.updateChatRoomDetail(detail);
 
     if (mounted) {
