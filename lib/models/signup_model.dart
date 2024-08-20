@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:todomate/screens/todo/todo_model.dart';
+import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
+
   factory DatabaseHelper() => _instance;
   static Database? _database;
 
@@ -24,7 +25,7 @@ class DatabaseHelper {
     // deleteDatabase(path);
     return await openDatabase(
       path,
-      version: 3,
+      version: 4,
       onCreate: _onCreate,
       onUpgrade: _onUpgrade,
     );
@@ -64,6 +65,7 @@ class DatabaseHelper {
           is_completed INTEGER,
           shared_with_friend INTEGER,
           friend_id TEXT,
+          is_friend_completed INTEGER,
           FOREIGN KEY(user_id) REFERENCES users(login_id)
         )
       ''');
@@ -81,7 +83,10 @@ class DatabaseHelper {
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     print('oldversion : $oldVersion , newVersion : $newVersion ');
-
+    if (oldVersion < 4) {
+      await db.execute(
+          'ALTER TABLE todos ADD COLUMN is_friend_completed INTEGER DEFAULT 0');
+    }
   }
 
   String _hashPassword(String password) {
@@ -138,7 +143,8 @@ class DatabaseHelper {
     }
   }
 
-  Future<Map<String, dynamic>> loginUser(String loginId, String password) async {
+  Future<Map<String, dynamic>> loginUser(String loginId,
+      String password) async {
     try {
       await ensurePasswordsAreHashed();
       final user = await getUser(loginId, password);
@@ -173,8 +179,11 @@ class DatabaseHelper {
     for (var user in users) {
       var userCopy = Map<String, dynamic>.from(user);
       if (userCopy['password'] != null && userCopy['password'].isNotEmpty) {
-        int displayLength = userCopy['password'].length > 3 ? 3 : userCopy['password'].length;
-        userCopy['password'] = userCopy['password'].substring(0, displayLength) + '***';
+        int displayLength = userCopy['password'].length > 3
+            ? 3
+            : userCopy['password'].length;
+        userCopy['password'] =
+            userCopy['password'].substring(0, displayLength) + '***';
       } else {
         userCopy['password'] = '***';
       }
@@ -306,14 +315,16 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getFriendRequests(String userId) async {
     Database db = await database;
-    return await db.query(
-      'friend_requests',
-      where: 'receiver_id = ? AND status = ?',
-      whereArgs: [userId, 'pending'],
-    );
+    return await db.rawQuery('''
+    SELECT fr.sender_id, u.nickname
+    FROM friend_requests fr
+    JOIN users u ON fr.sender_id = u.id
+    WHERE fr.receiver_id = ? AND fr.status = ?
+  ''', [userId, 'pending']);
   }
 
-  Future<List<Map<String, dynamic>>> searchUsers(String query, String userId) async {
+  Future<List<Map<String, dynamic>>> searchUsers(String query,
+      String userId) async {
     Database db = await database;
     return await db.query(
       'users',
@@ -358,6 +369,7 @@ class DatabaseHelper {
       where: 'user_id = ?',
       whereArgs: [userId],
     );
+    print('Fetched ${maps.length} todos for user $userId');
     return List.generate(maps.length, (i) {
       return Todo.fromMap(maps[i]);
     });
@@ -367,6 +379,7 @@ class DatabaseHelper {
     Database db = await database;
     try {
       await db.insert('todos', todo.toMap());
+      print('Inserted new todo: ${todo.id}');
     } catch (e) {
       print('Error inserting todo: $e');
       throw e;
@@ -396,9 +409,66 @@ class DatabaseHelper {
         where: 'id = ?',
         whereArgs: [todoId],
       );
+      print('Deleted todo: $todoId');
     } catch (e) {
       print('Error deleting todo: $e');
       throw e;
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getAcceptedFriends(String userId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.rawQuery('''
+    SELECT DISTINCT u.id, u.nickname 
+    FROM users u
+    JOIN friend_requests fr ON (fr.sender_id = u.id OR fr.receiver_id = u.id)
+    WHERE ((fr.sender_id = ? AND fr.receiver_id = u.id) 
+       OR (fr.receiver_id = ? AND fr.sender_id = u.id))
+    AND fr.status = 'accepted' 
+    AND u.id != ?
+  ''', [userId, userId, userId]);
+    return maps;
+  }
+
+  Future<Todo?> getLinkedTodo(String userId, String originalTodoId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'todos',
+      where: 'user_id = ? AND friend_id = ?',
+      whereArgs: [userId, originalTodoId],
+    );
+
+    if (maps.isNotEmpty) {
+      return Todo.fromMap(maps.first);
+    }
+    return null;
+  }
+
+  Future<void> updateLinkedTodo(String userId, String originalTodoId,
+      bool isCompleted) async {
+    final db = await database;
+    try {
+      await db.update(
+        'todos',
+        {'is_friend_completed': isCompleted ? 1 : 0},
+        where: 'user_id = ? AND friend_id = ?',
+        whereArgs: [userId, originalTodoId],
+      );
+      print(
+          'Updated linked todo completion status for user $userId and original todo $originalTodoId');
+    } catch (e) {
+      print('Error updating linked todo: $e');
+      throw e;
+    }
+  }
+
+  // 디버깅을 위한 메서드
+  Future<void> printAllTodos() async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query('todos');
+    print('All todos in database:');
+    for (var todo in maps) {
+      print(todo);
     }
   }
 }

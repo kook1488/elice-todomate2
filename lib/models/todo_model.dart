@@ -10,6 +10,9 @@ class Todo {
   final bool isCompleted;
   final bool sharedWithFriend;
   final String? friendId;
+  final bool isFriendCompleted;
+  bool isCompletedByMe;
+  bool isCompletedByFriend;
 
   Todo({
     required this.id,
@@ -21,6 +24,9 @@ class Todo {
     required this.isCompleted,
     required this.sharedWithFriend,
     this.friendId,
+    this.isFriendCompleted = false,
+    this.isCompletedByMe = false,
+    this.isCompletedByFriend = false,
   });
 
   Todo copyWith({
@@ -33,6 +39,7 @@ class Todo {
     bool? isCompleted,
     bool? sharedWithFriend,
     String? friendId,
+    bool? isFriendCompleted,
   }) {
     return Todo(
       id: id ?? this.id,
@@ -44,6 +51,7 @@ class Todo {
       isCompleted: isCompleted ?? this.isCompleted,
       sharedWithFriend: sharedWithFriend ?? this.sharedWithFriend,
       friendId: friendId ?? this.friendId,
+      isFriendCompleted: isFriendCompleted ?? this.isFriendCompleted,
     );
   }
 
@@ -58,6 +66,7 @@ class Todo {
       'is_completed': isCompleted ? 1 : 0,
       'shared_with_friend': sharedWithFriend ? 1 : 0,
       'friend_id': friendId,
+      'is_friend_completed': isFriendCompleted ? 1 : 0,
     };
   }
 
@@ -72,6 +81,7 @@ class Todo {
       isCompleted: map['is_completed'] == 1,
       sharedWithFriend: map['shared_with_friend'] == 1,
       friendId: map['friend_id'],
+      isFriendCompleted: map['is_friend_completed'] == 1,
     );
   }
 }

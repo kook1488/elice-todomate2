@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
-import 'package:todomate/screens/todo/todo_model.dart';
+import 'package:todomate/models/todo_model.dart';
 
 class TodoCreateScreen extends StatefulWidget {
   final String userId;
@@ -18,13 +18,16 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
   late DateTime _startDate;
   late DateTime _endDate;
   Color _selectedColor = Colors.yellow;
-  String? _selectedFriend;
+  String? _selectedFriendId;
 
   @override
   void initState() {
     super.initState();
     _startDate = DateTime.now();
     _endDate = _startDate.add(Duration(days: 1));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<TodoProvider>(context, listen: false).loadFriends(widget.userId);
+    });
   }
 
   @override
@@ -95,11 +98,13 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
     return Wrap(
       spacing: 8,
       children: [
+        Colors.red,
+        Colors.orange,
         Colors.yellow,
         Colors.green,
         Colors.blue,
-        Colors.purple,
-        Colors.red,
+        Colors.indigo,
+        Colors.purple
       ].map((color) => GestureDetector(
         onTap: () => setState(() => _selectedColor = color),
         child: Container(
@@ -119,15 +124,30 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
   }
 
   Widget _buildFriendSelector() {
-    // TODO: Implement actual friend selection
-    return DropdownButtonFormField<String>(
-      decoration: InputDecoration(labelText: '친구'),
-      value: _selectedFriend,
-      items: [
-        DropdownMenuItem(child: Text('친구 1'), value: 'friend1'),
-        DropdownMenuItem(child: Text('친구 2'), value: 'friend2'),
-      ],
-      onChanged: (value) => setState(() => _selectedFriend = value),
+    return Consumer<TodoProvider>(
+      builder: (context, todoProvider, child) {
+        if (todoProvider.friends.isEmpty) {
+          return Text('추가된 친구가 없습니다.');
+        }
+
+        return DropdownButtonFormField<String?>(
+          decoration: InputDecoration(labelText: '친구'),
+          value: _selectedFriendId,
+          items: [
+            DropdownMenuItem<String?>(
+              value: null,
+              child: Text('친구 선택 안함'),
+            ),
+            ...todoProvider.friends.map((friend) {
+              return DropdownMenuItem<String>(
+                value: friend['id'].toString(),
+                child: Text(friend['nickname'] ?? 'Unknown'),
+              );
+            }).toList(),
+          ],
+          onChanged: (value) => setState(() => _selectedFriendId = value),
+        );
+      },
     );
   }
 
@@ -142,11 +162,12 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
         endDate: _endDate,
         color: _selectedColor,
         isCompleted: false,
-        sharedWithFriend: _selectedFriend != null,
-        friendId: _selectedFriend,
+        sharedWithFriend: _selectedFriendId != null,
+        friendId: _selectedFriendId,
       );
 
-      Provider.of<TodoProvider>(context, listen: false).addTodo(newTodo);
+      final todoProvider = Provider.of<TodoProvider>(context, listen: false);
+      todoProvider.addSharedTodo(newTodo);
 
       Navigator.of(context).pop(true);
     }

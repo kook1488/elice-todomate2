@@ -1,11 +1,9 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
-import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/diary/diary.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/todo/todo_list_screen.dart';
@@ -87,10 +85,6 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     //아이디 삭제는 따로 잘되는거 같다 페이지 이동에 문제가 있을 뿐
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("채팅방 리스트"),
-        backgroundColor: Colors.blue,
-      ),
       body: pages[_selectedIndex],
       // floatingActionButton: _selectedIndex == 0
       //     ? FloatingActionButton(

@@ -75,9 +75,9 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
         topicId: topicId,
         userId: 1,
         startDate:
-            '${_setDateToString(_selectedDate)} ${_setStartTimeToString(_selectedTime)}',
+        '${_setDateToString(_selectedDate)} ${_setStartTimeToString(_selectedTime)}',
         endDate:
-            '${_setDateToString(_selectedDate)} ${_setEndTimeToString(_selectedTime)}',
+        '${_setDateToString(_selectedDate)} ${_setEndTimeToString(_selectedTime)}',
       ));
       _nameController.clear();
 
@@ -262,7 +262,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
                                       return Text('Error: ${snapshot.error}');
                                     } else {
                                       List<TopicModel> topicList =
-                                          snapshot.data as List<TopicModel>;
+                                      snapshot.data as List<TopicModel>;
                                       return Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
@@ -277,7 +277,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
                                                 border: Border.all(
                                                     color: Colors.black12),
                                                 borderRadius:
-                                                    BorderRadius.circular(5),
+                                                BorderRadius.circular(5),
                                               ),
                                               child: GestureDetector(
                                                 onTap: () => _onTopicDetailTap(

@@ -116,7 +116,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                         return Text('Error: ${snapshot.error}');
                                       } else {
                                         List<TopicModel> topicList =
-                                            snapshot.data as List<TopicModel>;
+                                        snapshot.data as List<TopicModel>;
                                         return Expanded(
                                           child: ListView.builder(
                                             scrollDirection: Axis.horizontal,
@@ -132,7 +132,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                                   border: Border.all(
                                                       color: Colors.black12),
                                                   borderRadius:
-                                                      BorderRadius.circular(5),
+                                                  BorderRadius.circular(5),
                                                 ),
                                                 child: GestureDetector(
                                                   onTap: () =>
@@ -177,7 +177,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                         return Text('Error: ${snapshot.error}');
                       } else {
                         List<ChatRoomModel> chatRoomList =
-                            snapshot.data as List<ChatRoomModel>;
+                        snapshot.data as List<ChatRoomModel>;
                         return ListView.builder(
                           itemCount: chatRoomList.length,
                           itemBuilder: (context, index) {
@@ -189,7 +189,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                   height: 155,
                                   decoration: BoxDecoration(
                                     border:
-                                        Border.all(color: Colors.grey.shade300),
+                                    Border.all(color: Colors.grey.shade300),
                                   ),
                                   child: Padding(
                                     padding: const EdgeInsets.symmetric(
@@ -207,7 +207,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                               builder:
                                                   (context, topicSnapshot) {
                                                 if (topicSnapshot
-                                                        .connectionState ==
+                                                    .connectionState ==
                                                     ConnectionState.waiting) {
                                                   return const Text(
                                                       '주제: 불러오는 중...');
@@ -235,7 +235,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                         ),
                                         Row(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.end,
+                                          MainAxisAlignment.end,
                                           children: [
                                             Container(
                                               width: 70,
@@ -243,7 +243,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                               decoration: BoxDecoration(
                                                 border: Border.all(
                                                     color:
-                                                        Colors.grey.shade300),
+                                                    Colors.grey.shade300),
                                               ),
                                               child: const Center(
                                                   child: Text('예약')),
