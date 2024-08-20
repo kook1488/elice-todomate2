@@ -7,6 +7,8 @@ import 'package:todomate/screens/account/findpwscreen.dart';
 import 'package:todomate/screens/account/signupscreen.dart';
 import 'package:todomate/screens/account/userlistscreen.dart';
 
+import '../../util/sharedpreference.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
@@ -49,6 +51,12 @@ class _LoginScreenState extends State<LoginScreen> {
           avatarPath: user['avatar_path'],
           loginId: _loginIdController.text, // loginId를 추가합니다.
         );
+
+        //저장 wowo
+        TodoSharedPreference().setPreferenceWithKey('id', _userInfo!.id.toString());
+        TodoSharedPreference().setPreferenceWithKey('userNickName', _userInfo!.nickName);
+        TodoSharedPreference().setPreferenceWithKey('userAvatarPath', _userInfo!.avatarPath);
+        TodoSharedPreference().setPreferenceWithKey('userId', _userInfo!.loginId);
 
         Navigator.pushReplacement(
           context,
