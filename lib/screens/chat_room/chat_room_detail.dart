@@ -13,10 +13,10 @@ class ChatRoomDetailScreen extends StatefulWidget {
   });
 
   @override
-  State<ChatRoomDetailScreen> createState() => _ChatRoomDetailScreenState();
+  State<ChatRoomDetailScreen> createState() => ChatRoomDetailScreenState();
 }
 
-class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
+class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   late TextEditingController _nameController = TextEditingController();
   late Future<List<ChatRoomModel>> chatRooms;
   late Future<List<TopicModel>> topics;
