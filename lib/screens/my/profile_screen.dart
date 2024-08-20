@@ -3,6 +3,7 @@ import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/my/nickname_change.dart';
 import 'package:todomate/screens/my/password_change.dart';
 import 'package:todomate/screens/my/profile_change.dart';
+import 'package:todomate/screens/my/profile_widget.dart';
 
 import 'delete_account.dart';
 
@@ -21,6 +22,8 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _nickname; //* 닉네임을 저장할 변수 추가
   final DatabaseHelper _dbHelper = DatabaseHelper(); //* DatabaseHelper 인스턴스 추가
+//클래스가 다를때는 위젯으로 가져온다//스테이트 풀위젯일때
+  //왜 위젯.login 으로 가져왔는지.,.
 
   @override
   void initState() {
@@ -28,221 +31,117 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadNickname(); //* 닉네임을 불러오는 메서드 호출
   }
 
+  @override
+  void didChangeDependencies() {
+    // 위젯이 다시 그려질 때 호출됨
+    super.didChangeDependencies();
+    _loadNickname(); // 닉네임을 다시 불러옴
+  }
+
   void _loadNickname() async {
     //* 닉네임을 불러오는 메서드 추가
     String? nickname = await _dbHelper.getNickname(widget.loginId);
     setState(() {
-      _nickname = nickname ?? 'Unknown User';
+      _nickname = nickname ?? 'Unknown User'; // 닉네임을 초기화
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        backgroundColor: Colors.white, // 배경색 설정
-        appBar: AppBar(
-          backgroundColor: Colors.grey, // 앱바 배경색
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.black), // 뒤로가기 버튼
-            onPressed: () {},
-          ),
+    return Scaffold(
+      backgroundColor: Colors.white, // 배경색 설정
+      appBar: AppBar(
+        backgroundColor: Colors.grey, // 앱바 배경색
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.grey), // 뒤로가기 버튼
+          onPressed: () {},
         ),
-        body: SafeArea(
-          child: Column(
-            children: [
-              // 상단 프로필 섹션
-              Container(
-                color: Colors.grey,
-                padding: EdgeInsets.all(16.0),
+      ),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // 상단 프로필 섹션
+            ProfileWidget(
+                nickname: _nickname ?? 'Unknown User'), //* 닉네임 전달 시 null 처리
+            // 하단 버튼 섹션
+            Expanded(
+              // 이쪽 버튼 사이에 구현이 안되는거 해결 해야할듯
+              child: Container(
+                color: Colors.white,
+                width: 320.0,
                 child: Column(
+                  mainAxisAlignment:
+                      MainAxisAlignment.start, // Column의 주 축에서 시작
+                  crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 꽉 차게
                   children: [
-                    Row(
-                      children: [
-                        // 프로필 이미지
-                        Padding(
-                          padding: const EdgeInsets.only(left: 40.0),
-                          child: CircleAvatar(
-                            radius: 50.0,
-                            backgroundImage: AssetImage(
-                                'asset/image/avata_1.png'), // 프로필 이미지 경로
+                    SizedBox(height: 20.0),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ProfileChange(
+                              loginId: widget.loginId, //클래스다른데도 위에 있는 클래스에서
+                              nickname:
+                                  _nickname ?? 'Unknown User', // nickname 전달
+                            ),
+                          ), //widget.loginId로 수정
+                        );
+                      },
+                      child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
+                    ),
+                    SizedBox(height: 8.0),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NicknameChange(
+                              loginId: widget.loginId, //* loginId 전달
+                              nickname: _nickname ?? 'Unknown User',
+                            ),
                           ),
-                        ),
-                        SizedBox(width: 60.0), // 프로필 이미지와 텍스트 사이 간격
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _nickname ?? 'Loading...', //* 닉네임 표시 부분 수정
-                              style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
+                        ); //* widget.loginId로 수정                        );
+                      },
+                      child: buildMenuItem(Icons.sync, "닉네임 변경"),
+                    ), // 간격 추가
+
+                    SizedBox(height: 8.0),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => PasswordChange(
+                                    loginId: widget.loginId, //* loginId 전달
+                                    nickname: _nickname ?? 'Unknown User',
+                                  )),
+                        );
+                      },
+                      child: buildMenuItem(Icons.lock, "비밀번호 변경"),
+                    ), // 간격 추가
+
+                    SizedBox(height: 8.0),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DeleteAccount(
+                              loginId: widget.loginId,
+                              nickname: _nickname ??
+                                  'Unknown User', // nickname 전달// nickname 전달
                             ),
-                            SizedBox(height: 8.0),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '해야할일 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '7개',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하는 친구 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '5명',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하지 않는 친구 1명',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16.0),
-                    // 추가된 통계 섹션
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Icon(Icons.school,
-                                size: 40.0, color: Colors.orange),
-                            Text('4',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께 완료한일',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.favorite,
-                                size: 40.0, color: Colors.orange),
-                            Text('5',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.star, size: 40.0, color: Colors.orange),
-                            Text('2',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하지 않는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                        );
+                      },
+                      child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
+                    ), // 간격 추가
                   ],
                 ),
               ),
-
-              // 하단 버튼 섹션
-              Expanded(
-                // 이쪽 버튼 사이에 구현이 안되는거 해결 해야할듯
-                child: Container(
-                  color: Colors.white,
-                  width: 320.0,
-                  child: Column(
-                    mainAxisAlignment:
-                        MainAxisAlignment.start, // Column의 주 축에서 시작
-                    crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 꽉 차게
-                    children: [
-                      SizedBox(height: 20.0),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ProfileChange(
-                                    loginId:
-                                        widget.loginId)), //* widget.loginId로 수정
-                          );
-                        },
-                        child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
-                      ),
-                      SizedBox(height: 8.0),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => NicknameChange(
-                                    loginId:
-                                        widget.loginId)), //* widget.loginId로 수정
-                          );
-                        },
-                        child: buildMenuItem(Icons.sync, "닉네임 변경"),
-                      ), // 간격 추가
-
-                      SizedBox(height: 8.0),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    PasswordChange(loginId: widget.loginId)),
-                          );
-                        },
-                        child: buildMenuItem(Icons.lock, "비밀번호 변경"),
-                      ), // 간격 추가
-
-                      SizedBox(height: 8.0),
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => // loginId 전달
-                                    DeleteAccount(loginId: widget.loginId)),
-                          );
-                        },
-                        child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
-                      ), // 간격 추가
-                    ],
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

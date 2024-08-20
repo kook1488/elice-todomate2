@@ -2,11 +2,17 @@ import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/models/todo_model.dart';
 
+import 'todo_model.dart';
+
 class TodoProvider with ChangeNotifier {
   DatabaseHelper _dbHelper = DatabaseHelper();
   List<Todo> _todos = [];
+
+ // final DatabaseHelper _databaseHelper = DatabaseHelper();
+
   List<Map<String, dynamic>> _friends = [];
   String? _currentUserId;
+
 
   List<Todo> get todos => _todos;
   List<Map<String, dynamic>> get friends => _friends;
@@ -20,6 +26,13 @@ class TodoProvider with ChangeNotifier {
   bool isCurrentUser(String userId) {
     return userId == _currentUserId;
   }
+
+  // 완료된 할 일의 개수를 반환하는 getter
+  int get completedTodoCount => _todos.where((todo) => todo.isCompleted).length;
+
+  // 완료되지 않은 할 일의 개수를 반환하는 getter
+  int get incompleteTodoCount =>
+      _todos.where((todo) => !todo.isCompleted).length;
 
   Future<void> loadTodos(String userId) async {
     _currentUserId = userId;
@@ -70,6 +83,12 @@ class TodoProvider with ChangeNotifier {
     _todos.removeWhere((todo) => todo.id == todoId);
     notifyListeners();
   }
+
+
+ // Future<void> toggleTodoCompletion(Todo todo) async {
+ //   final updatedTodo = todo.copyWith(isCompleted: !todo.isCompleted);
+  //  await updateTodo(updatedTodo);
+  //  notifyListeners(); // 체크 상태가 변경되었으므로 상태를 알림
 
   Future<void> toggleTodoCompletion(String todoId, {required bool isCurrentUser}) async {
     int index = _todos.indexWhere((todo) => todo.id == todoId);
@@ -135,5 +154,6 @@ class TodoProvider with ChangeNotifier {
   Future<void> sendNotificationToFriend(String friendId, String todoTitle, bool isCompleted) async {
     print('알림 전송: 친구 ID $friendId, 할 일 "$todoTitle"이(가) ${isCompleted ? "완료됨" : "미완료됨"}');
     // 실제 알림 전송 로직 구현
+
   }
 }
