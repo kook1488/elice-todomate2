@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/models/todo_model.dart';
 
-import 'todo_model.dart';
 
 class TodoProvider with ChangeNotifier {
   DatabaseHelper _dbHelper = DatabaseHelper();

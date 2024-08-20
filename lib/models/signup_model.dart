@@ -6,7 +6,6 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
-import 'package:todomate/screens/todo/todo_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
