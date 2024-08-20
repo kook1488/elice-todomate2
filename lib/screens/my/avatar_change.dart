@@ -1,13 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
+import 'package:todomate/screens/my/profile_widget.dart';
 
 class AvatarChange extends StatelessWidget {
   final String loginId;
+  final String nickname;
 
-  AvatarChange({required this.loginId});
+  AvatarChange({required this.loginId, required this.nickname});
 
   @override
   Widget build(BuildContext context) {
+    // 각 그리드 아이템에 사용할 이미지 경로 리스트
+    final List<String> imagePaths = [
+      'asset/image/avata_1.png',
+      'asset/image/avata_2.png',
+      'asset/image/avata_3.png',
+      'asset/image/avata_4.png',
+      'asset/image/avata_5.png',
+      'asset/image/avata_6.png',
+    ];
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
@@ -24,127 +38,7 @@ class AvatarChange extends StatelessWidget {
           child: Column(
             children: [
               // 상단 프로필 섹션
-              Container(
-                color: Colors.grey,
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        // 프로필 이미지
-                        Padding(
-                          padding: const EdgeInsets.only(left: 40.0),
-                          child: CircleAvatar(
-                            radius: 50.0,
-                            backgroundImage: AssetImage(
-                                'asset/image/avata_1.png'), // 프로필 이미지 경로
-                          ),
-                        ),
-                        SizedBox(width: 60.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'bluetux',
-                              style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 8.0),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '해야할일 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '7개',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하는 친구 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '5명',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하지 않는 친구 1명',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16.0),
-                    // 추가된 통계 섹션
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Icon(Icons.school,
-                                size: 40.0, color: Colors.orange),
-                            Text('4',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께 완료한일',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.favorite,
-                                size: 40.0, color: Colors.orange),
-                            Text('5',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.star, size: 40.0, color: Colors.orange),
-                            Text('2',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하지 않는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              ProfileWidget(nickname: nickname),
               // 하단 그리드뷰 및 버튼 섹션
               Expanded(
                 child: Container(
@@ -155,7 +49,8 @@ class AvatarChange extends StatelessWidget {
                       SizedBox(height: 30.0),
                       Expanded(
                         child: GridView.builder(
-                          itemCount: 6, // 아이템 개수
+                          itemCount:
+                              imagePaths.length, // 아이템 개수는 이미지 리스트의 길이와 동일
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3, // 한 줄에 보여줄 아이템 개수
@@ -164,11 +59,24 @@ class AvatarChange extends StatelessWidget {
                             childAspectRatio: 1.0, // 아이템의 가로:세로 비율
                           ),
                           itemBuilder: (context, index) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: Image.asset(
-                                'asset/image/avata_1.png', // 이미지 경로
-                                fit: BoxFit.cover,
+                            return GestureDetector(
+                              onTap: () {
+                                // 이미지가 선택되면 해당 경로를 ProfileProvider에 업데이트
+                                context
+                                    .read<
+                                        ProfileProvider>() // Provider에서 ProfileProvider 인스턴스를 가져옴
+                                    .updateAvatarPath(
+                                        // ProfileProvider의 updateAvatarPath 메서드를 호출
+                                        loginId,
+                                        imagePaths[
+                                            index]); // loginId와 선택된 이미지 경로를 메서드에 전달
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Image.asset(
+                                  imagePaths[index], // 각 이미지 경로를 가져옴
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             );
                           },
@@ -182,7 +90,7 @@ class AvatarChange extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     ProfileScreen(loginId: loginId)),
-                          ); // loginId 전달
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색
