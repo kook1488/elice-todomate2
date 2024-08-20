@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
-import 'package:todomate/screens/todo/todo_model.dart';
+import 'package:todomate/models/todo_model.dart';
+//import 'package:todomate/screens/todo/todo_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -175,9 +175,8 @@ class DatabaseHelper {
     for (var user in users) {
       var userCopy = Map<String, dynamic>.from(user);
       if (userCopy['password'] != null && userCopy['password'].isNotEmpty) {
-        int displayLength = userCopy['password'].length > 3
-            ? 3
-            : userCopy['password'].length;
+        int displayLength =
+            userCopy['password'].length > 3 ? 3 : userCopy['password'].length;
         userCopy['password'] =
             userCopy['password'].substring(0, displayLength) + '***';
       } else {
@@ -317,8 +316,8 @@ class DatabaseHelper {
   ''', [userId, 'pending']);
   }
 
-  Future<List<Map<String, dynamic>>> searchUsers(String query,
-      String userId) async {
+  Future<List<Map<String, dynamic>>> searchUsers(
+      String query, String userId) async {
     Database db = await database;
     return await db.query(
       'users',
@@ -438,8 +437,8 @@ class DatabaseHelper {
     return null;
   }
 
-  Future<void> updateLinkedTodo(String userId, String originalTodoId,
-      bool isCompleted) async {
+  Future<void> updateLinkedTodo(
+      String userId, String originalTodoId, bool isCompleted) async {
     final db = await database;
     try {
       await db.update(
