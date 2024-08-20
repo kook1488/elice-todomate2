@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:todomate/screens/todo/todo_provider.dart';
 import 'package:todomate/screens/todo/todo_model.dart';
+import 'package:todomate/screens/todo/todo_provider.dart';
 
 class TodoCreateScreen extends StatefulWidget {
   final String userId;
@@ -55,9 +55,11 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
               onSaved: (value) => _title = value!,
             ),
             SizedBox(height: 16),
-            _buildDateField('시작일', _startDate, (date) => setState(() => _startDate = date)),
+            _buildDateField(
+                '시작일', _startDate, (date) => setState(() => _startDate = date)),
             SizedBox(height: 16),
-            _buildDateField('종료일', _endDate, (date) => setState(() => _endDate = date)),
+            _buildDateField(
+                '종료일', _endDate, (date) => setState(() => _endDate = date)),
             SizedBox(height: 16),
             Text('색상'),
             SizedBox(height: 8),
@@ -70,7 +72,8 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
     );
   }
 
-  Widget _buildDateField(String label, DateTime initialDate, Function(DateTime) onChanged) {
+  Widget _buildDateField(
+      String label, DateTime initialDate, Function(DateTime) onChanged) {
     return InkWell(
       onTap: () async {
         final DateTime? picked = await showDatePicker(
@@ -100,21 +103,25 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
         Colors.blue,
         Colors.purple,
         Colors.red,
-      ].map((color) => GestureDetector(
-        onTap: () => setState(() => _selectedColor = color),
-        child: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            color: color,
-            shape: BoxShape.circle,
-            border: Border.all(
-              color: _selectedColor == color ? Colors.black : Colors.transparent,
-              width: 2,
-            ),
-          ),
-        ),
-      )).toList(),
+      ]
+          .map((color) => GestureDetector(
+                onTap: () => setState(() => _selectedColor = color),
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: color,
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: _selectedColor == color
+                          ? Colors.black
+                          : Colors.transparent,
+                      width: 2,
+                    ),
+                  ),
+                ),
+              ))
+          .toList(),
     );
   }
 
@@ -145,7 +152,7 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
         sharedWithFriend: _selectedFriend != null,
         friendId: _selectedFriend,
       );
-
+//ㄴㅁㅇㄹ
       Provider.of<TodoProvider>(context, listen: false).addTodo(newTodo);
 
       Navigator.of(context).pop(true);

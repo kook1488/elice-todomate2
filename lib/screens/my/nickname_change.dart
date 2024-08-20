@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
+import 'package:todomate/screens/my/profile_widget.dart';
 
 class NicknameChange extends StatelessWidget {
   final String loginId;
-
-  NicknameChange({required this.loginId});
+  final String nickname;
+  final TextEditingController _nicknameController = TextEditingController();
+  NicknameChange({required this.loginId, required this.nickname});
+//디비를 한번 더 불러서 화면을 더 갱신시켜야 한다.
 
   @override
   Widget build(BuildContext context) {
@@ -25,127 +28,7 @@ class NicknameChange extends StatelessWidget {
           child: Column(
             children: [
               // 상단 프로필 섹션
-              Container(
-                color: Colors.grey,
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        // 프로필 이미지
-                        Padding(
-                          padding: const EdgeInsets.only(left: 40.0),
-                          child: CircleAvatar(
-                            radius: 50.0,
-                            backgroundImage: AssetImage(
-                                'asset/image/avata_1.png'), // 프로필 이미지 경로
-                          ),
-                        ),
-                        SizedBox(width: 60.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'bluetux',
-                              style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 8.0),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '해야할일 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '7개',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하는 친구 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '5명',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하지 않는 친구 1명',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 16.0),
-                    // 추가된 통계 섹션
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Icon(Icons.school,
-                                size: 40.0, color: Colors.orange),
-                            Text('4',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께 완료한일',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.favorite,
-                                size: 40.0, color: Colors.orange),
-                            Text('5',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.star, size: 40.0, color: Colors.orange),
-                            Text('2',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하지 않는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
+              ProfileWidget(nickname: nickname),
               // 하단 그리드뷰 및 버튼 섹션
               Expanded(
                 child: Container(

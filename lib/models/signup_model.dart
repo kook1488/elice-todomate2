@@ -1,10 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:todomate/screens/todo/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
+import 'package:todomate/screens/todo/todo_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -81,7 +82,6 @@ class DatabaseHelper {
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
     print('oldversion : $oldVersion , newVersion : $newVersion ');
-
   }
 
   String _hashPassword(String password) {
@@ -138,7 +138,8 @@ class DatabaseHelper {
     }
   }
 
-  Future<Map<String, dynamic>> loginUser(String loginId, String password) async {
+  Future<Map<String, dynamic>> loginUser(
+      String loginId, String password) async {
     try {
       await ensurePasswordsAreHashed();
       final user = await getUser(loginId, password);
@@ -153,16 +154,10 @@ class DatabaseHelper {
           "message": "로그인에 성공했습니다."
         };
       } else {
-        return {
-          "success": false,
-          "message": "아이디 또는 비밀번호가 올바르지 않습니다."
-        };
+        return {"success": false, "message": "아이디 또는 비밀번호가 올바르지 않습니다."};
       }
     } catch (e) {
-      return {
-        "success": false,
-        "message": "로그인 중 오류가 발생했습니다: $e"
-      };
+      return {"success": false, "message": "로그인 중 오류가 발생했습니다: $e"};
     }
   }
 
@@ -173,8 +168,10 @@ class DatabaseHelper {
     for (var user in users) {
       var userCopy = Map<String, dynamic>.from(user);
       if (userCopy['password'] != null && userCopy['password'].isNotEmpty) {
-        int displayLength = userCopy['password'].length > 3 ? 3 : userCopy['password'].length;
-        userCopy['password'] = userCopy['password'].substring(0, displayLength) + '***';
+        int displayLength =
+            userCopy['password'].length > 3 ? 3 : userCopy['password'].length;
+        userCopy['password'] =
+            userCopy['password'].substring(0, displayLength) + '***';
       } else {
         userCopy['password'] = '***';
       }
@@ -182,6 +179,7 @@ class DatabaseHelper {
     }
   }
 
+//////////////////////////////////
   Future<int> updateUser(Map<String, dynamic> user) async {
     Database db = await database;
     return await db.update(
@@ -236,6 +234,7 @@ class DatabaseHelper {
     );
   }
 
+//////////////////////////
   Future<void> updatePasswordToHash() async {
     Database db = await database;
     List<Map<String, dynamic>> users = await db.query('users');
@@ -256,11 +255,8 @@ class DatabaseHelper {
   Future<bool> insertDiary(DiaryDTO diary) async {
     final db = await database;
     try {
-      await db.insert(
-          'diary',
-          diary.toJson(),
-          conflictAlgorithm: ConflictAlgorithm.fail
-      );
+      await db.insert('diary', diary.toJson(),
+          conflictAlgorithm: ConflictAlgorithm.fail);
       return true;
     } catch (e) {
       print('Insert Database error $e');
@@ -296,9 +292,8 @@ class DatabaseHelper {
 
   Future<void> checkTables() async {
     final Database db = await database;
-    final List<Map<String, dynamic>> tables = await db.rawQuery(
-        "SELECT name FROM sqlite_master WHERE type='table';"
-    );
+    final List<Map<String, dynamic>> tables =
+        await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
     for (var table in tables) {
       print('Table: ${table['name']}');
     }
@@ -313,7 +308,8 @@ class DatabaseHelper {
     );
   }
 
-  Future<List<Map<String, dynamic>>> searchUsers(String query, String userId) async {
+  Future<List<Map<String, dynamic>>> searchUsers(
+      String query, String userId) async {
     Database db = await database;
     return await db.query(
       'users',
