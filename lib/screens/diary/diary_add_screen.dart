@@ -2,24 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:todomate/models/diary_model.dart';
+import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/util/alert_dialog.dart';
+import 'package:todomate/util/string_utils.dart';
 
-import '../../models/diary_model.dart';
+class DiaryAddScreen extends StatefulWidget {
+  final DateTime date;
 
-
-import '../../models/signup_model.dart';
-import '../../util/alert_dialog.dart';
-import '../../util/string_utils.dart';
-
-class DiaryModifyScreen extends StatefulWidget {
-  final DiaryDTO diaryDTO;
-
-  const DiaryModifyScreen({super.key, required this.diaryDTO});
+  const DiaryAddScreen(
+      {super.key, required this.date});
 
   @override
-  State<StatefulWidget> createState() => DiaryModifyScreenState();
+  State<StatefulWidget> createState() => _DiaryAddScreenState();
 }
 
-class DiaryModifyScreenState extends State<DiaryModifyScreen> {
+class _DiaryAddScreenState extends State<DiaryAddScreen> {
   late TextEditingController _titleController;
   late TextEditingController _contentController;
   late DateTime _selectedDate;
@@ -31,16 +29,38 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
 
   @override
   void initState() {
-    _titleController = TextEditingController(text: widget.diaryDTO.title);
-    if (widget.diaryDTO.imageUrl != null) {
-      imageFilePath = widget.diaryDTO.imageUrl;
-      _selectedImage = File(widget.diaryDTO.imageUrl!);
-    }
-    _contentController =
-        TextEditingController(text: widget.diaryDTO.description);
-    _selectedDate = widget.diaryDTO.createAt;
-    _picker = ImagePicker();
     super.initState();
+
+    _titleController = TextEditingController();
+    _contentController = TextEditingController();
+    _selectedDate = widget.date;
+    _picker = ImagePicker();
+  }
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate, // 초기 날짜를 현재 날짜로 설정
+      firstDate: DateTime(2000), // 선택 가능한 최소 날짜
+      lastDate: DateTime(2101), // 선택 가능한 최대 날짜
+    );
+
+    if (pickedDate != null && pickedDate != _selectedDate) {
+      setState(() {
+        _selectedDate = pickedDate; // 선택된 날짜를 상태에 저장
+      });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      imageFilePath = pickedFile.path;
+      setState(() {
+        _selectedImage = File(imageFilePath ?? '');
+      });
+    }
   }
 
   @override
@@ -52,7 +72,7 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          '일기 수정',
+          '일기 쓰기',
           style: TextStyle(
             color: Colors.black,
             fontSize: 18,
@@ -164,7 +184,7 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16),
                 ],
               ),
             ),
@@ -173,22 +193,21 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
       ),
       backgroundColor: Colors.white,
       bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         width: double.infinity,
         child: ElevatedButton(
           onPressed: () {
-            _updateDiary();
-
+            _insertDiary();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.deepOrangeAccent,
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
           ),
           child: const Text(
-            '수정',
+            '등록',
             style: TextStyle(color: Colors.white),
           ),
         ),
@@ -196,47 +215,42 @@ class DiaryModifyScreenState extends State<DiaryModifyScreen> {
     );
   }
 
-  Future<void> _updateDiary() async {
-    try {
-      DiaryDTO modifiedDiary = DiaryDTO(id : widget.diaryDTO.id, userId: widget.diaryDTO.userId, title: _titleController.text, description: _contentController.text, imageUrl: imageFilePath, createAt: _selectedDate);
-      int updateDiaryResult =
-      await DatabaseHelper().updateDiary(modifiedDiary);
+  //디비 넣기전 변수 검증
+  bool checkInsert() {
+    if (_titleController.text.isNotEmpty &&
+        _contentController.text.isNotEmpty) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-      if (updateDiaryResult > 0) {
-        showAlertDialog(context, '알림', '수정 되었습니다.', shouldPop: true);
+  Future<void> _insertDiary() async {
+    try {
+      if (checkInsert()) {
+        DiaryDTO diary = DiaryDTO(
+          userId: '1',
+          title: _titleController.text,
+          description: _contentController.text,
+          imageUrl: imageFilePath,
+          createAt: DateTime(
+              _selectedDate.year, _selectedDate.month, _selectedDate.day),
+        );
+
+        bool isSuccessInsert = await DatabaseHelper().insertDiary(diary);
+
+        if (isSuccessInsert) {
+          // 등록 성공
+          showAlertDialog(context, '알림', '등록되었습니다.', shouldPop: true);
+        } else {
+          // 등록 실패
+          showAlertDialog(context, '알림', '등록에 실패했습니다.');
+        }
       } else {
-        showAlertDialog(context, "알림", "수정 실패했습니다.");
+        showAlertDialog(context, '알림', '일기 제목과 내용을 입력해주세요.');
       }
     } catch (e) {
-      showAlertDialog(context, '오류', '수정 중 오류가 발생했습니다.');
-    }
-  }
-
-  //달력에서 날짜 선택
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate, // 초기 날짜를 현재 날짜로 설정
-      firstDate: DateTime(2000), // 선택 가능한 최소 날짜
-      lastDate: DateTime(2101), // 선택 가능한 최대 날짜
-    );
-
-    if (pickedDate != null && pickedDate != _selectedDate) {
-      setState(() {
-        _selectedDate = pickedDate; // 선택된 날짜를 상태에 저장
-      });
-    }
-  }
-
-  //이미지 가져오기
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-
-    if (pickedFile != null) {
-      imageFilePath = pickedFile.path;
-      setState(() {
-        _selectedImage = File(imageFilePath ?? '');
-      });
+      showAlertDialog(context, '오류', '등록 중 오류가 발생했습니다.');
     }
   }
 
