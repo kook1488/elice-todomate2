@@ -278,7 +278,7 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                                       return Text('Error: ${snapshot.error}');
                                     } else {
                                       List<TopicModel> topicList =
-                                          snapshot.data as List<TopicModel>;
+                                      snapshot.data as List<TopicModel>;
                                       return Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
@@ -293,7 +293,7 @@ class _ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                                                 border: Border.all(
                                                     color: Colors.black12),
                                                 borderRadius:
-                                                    BorderRadius.circular(5),
+                                                BorderRadius.circular(5),
                                               ),
                                               child: GestureDetector(
                                                 onTap: () => _onTopicDetailTap(

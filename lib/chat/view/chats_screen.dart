@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
