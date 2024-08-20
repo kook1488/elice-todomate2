@@ -4,12 +4,22 @@ import 'package:todomate/screens/my/profile_widget.dart';
 
 class AvatarChange extends StatelessWidget {
   final String loginId;
-  final String nickname; // 닉네임을 전달받음
+  final String nickname;
 
   AvatarChange({required this.loginId, required this.nickname});
 
   @override
   Widget build(BuildContext context) {
+    // 각 그리드 아이템에 사용할 이미지 경로 리스트
+    final List<String> imagePaths = [
+      'asset/image/avata_1.png',
+      'asset/image/avata_2.png',
+      'asset/image/avata_3.png',
+      'asset/image/avata_4.png',
+      'asset/image/avata_5.png',
+      'asset/image/avata_6.png',
+    ];
+
     return MaterialApp(
       home: Scaffold(
         backgroundColor: Colors.white,
@@ -26,7 +36,7 @@ class AvatarChange extends StatelessWidget {
           child: Column(
             children: [
               // 상단 프로필 섹션
-              ProfileWidget(nickname: nickname), // UpperProfile 위젯 사용
+              ProfileWidget(nickname: nickname),
               // 하단 그리드뷰 및 버튼 섹션
               Expanded(
                 child: Container(
@@ -37,7 +47,8 @@ class AvatarChange extends StatelessWidget {
                       SizedBox(height: 30.0),
                       Expanded(
                         child: GridView.builder(
-                          itemCount: 6, // 아이템 개수
+                          itemCount:
+                              imagePaths.length, // 아이템 개수는 이미지 리스트의 길이와 동일
                           gridDelegate:
                               SliverGridDelegateWithFixedCrossAxisCount(
                             crossAxisCount: 3, // 한 줄에 보여줄 아이템 개수
@@ -49,7 +60,7 @@ class AvatarChange extends StatelessWidget {
                             return ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
                               child: Image.asset(
-                                'asset/image/avata_1.png', // 이미지 경로
+                                imagePaths[index], // 각 이미지 경로를 가져옴
                                 fit: BoxFit.cover,
                               ),
                             );
@@ -64,7 +75,7 @@ class AvatarChange extends StatelessWidget {
                             MaterialPageRoute(
                                 builder: (context) =>
                                     ProfileScreen(loginId: loginId)),
-                          ); // loginId 전달
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색

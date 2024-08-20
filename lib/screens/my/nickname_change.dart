@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
@@ -39,6 +41,7 @@ class NicknameChange extends StatelessWidget {
                       SizedBox(height: 40.0),
                       // 텍스트 필드 추가된 부분
                       TextField(
+                        controller: _nicknameController,
                         decoration: InputDecoration(
                           hintText: 'New NickName',
                           hintStyle: TextStyle(
@@ -70,15 +73,21 @@ class NicknameChange extends StatelessWidget {
                       SizedBox(height: 250.0),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
+                          // 닉네임 업데이트 로직
+                          Provider.of<ProfileProvider>(context, listen: false)
+                              .updateNickname(
+                                  loginId, _nicknameController.text);
+                          // 화면 갱신
+                          Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfileScreen(loginId: loginId)),
+                              builder: (context) =>
+                                  ProfileScreen(loginId: loginId),
+                            ),
                           );
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange, // 버튼 배경색
+                          backgroundColor: Colors.orange,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
@@ -93,7 +102,7 @@ class NicknameChange extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 60.0), // 버튼과 화면 하단 사이의 간격 추가
+                      SizedBox(height: 60.0),
                     ],
                   ),
                 ),

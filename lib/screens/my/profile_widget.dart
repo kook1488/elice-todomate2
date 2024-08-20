@@ -55,11 +55,11 @@ class ProfileWidget extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '함께 하는 친구 ',
+                          text: '완료한 일 ',
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
                         TextSpan(
-                          text: '5명',
+                          text: '5개',
                           style:
                               TextStyle(fontSize: 20.0, color: Colors.orange),
                         ),
@@ -70,7 +70,7 @@ class ProfileWidget extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '함께 하지 않는 친구 1명',
+                          text: '내가 쓴 일기 1개',
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
                       ],
@@ -87,19 +87,19 @@ class ProfileWidget extends StatelessWidget {
             children: [
               Column(
                 children: [
-                  Icon(Icons.school, size: 40.0, color: Colors.orange),
+                  Icon(Icons.favorite, size: 40.0, color: Colors.orange),
                   Text('4',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                  Text('함께 완료한일',
+                  Text('함께하는 친구',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
                 ],
               ),
               Column(
                 children: [
-                  Icon(Icons.favorite, size: 40.0, color: Colors.orange),
+                  Icon(Icons.chat_rounded, size: 40.0, color: Colors.orange),
                   Text('5',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                  Text('함께하는 친구',
+                  Text('참여중인 채팅방',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
                 ],
               ),
@@ -108,7 +108,7 @@ class ProfileWidget extends StatelessWidget {
                   Icon(Icons.star, size: 40.0, color: Colors.orange),
                   Text('2',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                  Text('함께하지 않는 친구',
+                  Text('예약한 채팅방',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
                 ],
               ),
