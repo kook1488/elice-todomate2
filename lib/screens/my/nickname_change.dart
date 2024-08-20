@@ -77,10 +77,13 @@ class NicknameChange extends StatelessWidget {
                               loginId, _nicknameController.text);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.orange, // 첫 번째 버튼 색상 변경 가능
+                          backgroundColor: Colors.white, // 첫 번째 버튼 색상 변경 가능
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
+                          elevation: 5, // 그림자 효과
+                          shadowColor:
+                              Colors.grey.withOpacity(0.3), // 그림자 색상 및 불투명도
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),
                         ),
@@ -88,7 +91,7 @@ class NicknameChange extends StatelessWidget {
                           'Change', // 첫 번째 버튼의 텍스트
                           style: TextStyle(
                             fontSize: 35.0,
-                            color: Colors.white,
+                            color: Colors.grey,
                           ),
                         ),
                       ),

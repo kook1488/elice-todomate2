@@ -119,7 +119,7 @@ class ProfileWidget extends StatelessWidget {
                   Icon(Icons.chat_rounded, size: 40.0, color: Colors.orange),
                   Text('$activeChatCount',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                  Text('참여중인 채팅방',
+                  Text('생성된 채팅방',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
                 ],
               ),

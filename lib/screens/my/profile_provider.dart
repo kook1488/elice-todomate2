@@ -3,8 +3,6 @@ import 'package:todomate/models/signup_model.dart';
 
 class ProfileProvider with ChangeNotifier {
   final DatabaseHelper _dbHelper = DatabaseHelper(); // DB 불러옴
-
-  // 닉네임, 아바타 선언
   String? _nickname;
   String _avatarPath = 'asset/image/avata_1.png'; // 기본 아바타 경로로 초기화
 
