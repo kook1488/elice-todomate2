@@ -73,205 +73,224 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('채팅방 목록'),
-        actions: [
-          IconButton(
-            icon: const FaIcon(
-              FontAwesomeIcons.filter,
-            ),
-            onPressed: () {
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return Dialog(
-                    child: SizedBox(
-                      height: 170,
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          children: [
-                            const Row(
-                              children: [
-                                Text(
-                                  '주제를 선택하세요.',
-                                  style: TextStyle(
-                                    fontSize: 25,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 15),
-                            FutureBuilder(
-                              future: topics,
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const CircularProgressIndicator();
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  List<TopicModel> topicList =
-                                      snapshot.data as List<TopicModel>;
-                                  return Expanded(
-                                    child: ListView.builder(
-                                      scrollDirection: Axis.horizontal,
-                                      itemCount: topicList.length,
-                                      itemBuilder: (context, index) {
-                                        return Container(
-                                          width: 70,
-                                          height: 70,
-                                          margin:
-                                              const EdgeInsets.only(right: 10),
-                                          decoration: BoxDecoration(
-                                            color: Colors.white,
-                                            border: Border.all(
-                                                color: Colors.black12),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
-                                          ),
-                                          child: GestureDetector(
-                                            onTap: () => _onTopicDetailTap(
-                                                topicList[index]),
-                                            child: Center(
-                                              child: Text(
-                                                topicList[index].name,
-                                                style: const TextStyle(
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  );
-                                }
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          )
-        ],
-      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Stack(
+        child: Column(
           children: [
-            FutureBuilder(
-              future: chatRooms,
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const CircularProgressIndicator();
-                } else if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                } else {
-                  List<ChatRoomModel> chatRoomList =
-                      snapshot.data as List<ChatRoomModel>;
-                  return ListView.builder(
-                    itemCount: chatRoomList.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () => _onChatRoomDetailTap(chatRoomList[index]),
-                        child: ListTile(
-                          title: Container(
-                            height: 155,
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                IconButton(
+                  icon: const FaIcon(
+                    FontAwesomeIcons.filter,
+                  ),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return Dialog(
+                          child: SizedBox(
+                            height: 170,
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 15,
-                                vertical: 10,
-                              ),
+                              padding: const EdgeInsets.all(20),
                               child: Column(
                                 children: [
-                                  Row(
+                                  const Row(
                                     children: [
-                                      // 주제를 비동기적으로 받아오는 FutureBuilder
-                                      FutureBuilder<String>(
-                                        future: _topicName(
-                                            chatRoomList[index].topicId),
-                                        builder: (context, topicSnapshot) {
-                                          if (topicSnapshot.connectionState ==
-                                              ConnectionState.waiting) {
-                                            return const Text('주제: 불러오는 중...');
-                                          } else if (topicSnapshot.hasError) {
-                                            return Text(
-                                                '주제: 오류 발생 - ${topicSnapshot.error}');
-                                          } else if (topicSnapshot.hasData) {
-                                            return Text(
-                                                '주제: ${topicSnapshot.data}');
-                                          } else {
-                                            return const Text('주제: 데이터 없음');
-                                          }
-                                        },
+                                      Text(
+                                        '주제를 선택하세요.',
+                                        style: TextStyle(
+                                          fontSize: 25,
+                                        ),
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Text('방이름: ${chatRoomList[index].name}'),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Container(
-                                        width: 70,
-                                        height: 30,
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.grey.shade300),
-                                        ),
-                                        child: const Center(child: Text('예약')),
-                                      )
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          '시작: ${chatRoomList[index].startDate}'),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Text(
-                                          '종료: ${chatRoomList[index].endDate}'),
-                                    ],
+                                  const SizedBox(height: 15),
+                                  FutureBuilder(
+                                    future: topics,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.waiting) {
+                                        return const CircularProgressIndicator();
+                                      } else if (snapshot.hasError) {
+                                        return Text('Error: ${snapshot.error}');
+                                      } else {
+                                        List<TopicModel> topicList =
+                                        snapshot.data as List<TopicModel>;
+                                        return Expanded(
+                                          child: ListView.builder(
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: topicList.length,
+                                            itemBuilder: (context, index) {
+                                              return Container(
+                                                width: 70,
+                                                height: 70,
+                                                margin: const EdgeInsets.only(
+                                                    right: 10),
+                                                decoration: BoxDecoration(
+                                                  color: Colors.white,
+                                                  border: Border.all(
+                                                      color: Colors.black12),
+                                                  borderRadius:
+                                                  BorderRadius.circular(5),
+                                                ),
+                                                child: GestureDetector(
+                                                  onTap: () =>
+                                                      _onTopicDetailTap(
+                                                          topicList[index]),
+                                                  child: Center(
+                                                    child: Text(
+                                                      topicList[index].name,
+                                                      style: const TextStyle(
+                                                        fontSize: 18,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                      }
+                                    },
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  );
-                }
-              },
+                        );
+                      },
+                    );
+                  },
+                )
+              ],
             ),
-            Positioned(
-              bottom: 5,
-              right: 5,
-              child: IconButton(
-                onPressed: _onCreateChatRoomTap,
-                icon: const FaIcon(
-                  FontAwesomeIcons.circlePlus,
-                  size: 70,
-                ),
+            Expanded(
+              child: Stack(
+                children: [
+                  FutureBuilder(
+                    future: chatRooms,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const CircularProgressIndicator();
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        List<ChatRoomModel> chatRoomList =
+                        snapshot.data as List<ChatRoomModel>;
+                        return ListView.builder(
+                          itemCount: chatRoomList.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () =>
+                                  _onChatRoomDetailTap(chatRoomList[index]),
+                              child: ListTile(
+                                title: Container(
+                                  height: 155,
+                                  decoration: BoxDecoration(
+                                    border:
+                                    Border.all(color: Colors.grey.shade300),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 15,
+                                      vertical: 10,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            // 주제를 비동기적으로 받아오는 FutureBuilder
+                                            FutureBuilder<String>(
+                                              future: _topicName(
+                                                  chatRoomList[index].topicId),
+                                              builder:
+                                                  (context, topicSnapshot) {
+                                                if (topicSnapshot
+                                                    .connectionState ==
+                                                    ConnectionState.waiting) {
+                                                  return const Text(
+                                                      '주제: 불러오는 중...');
+                                                } else if (topicSnapshot
+                                                    .hasError) {
+                                                  return Text(
+                                                      '주제: 오류 발생 - ${topicSnapshot.error}');
+                                                } else if (topicSnapshot
+                                                    .hasData) {
+                                                  return Text(
+                                                      '주제: ${topicSnapshot.data}');
+                                                } else {
+                                                  return const Text(
+                                                      '주제: 데이터 없음');
+                                                }
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                '방이름: ${chatRoomList[index].name}'),
+                                          ],
+                                        ),
+                                        Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.end,
+                                          children: [
+                                            Container(
+                                              width: 70,
+                                              height: 30,
+                                              decoration: BoxDecoration(
+                                                border: Border.all(
+                                                    color:
+                                                    Colors.grey.shade300),
+                                              ),
+                                              child: const Center(
+                                                  child: Text('예약')),
+                                            )
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                '시작: ${chatRoomList[index].startDate}'),
+                                          ],
+                                        ),
+                                        Row(
+                                          children: [
+                                            Text(
+                                                '종료: ${chatRoomList[index].endDate}'),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    },
+                  ),
+                  Positioned(
+                    bottom: 5,
+                    right: 5,
+                    child: IconButton(
+                      onPressed: _onCreateChatRoomTap,
+                      icon: const FaIcon(
+                        FontAwesomeIcons.circlePlus,
+                        size: 70,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ],
         ),
       ),
-      bottomNavigationBar: const BottomAppBar(),
+      // bottomNavigationBar: const BottomAppBar(),
     );
   }
 }
