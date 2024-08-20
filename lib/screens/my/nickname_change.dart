@@ -30,7 +30,7 @@ class NicknameChange extends StatelessWidget {
             children: [
               // 상단 프로필 섹션
               ProfileWidget(nickname: nickname),
-              // 하단 그리드뷰 및 버튼 섹션
+              // 하단 버튼 섹션
               Expanded(
                 child: Container(
                   color: Colors.white,

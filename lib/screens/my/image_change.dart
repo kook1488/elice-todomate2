@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
 class ImageChange extends StatelessWidget {
@@ -27,44 +26,44 @@ class ImageChange extends StatelessWidget {
             children: [
               // 상단 프로필 섹션
               ProfileWidget(nickname: nickname),
-              // 하단 그리드뷰 및 버튼 섹션
+              // 하단 버튼 섹션
               Expanded(
                 child: Container(
                   color: Colors.white,
                   padding: EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     children: [
-                      SizedBox(height: 40.0),
-                      Expanded(
-                        child: GridView.builder(
-                          itemCount: 6, // 아이템 개수
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 3, // 한 줄에 보여줄 아이템 개수
-                            crossAxisSpacing: 8.0, // 아이템 사이의 가로 간격
-                            mainAxisSpacing: 8.0, // 아이템 사이의 세로 간격
-                            childAspectRatio: 1.0, // 아이템의 가로:세로 비율
-                          ),
-                          itemBuilder: (context, index) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: Image.asset(
-                                'asset/image/woman.png', // 이미지 경로
-                                fit: BoxFit.cover,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                      SizedBox(height: 20.0),
+                      SizedBox(height: 100.0),
+
+                      // 첫 번째 Change 버튼
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfileScreen(loginId: loginId)),
-                          );
+                          // Change 버튼 동작
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white, // 첫 번째 버튼 색상 변경 가능
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          elevation: 5, // 그림자 효과
+                          shadowColor:
+                              Colors.grey.withOpacity(0.3), // 그림자 색상 및 불투명도
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 50.0, vertical: 10.0),
+                        ),
+                        child: Text(
+                          '사진 올리기',
+                          style: TextStyle(
+                            fontSize: 35.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 100.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context); // 첫 번째 pop
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색
@@ -75,7 +74,7 @@ class ImageChange extends StatelessWidget {
                               horizontal: 70.0, vertical: 10.0),
                         ),
                         child: Text(
-                          'change',
+                          'Confirm',
                           style: TextStyle(
                             fontSize: 35.0,
                             color: Colors.white,
