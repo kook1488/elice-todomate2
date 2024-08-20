@@ -1,12 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart'; // Provider 추가
+import 'package:todomate/screens/my/profile_provider.dart'; // ProfileProvider 추가
 
 class ProfileWidget extends StatelessWidget {
-  final String? nickname; // 닉네임을 받아올 변수
+  final String? nickname;
 
   ProfileWidget({this.nickname});
 
   @override
   Widget build(BuildContext context) {
+    // ProfileProvider의 avatarPath를 가져옴
+    final avatarPath = context.watch<ProfileProvider>().avatarPath;
+
     return Container(
       color: Colors.grey,
       padding: EdgeInsets.all(16.0),
@@ -19,16 +24,18 @@ class ProfileWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 40.0),
                 child: CircleAvatar(
                   radius: 50.0,
-                  backgroundImage:
-                      AssetImage('asset/image/avata_1.png'), // 프로필 이미지 경로
+                  backgroundImage: avatarPath != null //null인지판단
+                      ? AssetImage(
+                          avatarPath) //null이 아니면 해당경로의 이미지를 불러와 배경이미지로 사용
+                      : null, // 현재 선택된 프로필 이미지 경로 사용
                 ),
               ),
-              SizedBox(width: 60.0), // 프로필 이미지와 텍스트 사이 간격
+              SizedBox(width: 60.0),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    nickname ?? 'Loading...', // 닉네임 표시 부분
+                    nickname ?? 'Loading...',
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,

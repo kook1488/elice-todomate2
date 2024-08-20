@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
@@ -57,11 +59,24 @@ class AvatarChange extends StatelessWidget {
                             childAspectRatio: 1.0, // 아이템의 가로:세로 비율
                           ),
                           itemBuilder: (context, index) {
-                            return ClipRRect(
-                              borderRadius: BorderRadius.circular(12.0),
-                              child: Image.asset(
-                                imagePaths[index], // 각 이미지 경로를 가져옴
-                                fit: BoxFit.cover,
+                            return GestureDetector(
+                              onTap: () {
+                                // 이미지가 선택되면 해당 경로를 ProfileProvider에 업데이트
+                                context
+                                    .read<
+                                        ProfileProvider>() // Provider에서 ProfileProvider 인스턴스를 가져옴
+                                    .updateAvatarPath(
+                                        // ProfileProvider의 updateAvatarPath 메서드를 호출
+                                        loginId,
+                                        imagePaths[
+                                            index]); // loginId와 선택된 이미지 경로를 메서드에 전달
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Image.asset(
+                                  imagePaths[index], // 각 이미지 경로를 가져옴
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             );
                           },
