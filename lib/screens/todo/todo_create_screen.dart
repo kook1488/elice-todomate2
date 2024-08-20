@@ -58,9 +58,11 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
               onSaved: (value) => _title = value!,
             ),
             SizedBox(height: 16),
-            _buildDateField('시작일', _startDate, (date) => setState(() => _startDate = date)),
+            _buildDateField(
+                '시작일', _startDate, (date) => setState(() => _startDate = date)),
             SizedBox(height: 16),
-            _buildDateField('종료일', _endDate, (date) => setState(() => _endDate = date)),
+            _buildDateField(
+                '종료일', _endDate, (date) => setState(() => _endDate = date)),
             SizedBox(height: 16),
             Text('색상'),
             SizedBox(height: 8),
@@ -73,7 +75,8 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
     );
   }
 
-  Widget _buildDateField(String label, DateTime initialDate, Function(DateTime) onChanged) {
+  Widget _buildDateField(
+      String label, DateTime initialDate, Function(DateTime) onChanged) {
     return InkWell(
       onTap: () async {
         final DateTime? picked = await showDatePicker(

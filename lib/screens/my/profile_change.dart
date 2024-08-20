@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:todomate/screens/my/avatar_change.dart';
 import 'package:todomate/screens/my/image_change.dart';
+import 'package:todomate/screens/my/profile_widget.dart';
 
 class ProfileChange extends StatelessWidget {
   final String loginId;
+  final String nickname; // nickname 변수를 추가
 
-  ProfileChange({required this.loginId});
+  ProfileChange({required this.loginId, required this.nickname});
 
   @override
   Widget build(BuildContext context) {
@@ -25,130 +27,7 @@ class ProfileChange extends StatelessWidget {
           child: Column(
             children: [
               // 상단 프로필 섹션
-              Container(
-                color: Colors.grey,
-                padding: EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        // 프로필 이미지
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              left: 40.0), // 왼쪽에 50.0의 패딩 추가
-                          child: CircleAvatar(
-                            radius: 50.0,
-                            backgroundImage: AssetImage(
-                                'asset/image/avata_1.png'), // 프로필 이미지 경로// 프로필 이미지 경로
-                          ),
-                        ),
-                        SizedBox(width: 60.0), // 프로필 이미지와 텍스트 사이 간격
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'bluetux',
-                              style: TextStyle(
-                                fontSize: 24.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 8.0),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '해야할일 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '7개',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하는 친구 ',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                  TextSpan(
-                                    text: '5명',
-                                    style: TextStyle(
-                                        fontSize: 20.0, color: Colors.orange),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            RichText(
-                              text: TextSpan(
-                                children: [
-                                  TextSpan(
-                                    text: '함께 하지 않는 친구 1명',
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 16.0),
-                    // 추가된 통계 섹션
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Icon(Icons.school,
-                                size: 40.0, color: Colors.orange),
-                            Text('4',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께 완료한일',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.favorite,
-                                size: 40.0, color: Colors.orange),
-                            Text('5',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Icon(Icons.star, size: 40.0, color: Colors.orange),
-                            Text('2',
-                                style: TextStyle(
-                                    fontSize: 16.0, color: Colors.white)),
-                            Text('함께하지 않는 친구',
-                                style: TextStyle(
-                                    fontSize: 12.0, color: Colors.white)),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-
+              ProfileWidget(nickname: nickname),
               // 하단 버튼 섹션
               Expanded(
                 // 이쪽 버튼 사이에 구현이 안되는거 해결 해야할듯
@@ -166,8 +45,10 @@ class ProfileChange extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    ImageChange(loginId: loginId)),
+                                builder: (context) => ImageChange(
+                                      loginId: loginId,
+                                      nickname: nickname,
+                                    )),
                           );
                         },
                         child: buildMenuItemWithImage(
@@ -180,8 +61,12 @@ class ProfileChange extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    AvatarChange(loginId: loginId)),
+                              builder: (context) => AvatarChange(
+                                loginId: loginId,
+                                nickname:
+                                    nickname, // nickname 파라미터를 직접 전달 // nickname 파라미터 추가
+                              ),
+                            ),
                           );
                         },
                         child: buildMenuItemWithImage(
