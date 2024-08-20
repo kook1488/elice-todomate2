@@ -73,11 +73,10 @@ class NicknameChange extends StatelessWidget {
                       SizedBox(height: 250.0),
                       ElevatedButton(
                         onPressed: () {
-                          // 닉네임 업데이트 로직
-                          Provider.of<ProfileProvider>(context, listen: false)
-                              .updateNickname(
-                                  loginId, _nicknameController.text);
-                          // 화면 갱신
+                          //* 닉네임 업데이트 로직
+                          context.read<ProfileProvider>().updateNickname(
+                              loginId, _nicknameController.text);
+                          //* 화면 갱신
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

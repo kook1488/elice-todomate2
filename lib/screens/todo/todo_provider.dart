@@ -1,12 +1,19 @@
 import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 
-import 'todo_model.dart'; // Todo 모델의 경로를 올바르게 수정하세요
+import 'todo_model.dart';
 
 class TodoProvider with ChangeNotifier {
   List<Todo> _todos = [];
   final DatabaseHelper _databaseHelper = DatabaseHelper();
   List<Todo> get todos => _todos;
+
+  // 완료된 할 일의 개수를 반환하는 getter
+  int get completedTodoCount => _todos.where((todo) => todo.isCompleted).length;
+
+  // 완료되지 않은 할 일의 개수를 반환하는 getter
+  int get incompleteTodoCount =>
+      _todos.where((todo) => !todo.isCompleted).length;
 
   Future<void> loadTodos(String userId) async {
     _todos = await _databaseHelper.getTodos(userId);
@@ -37,5 +44,6 @@ class TodoProvider with ChangeNotifier {
   Future<void> toggleTodoCompletion(Todo todo) async {
     final updatedTodo = todo.copyWith(isCompleted: !todo.isCompleted);
     await updateTodo(updatedTodo);
+    notifyListeners(); // 체크 상태가 변경되었으므로 상태를 알림
   }
 }

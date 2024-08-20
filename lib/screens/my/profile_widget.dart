@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart'; // Provider 추가
-import 'package:todomate/screens/my/profile_provider.dart'; // ProfileProvider 추가
+import 'package:provider/provider.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
+import 'package:todomate/screens/todo/todo_provider.dart';
 
 class ProfileWidget extends StatelessWidget {
   final String? nickname;
@@ -9,8 +10,19 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ProfileProvider의 avatarPath를 가져옴
+    // ProfileProvider의 상태를 가져옴
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
+    final int todoCount =
+        context.watch<TodoProvider>().incompleteTodoCount; // 완료되지 않은 할 일 개수 사용
+    final int completedTodoCount = context
+        .watch<TodoProvider>()
+        .completedTodoCount; // TodoProvider에서 완료된 할 일 개수 가져옴
+    final int diaryCount = context.watch<ProfileProvider>().diaryCount;
+    final int friendCount = context.watch<ProfileProvider>().friendCount;
+    final int activeChatCount =
+        context.watch<ProfileProvider>().activeChatCount;
+    final int reservedChatCount =
+        context.watch<ProfileProvider>().reservedChatCount;
 
     return Container(
       color: Colors.grey,
@@ -24,9 +36,8 @@ class ProfileWidget extends StatelessWidget {
                 padding: const EdgeInsets.only(left: 40.0),
                 child: CircleAvatar(
                   radius: 50.0,
-                  backgroundImage: avatarPath != null //null인지판단
-                      ? AssetImage(
-                          avatarPath) //null이 아니면 해당경로의 이미지를 불러와 배경이미지로 사용
+                  backgroundImage: avatarPath != null
+                      ? AssetImage(avatarPath)
                       : null, // 현재 선택된 프로필 이미지 경로 사용
                 ),
               ),
@@ -51,7 +62,7 @@ class ProfileWidget extends StatelessWidget {
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
                         TextSpan(
-                          text: '7개',
+                          text: '$todoCount개', // 해야할 일 개수 변수 사용
                           style:
                               TextStyle(fontSize: 20.0, color: Colors.orange),
                         ),
@@ -66,7 +77,7 @@ class ProfileWidget extends StatelessWidget {
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
                         TextSpan(
-                          text: '5개',
+                          text: '$completedTodoCount개', // 완료한 일 개수 변수 사용
                           style:
                               TextStyle(fontSize: 20.0, color: Colors.orange),
                         ),
@@ -77,7 +88,7 @@ class ProfileWidget extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '내가 쓴 일기 1개',
+                          text: '내가 쓴 일기 $diaryCount개', // 일기 개수 변수 사용
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
                       ],
@@ -95,7 +106,7 @@ class ProfileWidget extends StatelessWidget {
               Column(
                 children: [
                   Icon(Icons.favorite, size: 40.0, color: Colors.orange),
-                  Text('4',
+                  Text('$friendCount',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
                   Text('함께하는 친구',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
@@ -104,7 +115,7 @@ class ProfileWidget extends StatelessWidget {
               Column(
                 children: [
                   Icon(Icons.chat_rounded, size: 40.0, color: Colors.orange),
-                  Text('5',
+                  Text('$activeChatCount',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
                   Text('참여중인 채팅방',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
@@ -113,7 +124,7 @@ class ProfileWidget extends StatelessWidget {
               Column(
                 children: [
                   Icon(Icons.star, size: 40.0, color: Colors.orange),
-                  Text('2',
+                  Text('$reservedChatCount',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
                   Text('예약한 채팅방',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
