@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
-import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
 class AvatarChange extends StatelessWidget {
@@ -85,12 +84,8 @@ class AvatarChange extends StatelessWidget {
                       SizedBox(height: 20.0),
                       ElevatedButton(
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ProfileScreen(loginId: loginId)),
-                          );
+                          Navigator.pop(context); // 첫 번째 pop
+                          Navigator.pop(context); // 두 번째 pop
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange, // 버튼 배경색

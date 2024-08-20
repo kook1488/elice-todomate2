@@ -28,8 +28,12 @@ class ProfileProvider with ChangeNotifier {
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
-    _nickname = await _dbHelper.getNickname(loginId); // 비동기인데 쿼리 가져올 때까지는 기다림
-    notifyListeners(); // 프로바이더 구독하는 위젯들에게 상태 변경 알림 - UI 다시 빌드하라고
+    _nickname = await _dbHelper.getNickname(loginId);
+    if (_nickname == null || _nickname!.isEmpty) {
+      _nickname = loginId; // 기본 닉네임을 로그인 아이디로 설정
+      await _dbHelper.updateNickname(loginId, _nickname!); // 기본 닉네임 저장
+    }
+    notifyListeners();
   }
 
   // 닉네임 상태 변경

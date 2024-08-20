@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
-import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
 class NicknameChange extends StatelessWidget {
@@ -70,20 +69,35 @@ class NicknameChange extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 250.0),
+                      SizedBox(height: 50.0),
+                      // 첫 번째 버튼 추가된 부분
                       ElevatedButton(
                         onPressed: () {
-                          //* 닉네임 업데이트 로직
                           context.read<ProfileProvider>().updateNickname(
                               loginId, _nicknameController.text);
-                          //* 화면 갱신
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) =>
-                                  ProfileScreen(loginId: loginId),
-                            ),
-                          );
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange, // 첫 번째 버튼 색상 변경 가능
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 70.0, vertical: 10.0),
+                        ),
+                        child: Text(
+                          'Change', // 첫 번째 버튼의 텍스트
+                          style: TextStyle(
+                            fontSize: 35.0,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 120.0), // 두 버튼 사이의 간격
+                      ElevatedButton(
+                        onPressed: () {
+                          // pop
+                          Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.orange,
@@ -94,7 +108,7 @@ class NicknameChange extends StatelessWidget {
                               horizontal: 70.0, vertical: 10.0),
                         ),
                         child: Text(
-                          'change',
+                          'Confirm',
                           style: TextStyle(
                             fontSize: 35.0,
                             color: Colors.white,
