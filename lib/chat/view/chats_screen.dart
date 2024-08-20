@@ -90,6 +90,10 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     //아이디 삭제는 따로 잘되는거 같다 페이지 이동에 문제가 있을 뿐
 
     return Scaffold(
+      // appBar: AppBar(
+      //   title: const Text("채팅방 리스트"),
+      //   backgroundColor: Colors.blue,
+      // ),
       body: pages[_selectedIndex],
       // floatingActionButton: _selectedIndex == 0
       //     ? FloatingActionButton(

@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:todomate/screens/account/introscreen.dart';
 import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
+import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
 
 void main() {
@@ -15,6 +16,7 @@ void main() {
           ChangeNotifierProvider(create: (context) => TodoProvider()),
           ChangeNotifierProvider(create: (context) => DiaryProvider()),
           ChangeNotifierProvider(create: (context) => ProfileProvider()),
+          ChangeNotifierProvider(create: (context) => ChatRoomProvider()),
         ],
         child: const MyApp(),
       ),

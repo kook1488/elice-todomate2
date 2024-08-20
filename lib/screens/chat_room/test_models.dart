@@ -57,7 +57,7 @@ class TopicModel {
   }
 }
 
-class DatabaseHelper {
+class ChatRoomDatabaseHelper {
   static Database? _chatRoomDatabase;
 
   // 데이터베이스 인스턴스를 가져오거나 새로운 인스턴스를 초기화합니다.

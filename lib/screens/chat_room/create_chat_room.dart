@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/chat_room/test_models.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
 
@@ -50,7 +51,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
     super.initState();
 
     // 채팅방 DB 초기화
-    db.initDatabase();
+    // db.initDatabase();
 
     chatRooms = db.getChatRoom();
     topics = db.getTopic();
@@ -82,11 +83,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
       _nameController.clear();
 
       if (mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const ChatRoomScreen(),
-          ),
-        );
+        Navigator.of(context).pop(true);
       }
     }
   }
@@ -139,34 +136,24 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appbar의 높이 설정
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(0),
-        child: AppBar(),
+      // appbar
+      appBar: AppBar(
+        title: const Text('채팅방 등록'),
+        actions: [
+          IconButton(
+            onPressed: _addChatRoom,
+            icon: const FaIcon(FontAwesomeIcons.check),
+          ),
+        ],
       ),
       // body
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 30,
+          vertical: 10,
         ),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // 뒤로가기 버튼
-                IconButton(
-                  onPressed: _onClosePressed,
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                ),
-                // 저장 버튼
-                IconButton(
-                  onPressed: _addChatRoom,
-                  icon: const FaIcon(FontAwesomeIcons.check),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
             const Row(
               children: [
                 Text(
@@ -354,7 +341,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomAppBar(),
+      // bottomNavigationBar: const BottomAppBar(),
     );
   }
 }
