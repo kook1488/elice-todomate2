@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/account/introscreen.dart';
+import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
 
 void main() {
@@ -10,6 +11,7 @@ void main() {
       MultiProvider(
         providers: [
           ChangeNotifierProvider(create: (context) => TodoProvider()),
+          ChangeNotifierProvider(create: (context) => DiaryProvider()),
           // 여기에 다른 provider들을 추가할 수 있습니다.
         ],
         child: const MyApp(),
