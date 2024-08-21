@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/models/todo_model.dart';
@@ -19,7 +20,9 @@ class TodoProvider with ChangeNotifier {
   List<Map<String, dynamic>> get friends => _friends;
 
   // 추가된 할 일의 완료 여부에 따른 카운트 Getter
-  int get incompleteTodoCount => _todos.where((todo) => !todo.isCompleted).length;
+
+  int get incompleteTodoCount =>
+      _todos.where((todo) => !todo.isCompleted).length;
   int get completedTodoCount => _todos.where((todo) => todo.isCompleted).length;
 
   // 생성자: WebSocket 메시지 리스너 설정
@@ -88,7 +91,8 @@ class TodoProvider with ChangeNotifier {
   }
 
   // 할 일 완료 상태 토글
-  Future<void> toggleTodoCompletion(String todoId, {required bool isCurrentUser}) async {
+  Future<void> toggleTodoCompletion(String todoId,
+      {required bool isCurrentUser}) async {
     int index = _todos.indexWhere((todo) => todo.id == todoId);
     if (index != -1) {
       Todo currentTodo = _todos[index];
@@ -107,7 +111,11 @@ class TodoProvider with ChangeNotifier {
 
       // WebSocket을 통해 상태 전송
       _dbHelper.sendTodoUpdate(
-          _currentUserId!, todoId, isCurrentUser ? updatedTodo.isCompleted : updatedTodo.isFriendCompleted);
+          _currentUserId!,
+          todoId,
+          isCurrentUser
+              ? updatedTodo.isCompleted
+              : updatedTodo.isFriendCompleted);
 
       notifyListeners();
     }
@@ -115,12 +123,15 @@ class TodoProvider with ChangeNotifier {
 
   // WebSocket 메시지 처리
   void _handleWebSocketMessage(Map<String, dynamic> data) {
-    if (data['type'] == 'todo_update' && data.containsKey('todoId') && data.containsKey('isCompleted')) {
+    if (data['type'] == 'todo_update' &&
+        data.containsKey('todoId') &&
+        data.containsKey('isCompleted')) {
       String todoId = data['todoId'];
       bool isCompleted = data['isCompleted'];
       String updatingUserId = data['userId'];
 
-      int index = _todos.indexWhere((todo) => todo.id == todoId || todo.friendId == todoId);
+      int index = _todos
+          .indexWhere((todo) => todo.id == todoId || todo.friendId == todoId);
       if (index != -1) {
         Todo currentTodo = _todos[index];
         Todo updatedTodo;
@@ -141,31 +152,5 @@ class TodoProvider with ChangeNotifier {
   Future<void> loadFriends(String userId) async {
     _friends = await _dbHelper.getAcceptedFriends(userId);
     notifyListeners();
-  }
-
-  Future<void> sendFriendRequest(String userId, String friendId) async {
-    await _dbHelper.sendFriendRequest(userId, friendId);
-    notifyListeners();
-  }
-
-  Future<void> acceptFriendRequest(String userId, String friendId) async {
-    await _dbHelper.acceptFriendRequest(userId, friendId);
-    await loadFriends(userId);
-  }
-
-  Future<List<Map<String, dynamic>>> searchUsers(
-      String query, String userId) async {
-    return await _dbHelper.searchUsers(query, userId);
-  }
-
-  Future<List<Map<String, dynamic>>> getFriendRequests(String userId) async {
-    return await _dbHelper.getFriendRequests(userId);
-  }
-
-  Future<void> sendNotificationToFriend(
-      String friendId, String todoTitle, bool isCompleted) async {
-    print(
-        '알림 전송: 친구 ID $friendId, 할 일 "$todoTitle"이(가) ${isCompleted ? "완료됨" : "미완료됨"}');
-    // 실제 알림 전송 로직 구현
   }
 }

@@ -7,7 +7,10 @@ class ProfileProvider with ChangeNotifier {
   String _avatarPath = 'asset/image/avata_1.png'; // 기본 아바타 경로로 초기화
   bool _isNicknameLoaded = false; // 닉네임 로딩 상태 추가
   // 프로필 관련 상태
-
+//프로바이더가 초기화 되는 시점이 그 화면을 가야만
+// 프로바이더가 초기화 되는 상황
+//프로바이더가
+  //마이 페이지 눌렀을때 디비에서 초기화함.
   int _todoCount = 7;
   int _completedTodoCount = 5;
   int _diaryCount = 0;
@@ -70,6 +73,7 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
+//다이어리 카운트
   void updateDiaryCount(int count) {
     _diaryCount += count;
     notifyListeners();

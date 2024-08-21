@@ -12,7 +12,9 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //워치에서 프로바이더를 가져옴
     // ProfileProvider의 상태를 가져옴
+    //디비로 초기값을 가져오는게 좋을 듯.. //watch가 디비를 관찰하는거 아닐까?
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
     final String? nickname =
         context.watch<ProfileProvider>().nickname; // Provider에서 닉네임을 가져옴
