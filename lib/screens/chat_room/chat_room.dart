@@ -218,261 +218,249 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
             Expanded(
               child: Stack(
                 children: [
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        // FutureBuilder(
-                        //   future: chatRooms,
-                        //   builder: (context, snapshot) {
-                        //     if (snapshot.connectionState ==
-                        //         ConnectionState.waiting) {
-                        //       return const CircularProgressIndicator();
-                        //     } else if (snapshot.hasError) {
-                        //       return Text('Error: ${snapshot.error}');
-                        //     } else {
-                        //       List<ChatRoomModel> chatRoomList =
-                        //           snapshot.data as List<ChatRoomModel>;
-                        //       return ListView.builder(
-                        //         itemCount: chatRoomList.length,
-                        //         itemBuilder: (context, index) {
-                        //           return GestureDetector(
-                        //             onTap: () => _onChatRoomDetailTap(
-                        //                 chatRoomList[index]),
-                        //             child: ListTile(
-                        //               title: Container(
-                        //                 height: 155,
-                        //                 decoration: BoxDecoration(
-                        //                   border: Border.all(
-                        //                       color: Colors.grey.shade300),
-                        //                 ),
-                        //                 child: Padding(
-                        //                   padding: const EdgeInsets.symmetric(
-                        //                     horizontal: 15,
-                        //                     vertical: 10,
-                        //                   ),
-                        //                   child: Column(
-                        //                     children: [
-                        //                       Row(
-                        //                         children: [
-                        //                           // 주제를 비동기적으로 받아오는 FutureBuilder
-                        //                           FutureBuilder<String>(
-                        //                             future: _topicName(
-                        //                                 chatRoomList[index]
-                        //                                     .topicId),
-                        //                             builder: (context,
-                        //                                 topicSnapshot) {
-                        //                               if (topicSnapshot
-                        //                                       .connectionState ==
-                        //                                   ConnectionState
-                        //                                       .waiting) {
-                        //                                 return const Text(
-                        //                                     '주제: 불러오는 중...');
-                        //                               } else if (topicSnapshot
-                        //                                   .hasError) {
-                        //                                 return Text(
-                        //                                     '주제: 오류 발생 - ${topicSnapshot.error}');
-                        //                               } else if (topicSnapshot
-                        //                                   .hasData) {
-                        //                                 return Text(
-                        //                                     '주제: ${topicSnapshot.data}');
-                        //                               } else {
-                        //                                 return const Text(
-                        //                                     '주제: 데이터 없음');
-                        //                               }
-                        //                             },
-                        //                           ),
-                        //                         ],
-                        //                       ),
-                        //                       Row(
-                        //                         children: [
-                        //                           Text(
-                        //                               '방이름: ${chatRoomList[index].name}'),
-                        //                         ],
-                        //                       ),
-                        //                       Row(
-                        //                         mainAxisAlignment:
-                        //                             MainAxisAlignment.end,
-                        //                         children: [
-                        //                           Container(
-                        //                             width: 70,
-                        //                             height: 30,
-                        //                             decoration: BoxDecoration(
-                        //                               border: Border.all(
-                        //                                   color: Colors
-                        //                                       .grey.shade300),
-                        //                             ),
-                        //                             child: const Center(
-                        //                                 child: Text('예약')),
-                        //                           )
-                        //                         ],
-                        //                       ),
-                        //                       Row(
-                        //                         children: [
-                        //                           Text(
-                        //                               '시작: ${chatRoomList[index].startDate}'),
-                        //                         ],
-                        //                       ),
-                        //                       Row(
-                        //                         children: [
-                        //                           Text(
-                        //                               '종료: ${chatRoomList[index].endDate}'),
-                        //                         ],
-                        //                       ),
-                        //                     ],
-                        //                   ),
-                        //                 ),
-                        //               ),
-                        //             ),
-                        //           );
-                        //         },
-                        //       );
-                        //     }
-                        //   },
-                        // ),
-                        Consumer<ChatRoomProvider>(
-                          builder: (context, chatRoomProvider, child) {
-                            final chatRoomList = chatRoomProvider.chatRooms;
-                            return Column(
-                              children: [
-                                Expanded(
-                                  child: ListView.builder(
-                                    itemCount: chatRoomList.length,
-                                    itemBuilder: (context, index) {
-                                      isReserveDisable = _reserveButtonDisable(
-                                          chatRoomList[index].startDate);
-                                      isParticipateDisable =
-                                          _participateButtonDisable(
-                                              chatRoomList[index].endDate);
-                                      return Stack(
-                                        children: [
-                                          GestureDetector(
-                                            onTap: () => _onChatRoomDetailTap(
-                                                chatRoomList[index]),
-                                            child: ListTile(
-                                              title: Container(
-                                                height: 180,
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color:
-                                                          Colors.grey.shade300),
-                                                ),
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                    horizontal: 15,
-                                                    vertical: 15,
-                                                  ),
-                                                  child: Column(
-                                                    children: [
-                                                      Row(
-                                                        children: [
-                                                          // 주제를 비동기적으로 받아오는 FutureBuilder
-                                                          FutureBuilder<String>(
-                                                            future: _topicName(
-                                                                chatRoomList[
-                                                                        index]
-                                                                    .topicId),
-                                                            builder: (context,
-                                                                topicSnapshot) {
-                                                              if (topicSnapshot
-                                                                      .connectionState ==
-                                                                  ConnectionState
-                                                                      .waiting) {
-                                                                return const Text(
-                                                                    '주제: 불러오는 중...');
-                                                              } else if (topicSnapshot
-                                                                  .hasError) {
-                                                                return Text(
-                                                                    '주제: 오류 발생 - ${topicSnapshot.error}');
-                                                              } else if (topicSnapshot
-                                                                  .hasData) {
-                                                                return Text(
-                                                                    '주제: ${topicSnapshot.data}');
-                                                              } else {
-                                                                return const Text(
-                                                                    '주제: 데이터 없음');
-                                                              }
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                              '방이름: ${chatRoomList[index].name}'),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                          height: 40),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                              '시작: ${chatRoomList[index].startDate}'),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                              '종료: ${chatRoomList[index].endDate}'),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
+                  // FutureBuilder(
+                  //   future: chatRooms,
+                  //   builder: (context, snapshot) {
+                  //     if (snapshot.connectionState ==
+                  //         ConnectionState.waiting) {
+                  //       return const CircularProgressIndicator();
+                  //     } else if (snapshot.hasError) {
+                  //       return Text('Error: ${snapshot.error}');
+                  //     } else {
+                  //       List<ChatRoomModel> chatRoomList =
+                  //           snapshot.data as List<ChatRoomModel>;
+                  //       return ListView.builder(
+                  //         itemCount: chatRoomList.length,
+                  //         itemBuilder: (context, index) {
+                  //           return GestureDetector(
+                  //             onTap: () => _onChatRoomDetailTap(
+                  //                 chatRoomList[index]),
+                  //             child: ListTile(
+                  //               title: Container(
+                  //                 height: 155,
+                  //                 decoration: BoxDecoration(
+                  //                   border: Border.all(
+                  //                       color: Colors.grey.shade300),
+                  //                 ),
+                  //                 child: Padding(
+                  //                   padding: const EdgeInsets.symmetric(
+                  //                     horizontal: 15,
+                  //                     vertical: 10,
+                  //                   ),
+                  //                   child: Column(
+                  //                     children: [
+                  //                       Row(
+                  //                         children: [
+                  //                           // 주제를 비동기적으로 받아오는 FutureBuilder
+                  //                           FutureBuilder<String>(
+                  //                             future: _topicName(
+                  //                                 chatRoomList[index]
+                  //                                     .topicId),
+                  //                             builder: (context,
+                  //                                 topicSnapshot) {
+                  //                               if (topicSnapshot
+                  //                                       .connectionState ==
+                  //                                   ConnectionState
+                  //                                       .waiting) {
+                  //                                 return const Text(
+                  //                                     '주제: 불러오는 중...');
+                  //                               } else if (topicSnapshot
+                  //                                   .hasError) {
+                  //                                 return Text(
+                  //                                     '주제: 오류 발생 - ${topicSnapshot.error}');
+                  //                               } else if (topicSnapshot
+                  //                                   .hasData) {
+                  //                                 return Text(
+                  //                                     '주제: ${topicSnapshot.data}');
+                  //                               } else {
+                  //                                 return const Text(
+                  //                                     '주제: 데이터 없음');
+                  //                               }
+                  //                             },
+                  //                           ),
+                  //                         ],
+                  //                       ),
+                  //                       Row(
+                  //                         children: [
+                  //                           Text(
+                  //                               '방이름: ${chatRoomList[index].name}'),
+                  //                         ],
+                  //                       ),
+                  //                       Row(
+                  //                         mainAxisAlignment:
+                  //                             MainAxisAlignment.end,
+                  //                         children: [
+                  //                           Container(
+                  //                             width: 70,
+                  //                             height: 30,
+                  //                             decoration: BoxDecoration(
+                  //                               border: Border.all(
+                  //                                   color: Colors
+                  //                                       .grey.shade300),
+                  //                             ),
+                  //                             child: const Center(
+                  //                                 child: Text('예약')),
+                  //                           )
+                  //                         ],
+                  //                       ),
+                  //                       Row(
+                  //                         children: [
+                  //                           Text(
+                  //                               '시작: ${chatRoomList[index].startDate}'),
+                  //                         ],
+                  //                       ),
+                  //                       Row(
+                  //                         children: [
+                  //                           Text(
+                  //                               '종료: ${chatRoomList[index].endDate}'),
+                  //                         ],
+                  //                       ),
+                  //                     ],
+                  //                   ),
+                  //                 ),
+                  //               ),
+                  //             ),
+                  //           );
+                  //         },
+                  //       );
+                  //     }
+                  //   },
+                  // ),
+                  Consumer<ChatRoomProvider>(
+                    builder: (context, chatRoomProvider, child) {
+                      final chatRoomList = chatRoomProvider.chatRooms;
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: chatRoomList.length,
+                              itemBuilder: (context, index) {
+                                isReserveDisable = _reserveButtonDisable(
+                                    chatRoomList[index].startDate);
+                                isParticipateDisable =
+                                    _participateButtonDisable(
+                                        chatRoomList[index].endDate);
+                                return Stack(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () => _onChatRoomDetailTap(
+                                          chatRoomList[index]),
+                                      child: ListTile(
+                                        title: Container(
+                                          height: 180,
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.grey.shade300),
                                           ),
-                                          Positioned(
-                                            top: 70,
-                                            right: 35,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 15,
+                                              vertical: 15,
+                                            ),
+                                            child: Column(
                                               children: [
-                                                ElevatedButton(
-                                                  onPressed: isParticipateDisable
-                                                      ? _onParticipateChatTap
-                                                      : null,
-                                                  child: const Center(
-                                                      child: Text('참여')),
+                                                Row(
+                                                  children: [
+                                                    // 주제를 비동기적으로 받아오는 FutureBuilder
+                                                    FutureBuilder<String>(
+                                                      future: _topicName(
+                                                          chatRoomList[index]
+                                                              .topicId),
+                                                      builder: (context,
+                                                          topicSnapshot) {
+                                                        if (topicSnapshot
+                                                                .connectionState ==
+                                                            ConnectionState
+                                                                .waiting) {
+                                                          return const Text(
+                                                              '주제: 불러오는 중...');
+                                                        } else if (topicSnapshot
+                                                            .hasError) {
+                                                          return Text(
+                                                              '주제: 오류 발생 - ${topicSnapshot.error}');
+                                                        } else if (topicSnapshot
+                                                            .hasData) {
+                                                          return Text(
+                                                              '주제: ${topicSnapshot.data}');
+                                                        } else {
+                                                          return const Text(
+                                                              '주제: 데이터 없음');
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
                                                 ),
-                                                const SizedBox(width: 10),
-                                                ElevatedButton(
-                                                  onPressed: isReserveDisable
-                                                      ? () {}
-                                                      : null,
-                                                  child: const Center(
-                                                      child: Text('예약')),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        '방이름: ${chatRoomList[index].name}'),
+                                                  ],
+                                                ),
+                                                const SizedBox(height: 40),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        '시작: ${chatRoomList[index].startDate}'),
+                                                  ],
+                                                ),
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                        '종료: ${chatRoomList[index].endDate}'),
+                                                  ],
                                                 ),
                                               ],
                                             ),
-                                          )
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 70,
+                                      right: 35,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          ElevatedButton(
+                                            onPressed: isParticipateDisable
+                                                ? _onParticipateChatTap
+                                                : null,
+                                            child:
+                                                const Center(child: Text('참여')),
+                                          ),
+                                          const SizedBox(width: 10),
+                                          ElevatedButton(
+                                            onPressed:
+                                                isReserveDisable ? () {} : null,
+                                            child:
+                                                const Center(child: Text('예약')),
+                                          ),
                                         ],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                        Positioned(
-                          bottom: 5,
-                          right: 5,
-                          child: IconButton(
-                            onPressed: _onCreateChatRoomTap,
-                            icon: const FaIcon(
-                              FontAwesomeIcons.circlePlus,
-                              size: 70,
+                                      ),
+                                    )
+                                  ],
+                                );
+                              },
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      );
+                    },
+                  ),
+                  Positioned(
+                    bottom: 5,
+                    right: 5,
+                    child: IconButton(
+                      onPressed: _onCreateChatRoomTap,
+                      icon: const FaIcon(
+                        FontAwesomeIcons.circlePlus,
+                        size: 70,
+                      ),
                     ),
                   ),
                 ],
               ),
-              // bottomNavigationBar: const BottomAppBar(),
             ),
           ],
         ));
