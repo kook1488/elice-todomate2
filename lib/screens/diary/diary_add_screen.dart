@@ -2,16 +2,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:todomate/models/diary_model.dart';
 import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/util/alert_dialog.dart';
-import 'package:todomate/util/string_utils.dart';
+import 'package:todomate/util/string_utils.dart'; // 수정된 경로
 
 class DiaryAddScreen extends StatefulWidget {
   final DateTime date;
-
-  const DiaryAddScreen(
-      {super.key, required this.date});
+  const DiaryAddScreen({super.key, required this.date});
 
   @override
   State<StatefulWidget> createState() => _DiaryAddScreenState();
@@ -148,21 +148,20 @@ class _DiaryAddScreenState extends State<DiaryAddScreen> {
                       ),
                       child: _selectedImage == null
                           ? const Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
-                        // 텍스트와 아이콘을 양쪽 끝으로 배치
-                        children: [
-                          Text(
-                            '사진을 넣어보세요.',
-                            style: TextStyle(
-                                color: Colors.black), // 원하는 텍스트 스타일 적용
-                          ),
-                          Icon(
-                            Icons.image, // 달력 아이콘
-                            color: Colors.black, // 아이콘 색상
-                          ),
-                        ],
-                      )
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              // 텍스트와 아이콘을 양쪽 끝으로 배치
+                              children: [
+                                Text(
+                                  '사진을 넣어보세요.',
+                                  style: TextStyle(
+                                      color: Colors.black), // 원하는 텍스트 스타일 적용
+                                ),
+                                Icon(
+                                  Icons.image, // 달력 아이콘
+                                  color: Colors.black, // 아이콘 색상
+                                ),
+                              ],
+                            )
                           : Image.file(_selectedImage!, fit: BoxFit.cover),
                     ),
                   ),
@@ -241,6 +240,9 @@ class _DiaryAddScreenState extends State<DiaryAddScreen> {
 
         if (isSuccessInsert) {
           // 등록 성공
+          // 등록 성공 시 diaryCount 업데이트
+          Provider.of<ProfileProvider>(context, listen: false)
+              .updateDiaryCount(1);
           showAlertDialog(context, '알림', '등록되었습니다.', shouldPop: true);
         } else {
           // 등록 실패
@@ -253,5 +255,4 @@ class _DiaryAddScreenState extends State<DiaryAddScreen> {
       showAlertDialog(context, '오류', '등록 중 오류가 발생했습니다.');
     }
   }
-
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
@@ -12,6 +14,9 @@ class ProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     // ProfileProvider의 상태를 가져옴
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
+    final String? nickname =
+        context.watch<ProfileProvider>().nickname; // Provider에서 닉네임을 가져옴
+
     final int todoCount =
         context.watch<TodoProvider>().incompleteTodoCount; // 완료되지 않은 할 일 개수 사용
     final int completedTodoCount = context
@@ -37,7 +42,10 @@ class ProfileWidget extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 50.0,
                   backgroundImage: avatarPath != null
-                      ? AssetImage(avatarPath)
+                      ? avatarPath.contains('asset')
+                          ? AssetImage(avatarPath)
+                              as ImageProvider // 그리드에서 선택한 경우
+                          : FileImage(File(avatarPath)) // 갤러리에서 선택한 경우
                       : null, // 현재 선택된 프로필 이미지 경로 사용
                 ),
               ),
@@ -46,7 +54,7 @@ class ProfileWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    nickname ?? 'Loading...',
+                    nickname ?? '$nickname',
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
@@ -117,7 +125,7 @@ class ProfileWidget extends StatelessWidget {
                   Icon(Icons.chat_rounded, size: 40.0, color: Colors.orange),
                   Text('$activeChatCount',
                       style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                  Text('참여중인 채팅방',
+                  Text('생성된 채팅방',
                       style: TextStyle(fontSize: 12.0, color: Colors.white)),
                 ],
               ),
