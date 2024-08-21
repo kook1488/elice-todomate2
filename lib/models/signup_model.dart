@@ -83,11 +83,14 @@ class DatabaseHelper {
 
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'user_database.db');
+
+    // deleteDatabase(path);
+
     return await openDatabase(
       path,
       version: 4,
       onCreate: _onCreate,
-      onUpgrade: _onUpgrade,
+      // onUpgrade: _onUpgrade,
     );
   }
 
@@ -139,15 +142,7 @@ class DatabaseHelper {
           FOREIGN KEY(receiver_id) REFERENCES users(id)
         )
       ''');
-  }
-
-  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
-    print('oldversion : $oldVersion , newVersion : $newVersion ');
-    if (oldVersion < 4) {
-      await db.execute(
-          'ALTER TABLE todos ADD COLUMN is_friend_completed INTEGER DEFAULT 0');
-
-      await db.execute('''
+    await db.execute('''
       CREATE TABLE chat_room(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -157,7 +152,7 @@ class DatabaseHelper {
         endDate TEXT
       )
     ''');
-      await db.execute('''
+    await db.execute('''
       CREATE TABLE topic(
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT,
@@ -165,17 +160,26 @@ class DatabaseHelper {
         endedAt timestamp
       )
     ''');
-      await db.execute('''
+    await db.execute('''
       INSERT INTO topic (name) VALUES ('주제1');
     ''');
-      await db.execute('''
+    await db.execute('''
       INSERT INTO topic (name) VALUES ('주제2');
     ''');
-      await db.execute('''
+    await db.execute('''
       INSERT INTO topic (name) VALUES ('주제3');
     ''');
-    }
   }
+
+  // Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+  //   print('oldversion : $oldVersion , newVersion : $newVersion ');
+  //   if (oldVersion < 4) {
+  //     await db.execute(
+  //         'ALTER TABLE todos ADD COLUMN is_friend_completed INTEGER DEFAULT 0');
+  //
+  //
+  //   }
+  // }
 
   String _hashPassword(String password) {
     var bytes = utf8.encode(password);
