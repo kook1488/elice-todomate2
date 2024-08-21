@@ -8,7 +8,6 @@ import 'package:todomate/screens/chat/chat.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/chat_room/create_chat_room.dart';
-import 'package:todomate/screens/chat_room/test_models.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({super.key});
