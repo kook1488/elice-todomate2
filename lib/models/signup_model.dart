@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -8,9 +7,14 @@ import 'package:todomate/models/chat_room_model.dart';
 import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
 import 'package:todomate/models/topic_model.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
+  WebSocketChannel? _channel;
+  final StreamController<Map<String, dynamic>> _todoUpdateController =
+      StreamController<Map<String, dynamic>>.broadcast();
+  Timer? _reconnectionTimer;
 
   factory DatabaseHelper() => _instance;
   static Database? _database;
@@ -23,9 +27,62 @@ class DatabaseHelper {
     return _database!;
   }
 
+  Stream<Map<String, dynamic>> get todoUpdateStream =>
+      _todoUpdateController.stream;
+
+  void connectWebSocket() {
+    _channel = WebSocketChannel.connect(
+      Uri.parse('ws://172.30.1.57:8080'),
+    );
+    _channel!.stream.listen(
+      (message) {
+        print("Received message: $message");
+        try {
+          final decodedMessage = json.decode(message);
+          _todoUpdateController.add(decodedMessage);
+        } catch (e) {
+          print("Error decoding JSON message: $e");
+        }
+      },
+      onError: (error) {
+        print("WebSocket error: $error");
+        _scheduleReconnection();
+      },
+      onDone: () {
+        print("WebSocket connection closed");
+        _scheduleReconnection();
+      },
+    );
+  }
+
+  void _scheduleReconnection() {
+    _reconnectionTimer?.cancel();
+    _reconnectionTimer = Timer(const Duration(seconds: 5), () {
+      print("Attempting to reconnect to WebSocket");
+      connectWebSocket();
+    });
+  }
+
+  void disconnectWebSocket() {
+    _channel?.sink.close();
+    _channel = null;
+    _reconnectionTimer?.cancel();
+  }
+
+  void sendTodoUpdate(String userId, String todoId, bool isCompleted) {
+    if (_channel != null) {
+      final message = json.encode({
+        'type': 'todo_update',
+        'userId': userId,
+        'todoId': todoId,
+        'isCompleted': isCompleted,
+      });
+      _channel!.sink.add(message);
+    }
+  }
+
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'user_database.db');
-    print(path);
     // deleteDatabase(path);
     return await openDatabase(
       path,
@@ -215,7 +272,6 @@ class DatabaseHelper {
     }
   }
 
-//////////////////////////////////
   Future<int> updateUser(Map<String, dynamic> user) async {
     Database db = await database;
     return await db.update(
@@ -270,7 +326,6 @@ class DatabaseHelper {
     );
   }
 
-//////////////////////////
   Future<void> updatePasswordToHash() async {
     Database db = await database;
     List<Map<String, dynamic>> users = await db.query('users');
@@ -454,6 +509,33 @@ class DatabaseHelper {
     }
   }
 
+  Future<void> updateTodoCompletion(String todoId, bool isCompleted,
+      {bool isCurrentUser = true}) async {
+    Database db = await database;
+    try {
+      final updateData = isCurrentUser
+          ? {'is_completed': isCompleted ? 1 : 0}
+          : {'is_friend_completed': isCompleted ? 1 : 0};
+
+      final rowsAffected = await db.update(
+        'todos',
+        updateData,
+        where: 'id = ?',
+        whereArgs: [todoId],
+      );
+
+      if (rowsAffected == 0) {
+        throw Exception('Todo not found or not updated');
+      }
+
+      print(
+          'Updated todo completion status: $todoId, isCompleted: $isCompleted, isCurrentUser: $isCurrentUser');
+    } catch (e) {
+      print('Error updating todo completion status: $e');
+      rethrow;
+    }
+  }
+
   Future<List<Map<String, dynamic>>> getAcceptedFriends(String userId) async {
     final db = await database;
     final List<Map<String, dynamic>> maps = await db.rawQuery('''
@@ -486,12 +568,17 @@ class DatabaseHelper {
       String userId, String originalTodoId, bool isCompleted) async {
     final db = await database;
     try {
-      await db.update(
+      final rowsAffected = await db.update(
         'todos',
         {'is_friend_completed': isCompleted ? 1 : 0},
         where: 'user_id = ? AND friend_id = ?',
         whereArgs: [userId, originalTodoId],
       );
+
+      if (rowsAffected == 0) {
+        throw Exception('Linked todo not found or not updated');
+      }
+
       print(
           'Updated linked todo completion status for user $userId and original todo $originalTodoId');
     } catch (e) {
@@ -666,5 +753,22 @@ class DatabaseHelper {
       where: 'id = ?', // 삭제할 조건 설정
       whereArgs: [topic.id], // 조건 값 설정
     );
+  }
+
+  // 웹소켓 연결 상태 확인
+  bool isWebSocketConnected() {
+    return _channel != null;
+  }
+
+  // 웹소켓 재연결
+  void reconnectWebSocket() {
+    disconnectWebSocket();
+    connectWebSocket();
+  }
+
+  // 리소스 정리
+  void dispose() {
+    disconnectWebSocket();
+    _todoUpdateController.close();
   }
 }

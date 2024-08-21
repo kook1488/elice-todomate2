@@ -11,8 +11,6 @@ class Todo {
   final bool sharedWithFriend;
   final String? friendId;
   final bool isFriendCompleted;
-  bool isCompletedByMe;
-  bool isCompletedByFriend;
 
   Todo({
     required this.id,
@@ -25,8 +23,6 @@ class Todo {
     required this.sharedWithFriend,
     this.friendId,
     this.isFriendCompleted = false,
-    this.isCompletedByMe = false,
-    this.isCompletedByFriend = false,
   });
 
   Todo copyWith({
@@ -70,7 +66,7 @@ class Todo {
     };
   }
 
-  static Todo fromMap(Map<String, dynamic> map) {
+  factory Todo.fromMap(Map<String, dynamic> map) {
     return Todo(
       id: map['id'],
       userId: map['user_id'],
@@ -83,5 +79,23 @@ class Todo {
       friendId: map['friend_id'],
       isFriendCompleted: map['is_friend_completed'] == 1,
     );
+  }
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'userId': userId,
+      'title': title,
+      'startDate': startDate.toIso8601String(),
+      'endDate': endDate.toIso8601String(),
+      'color': color.value.toRadixString(16).padLeft(8, '0'),
+      'isCompleted': isCompleted,
+      'sharedWithFriend': sharedWithFriend,
+      'friendId': friendId,
+      'isFriendCompleted': isFriendCompleted,
+    };
+  }
+  @override
+  String toString() {
+    return 'Todo(id: $id, userId: $userId, title: $title, startDate: $startDate, endDate: $endDate, color: ${color.value}, isCompleted: $isCompleted, sharedWithFriend: $sharedWithFriend, friendId: $friendId, isFriendCompleted: $isFriendCompleted)';
   }
 }
