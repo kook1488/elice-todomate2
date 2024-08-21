@@ -2,6 +2,8 @@ import 'dart:io'; // 파일 처리를 위해 dart:io 사용
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // image_picker 패키지 임포트
+import 'package:provider/provider.dart'; // Provider 임포트
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
 class ImageChange extends StatefulWidget {
@@ -88,7 +90,16 @@ class _ImageChangeState extends State<ImageChange> {
                           // 버튼들이 밀리지 않도록 추가한 SizedBox
                           SizedBox(height: 220.0),
                           ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              if (_image != null) {
+                                context
+                                    .read<ProfileProvider>()
+                                    .updateAvatarPath(
+                                      widget.loginId,
+                                      _image!.path,
+                                    );
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(

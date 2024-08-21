@@ -15,6 +15,7 @@ void main() {
           ChangeNotifierProvider(create: (context) => TodoProvider()),
           ChangeNotifierProvider(create: (context) => DiaryProvider()),
           ChangeNotifierProvider(create: (context) => ProfileProvider()),
+          ChangeNotifierProvider(create: (context) => ProfileProvider()),
         ],
         child: const MyApp(),
       ),

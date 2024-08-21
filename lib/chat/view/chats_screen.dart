@@ -1,6 +1,6 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
@@ -10,6 +10,9 @@ import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/todo/todo_list_screen.dart';
 import 'package:todomate/util/sharedpreference.dart';
 
+// 매개변수 값 안넣고 하는거 쉐어드 프리퍼랜스
+// 로그인 스크린에서 로그인 아이디 없이 디비 조회 할 것인데
+// 어떻게 할것인가? -쉐어드 프리퍼렌스
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 

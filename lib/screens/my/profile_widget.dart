@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
@@ -39,7 +41,10 @@ class ProfileWidget extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 50.0,
                   backgroundImage: avatarPath != null
-                      ? AssetImage(avatarPath)
+                      ? avatarPath.contains('asset')
+                          ? AssetImage(avatarPath)
+                              as ImageProvider // 그리드에서 선택한 경우
+                          : FileImage(File(avatarPath)) // 갤러리에서 선택한 경우
                       : null, // 현재 선택된 프로필 이미지 경로 사용
                 ),
               ),
