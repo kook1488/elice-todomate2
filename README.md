@@ -55,6 +55,6 @@ flutter pub get
 
 # Socket.io
 socket 폴더에 연동 방법 이미지로 업로드 했습니다.
-채팅 화면은 diary_chat.dart 파일입니다.
+flutter 연동화면은 diary_chat.dart 파일입니다.
 
 
