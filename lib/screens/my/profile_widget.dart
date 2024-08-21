@@ -16,6 +16,7 @@ class ProfileWidget extends StatelessWidget {
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
     final String? nickname =
         context.watch<ProfileProvider>().nickname; // Provider에서 닉네임을 가져옴
+
     final int todoCount =
         context.watch<TodoProvider>().incompleteTodoCount; // 완료되지 않은 할 일 개수 사용
     final int completedTodoCount = context

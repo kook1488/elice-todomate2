@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
 import 'package:todomate/screens/diary/diary.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/todo/todo_list_screen.dart';
 import 'package:todomate/util/sharedpreference.dart';
@@ -71,7 +73,13 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     }
   }
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) async {
+    if (index == 3) {
+      // '마이페이지' 탭이 선택되었을 때
+      final profileProvider =
+          Provider.of<ProfileProvider>(context, listen: false); // 수정된 부분
+      await profileProvider.loadNickname(_userId); // 닉네임 로드
+    }
     setState(() {
       _selectedIndex = index;
     });
