@@ -3,33 +3,47 @@ import 'package:todomate/models/signup_model.dart';
 
 class ProfileProvider with ChangeNotifier {
   final DatabaseHelper _dbHelper = DatabaseHelper(); // DB 불러옴
-
-  // 닉네임, 아바타 선언
   String? _nickname;
   String _avatarPath = 'asset/image/avata_1.png'; // 기본 아바타 경로로 초기화
-
+  bool _isNicknameLoaded = false; // 닉네임 로딩 상태 추가
   // 프로필 관련 상태
+
   int _todoCount = 7;
   int _completedTodoCount = 5;
-  int _diaryCount = 1;
-  int _friendCount = 4;
+  int _diaryCount = 0;
+  int _friendCount = 0;
   int _activeChatCount = 5;
   int _reservedChatCount = 2;
 
   // Getter 메서드
   String? get nickname => _nickname;
+
   String get avatarPath => _avatarPath;
+
+  bool get isNicknameLoaded => _isNicknameLoaded; // 로딩 상태 Getter 추가
+
   int get todoCount => _todoCount;
+
   int get completedTodoCount => _completedTodoCount;
+
   int get diaryCount => _diaryCount;
+
   int get friendCount => _friendCount;
+
   int get activeChatCount => _activeChatCount;
+
   int get reservedChatCount => _reservedChatCount;
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
-    _nickname = await _dbHelper.getNickname(loginId); // 비동기인데 쿼리 가져올 때까지는 기다림
-    notifyListeners(); // 프로바이더 구독하는 위젯들에게 상태 변경 알림 - UI 다시 빌드하라고
+    if (_isNicknameLoaded) return; // 이미 로드된 경우 중복 로드 방지 //$
+    _nickname = await _dbHelper.getNickname(loginId);
+    if (_nickname == null || _nickname!.isEmpty) {
+      _nickname = loginId; // 기본 닉네임을 로그인 아이디로 설정
+      await _dbHelper.updateNickname(loginId, _nickname!); // 기본 닉네임 저장
+    }
+    _isNicknameLoaded = true; // 로딩 완료 상태로 설정 //$
+    notifyListeners();
   }
 
   // 닉네임 상태 변경
@@ -57,12 +71,7 @@ class ProfileProvider with ChangeNotifier {
   }
 
   void updateDiaryCount(int count) {
-    _diaryCount = count;
-    notifyListeners();
-  }
-
-  void updateFriendCount(int count) {
-    _friendCount = count;
+    _diaryCount += count;
     notifyListeners();
   }
 
@@ -76,5 +85,25 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // 친구 수 업데이트 메서드
+  void updateFriendCount(int count) {
+    _friendCount = count;
+    notifyListeners(); // 상태가 변경되었음을 알림
+  }
+
+  // 친구 추가 시 호출할 메서드 (예시)
+  void addFriend() {
+    _friendCount += 1;
+    notifyListeners();
+  }
+
+  // 친구 삭제 시 호출할 메서드 (예시)
+  void removeFriend() {
+    if (_friendCount > 0) {
+      _friendCount -= 1;
+      notifyListeners();
+    }
+
 // 기타 필요한 메서드들 추가 가능
+  }
 }

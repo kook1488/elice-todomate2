@@ -1,15 +1,20 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
 import 'package:todomate/screens/diary/diary.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/todo/todo_list_screen.dart';
 import 'package:todomate/util/sharedpreference.dart';
 
+// 매개변수 값 안넣고 하는거 쉐어드 프리퍼랜스
+// 로그인 스크린에서 로그인 아이디 없이 디비 조회 할 것인데
+// 어떻게 할것인가? -쉐어드 프리퍼렌스
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
@@ -68,7 +73,13 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     }
   }
 
-  void _onItemTapped(int index) {
+  void _onItemTapped(int index) async {
+    if (index == 3) {
+      // '마이페이지' 탭이 선택되었을 때
+      final profileProvider =
+          Provider.of<ProfileProvider>(context, listen: false); // 수정된 부분
+      await profileProvider.loadNickname(_userId); // 닉네임 로드
+    }
     setState(() {
       _selectedIndex = index;
     });
@@ -90,6 +101,10 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     //아이디 삭제는 따로 잘되는거 같다 페이지 이동에 문제가 있을 뿐
 
     return Scaffold(
+      // appBar: AppBar(
+      //   title: const Text("채팅방 리스트"),
+      //   backgroundColor: Colors.blue,
+      // ),
       body: pages[_selectedIndex],
       // floatingActionButton: _selectedIndex == 0
       //     ? FloatingActionButton(

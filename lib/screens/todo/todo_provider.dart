@@ -1,50 +1,52 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/models/todo_model.dart';
 
-
 class TodoProvider with ChangeNotifier {
-  DatabaseHelper _dbHelper = DatabaseHelper();
+  final DatabaseHelper _dbHelper = DatabaseHelper();
   List<Todo> _todos = [];
-
- // final DatabaseHelper _databaseHelper = DatabaseHelper();
-
   List<Map<String, dynamic>> _friends = [];
   String? _currentUserId;
 
-
-  List<Todo> get todos => _todos;
-  List<Map<String, dynamic>> get friends => _friends;
+  // 현재 사용자 ID Getter
   String? get currentUserId => _currentUserId;
 
+  // 할 일 목록 Getter
+  List<Todo> get todos => _todos;
+
+  // 친구 목록 Getter
+  List<Map<String, dynamic>> get friends => _friends;
+
+  // 추가된 할 일의 완료 여부에 따른 카운트 Getter
+  int get incompleteTodoCount => _todos.where((todo) => !todo.isCompleted).length;
+  int get completedTodoCount => _todos.where((todo) => todo.isCompleted).length;
+
+  // 생성자: WebSocket 메시지 리스너 설정
+  TodoProvider() {
+    _dbHelper.todoUpdateStream.listen(_handleWebSocketMessage);
+  }
+
+  // 현재 사용자 ID 설정
   void setCurrentUserId(String userId) {
     _currentUserId = userId;
     notifyListeners();
   }
 
-  bool isCurrentUser(String userId) {
-    return userId == _currentUserId;
-  }
-
-  // 완료된 할 일의 개수를 반환하는 getter
-  int get completedTodoCount => _todos.where((todo) => todo.isCompleted).length;
-
-  // 완료되지 않은 할 일의 개수를 반환하는 getter
-  int get incompleteTodoCount =>
-      _todos.where((todo) => !todo.isCompleted).length;
-
+  // 할 일 목록 로드
   Future<void> loadTodos(String userId) async {
-    _currentUserId = userId;
     _todos = await _dbHelper.getTodos(userId);
     notifyListeners();
   }
 
+  // 할 일 추가
   Future<void> addTodo(Todo todo) async {
     await _dbHelper.insertTodo(todo);
     _todos.add(todo);
     notifyListeners();
   }
 
+  // 공유된 할 일 추가
   Future<void> addSharedTodo(Todo todo) async {
     await _dbHelper.insertTodo(todo);
     _todos.add(todo);
@@ -68,6 +70,7 @@ class TodoProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  // 할 일 업데이트
   Future<void> updateTodo(Todo todo) async {
     await _dbHelper.updateTodo(todo);
     int index = _todos.indexWhere((t) => t.id == todo.id);
@@ -77,18 +80,14 @@ class TodoProvider with ChangeNotifier {
     }
   }
 
+  // 할 일 삭제
   Future<void> deleteTodo(String todoId) async {
     await _dbHelper.deleteTodo(todoId);
     _todos.removeWhere((todo) => todo.id == todoId);
     notifyListeners();
   }
 
-
- // Future<void> toggleTodoCompletion(Todo todo) async {
- //   final updatedTodo = todo.copyWith(isCompleted: !todo.isCompleted);
-  //  await updateTodo(updatedTodo);
-  //  notifyListeners(); // 체크 상태가 변경되었으므로 상태를 알림
-
+  // 할 일 완료 상태 토글
   Future<void> toggleTodoCompletion(String todoId, {required bool isCurrentUser}) async {
     int index = _todos.indexWhere((todo) => todo.id == todoId);
     if (index != -1) {
@@ -96,37 +95,49 @@ class TodoProvider with ChangeNotifier {
       Todo updatedTodo;
 
       if (isCurrentUser) {
-        updatedTodo = currentTodo.copyWith(isCompleted: !currentTodo.isCompleted);
+        updatedTodo =
+            currentTodo.copyWith(isCompleted: !currentTodo.isCompleted);
       } else {
-        updatedTodo = currentTodo.copyWith(isFriendCompleted: !currentTodo.isFriendCompleted);
+        updatedTodo = currentTodo.copyWith(
+            isFriendCompleted: !currentTodo.isFriendCompleted);
       }
 
       await _dbHelper.updateTodo(updatedTodo);
       _todos[index] = updatedTodo;
 
-      if (updatedTodo.sharedWithFriend && updatedTodo.friendId != null) {
-        // 연결된 투두리스트 업데이트
-        Todo? linkedTodo = await _dbHelper.getLinkedTodo(updatedTodo.friendId!, updatedTodo.id);
-        if (linkedTodo != null) {
-          Todo updatedLinkedTodo = linkedTodo.copyWith(
-            isCompleted: isCurrentUser ? linkedTodo.isCompleted : updatedTodo.isCompleted,
-            isFriendCompleted: isCurrentUser ? updatedTodo.isCompleted : linkedTodo.isFriendCompleted,
-          );
-          await _dbHelper.updateTodo(updatedLinkedTodo);
-        }
-
-        // 알림 전송
-        sendNotificationToFriend(
-            updatedTodo.friendId!,
-            updatedTodo.title,
-            isCurrentUser ? updatedTodo.isCompleted : updatedTodo.isFriendCompleted
-        );
-      }
+      // WebSocket을 통해 상태 전송
+      _dbHelper.sendTodoUpdate(
+          _currentUserId!, todoId, isCurrentUser ? updatedTodo.isCompleted : updatedTodo.isFriendCompleted);
 
       notifyListeners();
     }
   }
 
+  // WebSocket 메시지 처리
+  void _handleWebSocketMessage(Map<String, dynamic> data) {
+    if (data['type'] == 'todo_update' && data.containsKey('todoId') && data.containsKey('isCompleted')) {
+      String todoId = data['todoId'];
+      bool isCompleted = data['isCompleted'];
+      String updatingUserId = data['userId'];
+
+      int index = _todos.indexWhere((todo) => todo.id == todoId || todo.friendId == todoId);
+      if (index != -1) {
+        Todo currentTodo = _todos[index];
+        Todo updatedTodo;
+
+        if (updatingUserId == _currentUserId) {
+          updatedTodo = currentTodo.copyWith(isCompleted: isCompleted);
+        } else {
+          updatedTodo = currentTodo.copyWith(isFriendCompleted: isCompleted);
+        }
+
+        _todos[index] = updatedTodo;
+        notifyListeners();
+      }
+    }
+  }
+
+  // 친구 목록 로드
   Future<void> loadFriends(String userId) async {
     _friends = await _dbHelper.getAcceptedFriends(userId);
     notifyListeners();
@@ -142,7 +153,8 @@ class TodoProvider with ChangeNotifier {
     await loadFriends(userId);
   }
 
-  Future<List<Map<String, dynamic>>> searchUsers(String query, String userId) async {
+  Future<List<Map<String, dynamic>>> searchUsers(
+      String query, String userId) async {
     return await _dbHelper.searchUsers(query, userId);
   }
 
@@ -150,9 +162,10 @@ class TodoProvider with ChangeNotifier {
     return await _dbHelper.getFriendRequests(userId);
   }
 
-  Future<void> sendNotificationToFriend(String friendId, String todoTitle, bool isCompleted) async {
-    print('알림 전송: 친구 ID $friendId, 할 일 "$todoTitle"이(가) ${isCompleted ? "완료됨" : "미완료됨"}');
+  Future<void> sendNotificationToFriend(
+      String friendId, String todoTitle, bool isCompleted) async {
+    print(
+        '알림 전송: 친구 ID $friendId, 할 일 "$todoTitle"이(가) ${isCompleted ? "완료됨" : "미완료됨"}');
     // 실제 알림 전송 로직 구현
-
   }
 }

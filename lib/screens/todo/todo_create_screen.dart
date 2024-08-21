@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
 import 'package:todomate/models/todo_model.dart';
+import 'package:web_socket_channel/web_socket_channel.dart'; // web_socket_channel 패키지 추가
+import 'package:web_socket_channel/io.dart'; // IOWebSocketChannel 사용
 
 class TodoCreateScreen extends StatefulWidget {
   final String userId;
@@ -19,15 +22,26 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
   late DateTime _endDate;
   Color _selectedColor = Colors.yellow;
   String? _selectedFriendId;
+  late WebSocketChannel channel; // WebSocket 채널 변수 추가
 
   @override
   void initState() {
     super.initState();
     _startDate = DateTime.now();
     _endDate = _startDate.add(Duration(days: 1));
+
+    // WebSocket 초기화
+    channel = IOWebSocketChannel.connect('ws://172.30.1.57:8080'); // 서버 주소를 입력하세요.
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<TodoProvider>(context, listen: false).loadFriends(widget.userId);
     });
+  }
+
+  @override
+  void dispose() {
+    channel.sink.close(); // 화면이 종료될 때 WebSocket 연결 종료
+    super.dispose();
   }
 
   @override
@@ -58,11 +72,9 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
               onSaved: (value) => _title = value!,
             ),
             SizedBox(height: 16),
-            _buildDateField(
-                '시작일', _startDate, (date) => setState(() => _startDate = date)),
+            _buildDateField('시작일', _startDate, (date) => setState(() => _startDate = date)),
             SizedBox(height: 16),
-            _buildDateField(
-                '종료일', _endDate, (date) => setState(() => _endDate = date)),
+            _buildDateField('종료일', _endDate, (date) => setState(() => _endDate = date)),
             SizedBox(height: 16),
             Text('색상'),
             SizedBox(height: 8),
@@ -75,8 +87,7 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
     );
   }
 
-  Widget _buildDateField(
-      String label, DateTime initialDate, Function(DateTime) onChanged) {
+  Widget _buildDateField(String label, DateTime initialDate, Function(DateTime) onChanged) {
     return InkWell(
       onTap: () async {
         final DateTime? picked = await showDatePicker(
@@ -168,6 +179,23 @@ class _TodoCreateScreenState extends State<TodoCreateScreen> {
         sharedWithFriend: _selectedFriendId != null,
         friendId: _selectedFriendId,
       );
+
+      // WebSocket 메시지 생성
+      final message = json.encode({
+        'id': newTodo.id,
+        'userId': newTodo.userId,
+        'title': newTodo.title,
+        'startDate': newTodo.startDate.toString(),
+        'endDate': newTodo.endDate.toString(),
+        'color': newTodo.color.value.toRadixString(16),
+        'isCompleted': newTodo.isCompleted,
+        'sharedWithFriend': newTodo.sharedWithFriend,
+        'friendId': newTodo.friendId,
+      });
+
+      // WebSocket에 메시지 전송
+      channel.sink.add(message); // 메시지 전송
+      print('메시지를 서버에 전송했습니다: $message');
 
       final todoProvider = Provider.of<TodoProvider>(context, listen: false);
       todoProvider.addSharedTodo(newTodo);
