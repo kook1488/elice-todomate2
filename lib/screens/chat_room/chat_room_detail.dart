@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:todomate/models/chat_room_model.dart';
 import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/models/topic_model.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
-import 'package:todomate/screens/chat_room/test_models.dart';
-import 'package:todomate/screens/chat_room/chat_room.dart';
-import 'package:todomate/screens/todo/todo_provider.dart';
 
 class ChatRoomDetailScreen extends StatefulWidget {
   final ChatRoomModel chatRoomDetail;
@@ -32,6 +31,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   late Future<String> topicName;
   String topicNameString = '';
   final DatabaseHelper db = DatabaseHelper();
+  List<int> filterList = [];
 
   void _onClosePressed() {
     Navigator.of(context).pop();
@@ -76,7 +76,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
     });
 
     // db.initDatabase();
-    chatRooms = db.getChatRoom();
+    chatRooms = db.getChatRoom(filterList);
     topics = db.getTopic();
   }
 
@@ -271,7 +271,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                                       return Text('Error: ${snapshot.error}');
                                     } else {
                                       List<TopicModel> topicList =
-                                      snapshot.data as List<TopicModel>;
+                                          snapshot.data as List<TopicModel>;
                                       return Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
@@ -286,7 +286,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                                                 border: Border.all(
                                                     color: Colors.black12),
                                                 borderRadius:
-                                                BorderRadius.circular(5),
+                                                    BorderRadius.circular(5),
                                               ),
                                               child: GestureDetector(
                                                 onTap: () => _onTopicDetailTap(

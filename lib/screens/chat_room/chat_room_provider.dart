@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:todomate/screens/chat_room/test_models.dart';
+import 'package:todomate/models/chat_room_model.dart';
 import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/models/topic_model.dart';
 
 class ChatRoomProvider with ChangeNotifier {
   final DatabaseHelper _db = DatabaseHelper();
@@ -9,8 +10,8 @@ class ChatRoomProvider with ChangeNotifier {
 
   List<ChatRoomModel> get chatRooms => _chatRooms;
 
-  Future<void> getChatRoomList() async {
-    _chatRooms = await _db.getChatRoom();
+  Future<void> getChatRoomList(var filterList) async {
+    _chatRooms = await _db.getChatRoom(filterList);
     notifyListeners();
   }
 

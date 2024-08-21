@@ -4,10 +4,10 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:todomate/models/chat_room_model.dart';
 import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
-import 'package:todomate/screens/todo/todo_model.dart';
-import 'package:todomate/screens/chat_room/test_models.dart';
+import 'package:todomate/models/topic_model.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
@@ -204,9 +204,8 @@ class DatabaseHelper {
     for (var user in users) {
       var userCopy = Map<String, dynamic>.from(user);
       if (userCopy['password'] != null && userCopy['password'].isNotEmpty) {
-        int displayLength = userCopy['password'].length > 3
-            ? 3
-            : userCopy['password'].length;
+        int displayLength =
+            userCopy['password'].length > 3 ? 3 : userCopy['password'].length;
         userCopy['password'] =
             userCopy['password'].substring(0, displayLength) + '***';
       } else {
@@ -362,8 +361,8 @@ class DatabaseHelper {
   ''', [userId, 'pending']);
   }
 
-  Future<List<Map<String, dynamic>>> searchUsers(String query,
-      String userId) async {
+  Future<List<Map<String, dynamic>>> searchUsers(
+      String query, String userId) async {
     Database db = await database;
     return await db.query(
       'users',
@@ -483,8 +482,8 @@ class DatabaseHelper {
     return null;
   }
 
-  Future<void> updateLinkedTodo(String userId, String originalTodoId,
-      bool isCompleted) async {
+  Future<void> updateLinkedTodo(
+      String userId, String originalTodoId, bool isCompleted) async {
     final db = await database;
     try {
       await db.update(
@@ -509,6 +508,7 @@ class DatabaseHelper {
     for (var todo in maps) {
       print(todo);
     }
+  }
 
   // chat_room
   Future<int> insertChatRoomModel(ChatRoomModel chatRoom) async {
@@ -518,16 +518,24 @@ class DatabaseHelper {
     return await db.insert('chat_room', chatRoom.toMap());
   }
 
-  Future<List<ChatRoomModel>> getChatRoom() async {
+  Future<List<ChatRoomModel>> getChatRoom(List<int> filterList) async {
     Database db = await database;
+    String topicListFilter =
+        'select * from chat_room where topicId in (${filterList.join(',')});';
+
+    if (filterList.isEmpty) {
+      topicListFilter = 'select * from chat_room;';
+    }
+    print(filterList);
 
     // 테이블에서 모든 행을 쿼리합니다.
-    List<Map<String, dynamic>> maps = await db.query(
-      'chat_room',
-      // where: 'topicId = ?',
-      // whereArgs: [1],
-      orderBy: 'id desc',
-    );
+    List<Map<String, dynamic>> maps = await db.rawQuery(topicListFilter);
+    // List<Map<String, dynamic>> maps = await db.query(
+    //   'chat_room',
+    //   where: 'topicId in ?',
+    //   whereArgs: [(1)],
+    //   orderBy: 'id desc',
+    // );
 
     // 쿼리 결과에서 객체의 목록을 생성합니다.
     return List.generate(maps.length, (index) {
