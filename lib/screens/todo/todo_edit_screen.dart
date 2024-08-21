@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:todomate/models/todo_model.dart';
-import 'package:todomate/screens/todo/todo_provider.dart';
 
 class TodoEditScreen extends StatefulWidget {
   final Todo todo;
@@ -18,7 +16,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   late DateTime _startDate;
   late DateTime _endDate;
   late Color _selectedColor;
-  String? _selectedFriendId;
+  String? _selectedFriend;
 
   @override
   void initState() {
@@ -27,12 +25,7 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
     _startDate = widget.todo.startDate;
     _endDate = widget.todo.endDate;
     _selectedColor = widget.todo.color;
-    _selectedFriendId = widget.todo.friendId;
-
-    // 친구 목록 로드
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      Provider.of<TodoProvider>(context, listen: false).loadFriends(widget.todo.userId);
-    });
+    _selectedFriend = widget.todo.friendId;
   }
 
   @override
@@ -127,36 +120,15 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
   }
 
   Widget _buildFriendSelector() {
-    return Consumer<TodoProvider>(
-      builder: (context, todoProvider, child) {
-        if (todoProvider.friends.isEmpty) {
-          return Text('추가된 친구가 없습니다.');
-        }
-
-        // 현재 선택된 친구 ID가 목록에 없는 경우를 처리
-        bool isCurrentFriendInList = todoProvider.friends.any((friend) => friend['id'].toString() == _selectedFriendId);
-        if (!isCurrentFriendInList) {
-          _selectedFriendId = null;
-        }
-
-        return DropdownButtonFormField<String>(
-          decoration: InputDecoration(labelText: '친구'),
-          value: _selectedFriendId,
-          items: [
-            DropdownMenuItem<String>(
-              value: null,
-              child: Text('친구 선택 안함'),
-            ),
-            ...todoProvider.friends.map((friend) {
-              return DropdownMenuItem<String>(
-                value: friend['id'].toString(),
-                child: Text(friend['nickname'] ?? 'Unknown'),
-              );
-            }).toList(),
-          ],
-          onChanged: (value) => setState(() => _selectedFriendId = value),
-        );
-      },
+    // TODO: Implement actual friend selection
+    return DropdownButtonFormField<String>(
+      decoration: InputDecoration(labelText: '친구'),
+      value: _selectedFriend,
+      items: [
+        DropdownMenuItem(child: Text('친구 1'), value: 'friend1'),
+        DropdownMenuItem(child: Text('친구 2'), value: 'friend2'),
+      ],
+      onChanged: (value) => setState(() => _selectedFriend = value),
     );
   }
 
@@ -170,8 +142,8 @@ class _TodoEditScreenState extends State<TodoEditScreen> {
         endDate: _endDate,
         color: _selectedColor,
         isCompleted: widget.todo.isCompleted,
-        sharedWithFriend: _selectedFriendId != null,
-        friendId: _selectedFriendId,
+        sharedWithFriend: _selectedFriend != null,
+        friendId: _selectedFriend,
       );
       Navigator.of(context).pop(updatedTodo);
     }
