@@ -82,6 +82,11 @@ class DiaryProvider extends ChangeNotifier {
     setSelectedDiaryList();
   }
 
+  // 일기 개수를 반환하는 메서드
+  int getDiaryCount() {
+    return _diaryList.length;
+  }
+
   Future<void> deleteDiary(BuildContext context, DiaryDTO diary) async {
     try {
       bool isSuccessDeleteDiary =

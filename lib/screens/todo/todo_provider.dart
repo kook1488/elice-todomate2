@@ -95,9 +95,11 @@ class TodoProvider with ChangeNotifier {
       Todo updatedTodo;
 
       if (isCurrentUser) {
-        updatedTodo = currentTodo.copyWith(isCompleted: !currentTodo.isCompleted);
+        updatedTodo =
+            currentTodo.copyWith(isCompleted: !currentTodo.isCompleted);
       } else {
-        updatedTodo = currentTodo.copyWith(isFriendCompleted: !currentTodo.isFriendCompleted);
+        updatedTodo = currentTodo.copyWith(
+            isFriendCompleted: !currentTodo.isFriendCompleted);
       }
 
       await _dbHelper.updateTodo(updatedTodo);
@@ -139,5 +141,31 @@ class TodoProvider with ChangeNotifier {
   Future<void> loadFriends(String userId) async {
     _friends = await _dbHelper.getAcceptedFriends(userId);
     notifyListeners();
+  }
+
+  Future<void> sendFriendRequest(String userId, String friendId) async {
+    await _dbHelper.sendFriendRequest(userId, friendId);
+    notifyListeners();
+  }
+
+  Future<void> acceptFriendRequest(String userId, String friendId) async {
+    await _dbHelper.acceptFriendRequest(userId, friendId);
+    await loadFriends(userId);
+  }
+
+  Future<List<Map<String, dynamic>>> searchUsers(
+      String query, String userId) async {
+    return await _dbHelper.searchUsers(query, userId);
+  }
+
+  Future<List<Map<String, dynamic>>> getFriendRequests(String userId) async {
+    return await _dbHelper.getFriendRequests(userId);
+  }
+
+  Future<void> sendNotificationToFriend(
+      String friendId, String todoTitle, bool isCompleted) async {
+    print(
+        '알림 전송: 친구 ID $friendId, 할 일 "$todoTitle"이(가) ${isCompleted ? "완료됨" : "미완료됨"}');
+    // 실제 알림 전송 로직 구현
   }
 }

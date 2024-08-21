@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 
 class FriendSearchScreen extends StatefulWidget {
   final String userId;
@@ -35,11 +37,19 @@ class _FriendSearchScreenState extends State<FriendSearchScreen> {
     final friends = await _databaseHelper.getAcceptedFriends(widget.userId);
     setState(() {
       _acceptedFriends = friends;
+      _updateFriendCount(); // 친구 목록을 불러온 후 친구 수 업데이트
     });
   }
 
+  void _updateFriendCount() {
+    final profileProvider = Provider.of<ProfileProvider>(context,
+        listen: false); // ProfileProvider 가져오기 *//
+    profileProvider.updateFriendCount(_acceptedFriends.length); // 친구 수 업데이트 *//
+  }
+
   Future<void> _search() async {
-    final results = await _databaseHelper.searchUsers(_searchController.text, widget.userId);
+    final results = await _databaseHelper.searchUsers(
+        _searchController.text, widget.userId);
     setState(() {
       _searchResults = results;
     });
@@ -47,15 +57,17 @@ class _FriendSearchScreenState extends State<FriendSearchScreen> {
 
   Future<void> _sendFriendRequest(String friendId) async {
     await _databaseHelper.sendFriendRequest(widget.userId, friendId);
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('친구 요청을 보냈습니다.')));
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('친구 요청을 보냈습니다.')));
     _search(); // Refresh search results
   }
 
   Future<void> _acceptFriendRequest(String senderId) async {
     await _databaseHelper.acceptFriendRequest(widget.userId, senderId);
     await _loadFriendRequests();
-    await _loadAcceptedFriends();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('친구 요청을 수락했습니다.')));
+    await _loadAcceptedFriends(); // 친구 목록 갱신 후 친구 수 업데이트
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text('친구 요청을 수락했습니다.')));
   }
 
   @override
@@ -139,7 +151,8 @@ class _FriendSearchScreenState extends State<FriendSearchScreen> {
                   title: Text('친구 요청: ${request['nickname']}'),
                   trailing: IconButton(
                     icon: Icon(Icons.check),
-                    onPressed: () => _acceptFriendRequest(request['sender_id'].toString()),
+                    onPressed: () =>
+                        _acceptFriendRequest(request['sender_id'].toString()),
                   ),
                 );
               },
