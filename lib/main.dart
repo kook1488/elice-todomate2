@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:todomate/screens/account/introscreen.dart';
 import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
+import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
 import 'package:todomate/service/websocket_service.dart';
 
@@ -15,6 +16,7 @@ void main() {
           ChangeNotifierProvider(create: (context) => TodoProvider()),
           ChangeNotifierProvider(create: (context) => DiaryProvider()),
           ChangeNotifierProvider(create: (context) => ProfileProvider()),
+          ChangeNotifierProvider(create: (context) => ChatRoomProvider()),
           // WebSocketService를 제공자로 추가합니다.
           Provider(create: (context) => WebSocketService()),
         ],
@@ -25,12 +27,13 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     // WebSocketService 인스턴스를 가져옵니다.
-    final webSocketService = Provider.of<WebSocketService>(context, listen: false);
+    final webSocketService =
+        Provider.of<WebSocketService>(context, listen: false);
 
     // WebSocket 연결을 설정합니다.
     webSocketService.onMessageReceived = (Map<String, dynamic> message) {

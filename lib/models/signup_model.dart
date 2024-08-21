@@ -3,14 +3,17 @@ import 'dart:convert';
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:todomate/models/chat_room_model.dart';
 import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
+import 'package:todomate/models/topic_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class DatabaseHelper {
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   WebSocketChannel? _channel;
-  StreamController<Map<String, dynamic>> _todoUpdateController = StreamController<Map<String, dynamic>>.broadcast();
+  final StreamController<Map<String, dynamic>> _todoUpdateController =
+      StreamController<Map<String, dynamic>>.broadcast();
   Timer? _reconnectionTimer;
 
   factory DatabaseHelper() => _instance;
@@ -24,14 +27,15 @@ class DatabaseHelper {
     return _database!;
   }
 
-  Stream<Map<String, dynamic>> get todoUpdateStream => _todoUpdateController.stream;
+  Stream<Map<String, dynamic>> get todoUpdateStream =>
+      _todoUpdateController.stream;
 
   void connectWebSocket() {
     _channel = WebSocketChannel.connect(
       Uri.parse('ws://172.30.1.57:8080'),
     );
     _channel!.stream.listen(
-          (message) {
+      (message) {
         print("Received message: $message");
         try {
           final decodedMessage = json.decode(message);
@@ -53,7 +57,7 @@ class DatabaseHelper {
 
   void _scheduleReconnection() {
     _reconnectionTimer?.cancel();
-    _reconnectionTimer = Timer(Duration(seconds: 5), () {
+    _reconnectionTimer = Timer(const Duration(seconds: 5), () {
       print("Attempting to reconnect to WebSocket");
       connectWebSocket();
     });
@@ -135,6 +139,33 @@ class DatabaseHelper {
           FOREIGN KEY(receiver_id) REFERENCES users(id)
         )
       ''');
+    await db.execute('''
+      CREATE TABLE chat_room(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        topicId INTEGER,
+        userId INTEGER,
+        startDate TEXT,
+        endDate TEXT
+      )
+    ''');
+    await db.execute('''
+      CREATE TABLE topic(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        startedAt timestamp,
+        endedAt timestamp
+      )
+    ''');
+    await db.execute('''
+      INSERT INTO topic (name) VALUES ('주제1');
+    ''');
+    await db.execute('''
+      INSERT INTO topic (name) VALUES ('주제2');
+    ''');
+    await db.execute('''
+      INSERT INTO topic (name) VALUES ('주제3');
+    ''');
   }
 
   Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
@@ -160,7 +191,7 @@ class DatabaseHelper {
       if (e.toString().contains('UNIQUE constraint failed')) {
         throw Exception('사용자 아이디가 이미 존재합니다.');
       } else {
-        throw e;
+        rethrow;
       }
     }
   }
@@ -199,7 +230,8 @@ class DatabaseHelper {
     }
   }
 
-  Future<Map<String, dynamic>> loginUser(String loginId, String password) async {
+  Future<Map<String, dynamic>> loginUser(
+      String loginId, String password) async {
     try {
       await ensurePasswordsAreHashed();
       final user = await getUser(loginId, password);
@@ -228,9 +260,8 @@ class DatabaseHelper {
     for (var user in users) {
       var userCopy = Map<String, dynamic>.from(user);
       if (userCopy['password'] != null && userCopy['password'].isNotEmpty) {
-        int displayLength = userCopy['password'].length > 3
-            ? 3
-            : userCopy['password'].length;
+        int displayLength =
+            userCopy['password'].length > 3 ? 3 : userCopy['password'].length;
         userCopy['password'] =
             userCopy['password'].substring(0, displayLength) + '***';
       } else {
@@ -368,7 +399,7 @@ class DatabaseHelper {
   Future<void> checkTables() async {
     final Database db = await database;
     final List<Map<String, dynamic>> tables =
-    await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
+        await db.rawQuery("SELECT name FROM sqlite_master WHERE type='table';");
     for (var table in tables) {
       print('Table: ${table['name']}');
     }
@@ -384,7 +415,8 @@ class DatabaseHelper {
   ''', [userId, 'pending']);
   }
 
-  Future<List<Map<String, dynamic>>> searchUsers(String query, String userId) async {
+  Future<List<Map<String, dynamic>>> searchUsers(
+      String query, String userId) async {
     Database db = await database;
     return await db.query(
       'users',
@@ -403,7 +435,7 @@ class DatabaseHelper {
       });
     } catch (e) {
       print('Error sending friend request: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -418,7 +450,7 @@ class DatabaseHelper {
       );
     } catch (e) {
       print('Error accepting friend request: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -442,7 +474,7 @@ class DatabaseHelper {
       print('Inserted new todo: ${todo.id}');
     } catch (e) {
       print('Error inserting todo: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -457,7 +489,7 @@ class DatabaseHelper {
       );
     } catch (e) {
       print('Error updating todo: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -472,11 +504,12 @@ class DatabaseHelper {
       print('Deleted todo: $todoId');
     } catch (e) {
       print('Error deleting todo: $e');
-      throw e;
+      rethrow;
     }
   }
 
-  Future<void> updateTodoCompletion(String todoId, bool isCompleted, {bool isCurrentUser = true}) async {
+  Future<void> updateTodoCompletion(String todoId, bool isCompleted,
+      {bool isCurrentUser = true}) async {
     Database db = await database;
     try {
       final updateData = isCurrentUser
@@ -494,10 +527,11 @@ class DatabaseHelper {
         throw Exception('Todo not found or not updated');
       }
 
-      print('Updated todo completion status: $todoId, isCompleted: $isCompleted, isCurrentUser: $isCurrentUser');
+      print(
+          'Updated todo completion status: $todoId, isCompleted: $isCompleted, isCurrentUser: $isCurrentUser');
     } catch (e) {
       print('Error updating todo completion status: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -529,7 +563,8 @@ class DatabaseHelper {
     return null;
   }
 
-  Future<void> updateLinkedTodo(String userId, String originalTodoId, bool isCompleted) async {
+  Future<void> updateLinkedTodo(
+      String userId, String originalTodoId, bool isCompleted) async {
     final db = await database;
     try {
       final rowsAffected = await db.update(
@@ -543,10 +578,11 @@ class DatabaseHelper {
         throw Exception('Linked todo not found or not updated');
       }
 
-      print('Updated linked todo completion status for user $userId and original todo $originalTodoId');
+      print(
+          'Updated linked todo completion status for user $userId and original todo $originalTodoId');
     } catch (e) {
       print('Error updating linked todo: $e');
-      throw e;
+      rethrow;
     }
   }
 
@@ -562,7 +598,165 @@ class DatabaseHelper {
 
   // 웹소켓 연결 상태 확인
   bool isWebSocketConnected() {
-    return _channel != null && _channel!.sink != null;
+    return _channel != null;
+  }
+
+  // chat_room
+  Future<int> insertChatRoomModel(ChatRoomModel chatRoom) async {
+    Database db = await database;
+
+    // 테이블에 데이터를 삽입하고 삽입된 ID를 반환합니다.
+    return await db.insert('chat_room', chatRoom.toMap());
+  }
+
+  Future<List<ChatRoomModel>> getChatRoom(List<int> filterList) async {
+    Database db = await database;
+    String topicListFilter =
+        'select * from chat_room where topicId in (${filterList.join(',')});';
+
+    if (filterList.isEmpty) {
+      topicListFilter = 'select * from chat_room;';
+    }
+    print(filterList);
+
+    // 테이블에서 모든 행을 쿼리합니다.
+    List<Map<String, dynamic>> maps = await db.rawQuery(topicListFilter);
+    // List<Map<String, dynamic>> maps = await db.query(
+    //   'chat_room',
+    //   where: 'topicId in ?',
+    //   whereArgs: [(1)],
+    //   orderBy: 'id desc',
+    // );
+
+    // 쿼리 결과에서 객체의 목록을 생성합니다.
+    return List.generate(maps.length, (index) {
+      return ChatRoomModel(
+        id: maps[index]['id'],
+        name: maps[index]['name'],
+        topicId: maps[index]['topicId'],
+        userId: maps[index]['userId'],
+        startDate: maps[index]['startDate'],
+        endDate: maps[index]['endDate'],
+      );
+    });
+  }
+
+  Future<ChatRoomModel> getChatRoomDetail(int id) async {
+    Database db = await database;
+
+    List<Map<String, dynamic>> maps = await db.query(
+      'chat_room',
+      where: 'id = ?',
+      whereArgs: [id],
+      limit: 1,
+    );
+
+    final map = ChatRoomModel(
+      id: maps.first['id'],
+      name: maps.first['name'],
+      topicId: maps.first['topicId'],
+      userId: maps.first['userId'],
+      startDate: maps.first['startDate'],
+      endDate: maps.first['endDate'],
+    );
+    return map;
+  }
+
+  Future<void> updateChatRoomModel(ChatRoomModel chatRoom) async {
+    Database db = await database;
+
+    await db.update(
+      'chat_room', // 테이블 이름
+      chatRoom.toMap(), // 업데이트할 데이터를 Map 형태로 변환
+      where: 'id = ?', // 업데이트할 조건 설정
+      whereArgs: [chatRoom.id], // 조건 값 설정
+    );
+  }
+
+  Future<void> deleteChatRoomModel(int id) async {
+    Database db = await database;
+
+    await db.delete(
+      'chat_room', // 테이블 이름
+      where: 'id = ?', // 삭제할 조건 설정
+      whereArgs: [id], // 조건 값 설정
+    );
+  }
+
+  // topic
+  Future<int> insertTopicModel(TopicModel topic) async {
+    Database db = await database;
+
+    return await db.insert('topic', topic.toMap());
+  }
+
+  Future<List<TopicModel>> getTopic() async {
+    Database db = await database;
+
+    List<Map<String, dynamic>> maps = await db.query(
+      'topic',
+      orderBy: 'id desc',
+    );
+
+    return List.generate(maps.length, (index) {
+      return TopicModel(
+        id: maps[index]['id'],
+        name: maps[index]['name'],
+        startedAt: maps[index]['startedAt'],
+        endedAt: maps[index]['endedAt'],
+      );
+    });
+  }
+
+  Future<TopicModel> getTopicDetail({required int topicId}) async {
+    Database db = await database;
+
+    List<Map<String, dynamic>> maps = await db.query(
+      'chat_room',
+      where: 'id = ?',
+      whereArgs: [topicId],
+      limit: 1,
+    );
+
+    final map = TopicModel(
+      id: maps.first['id'],
+      name: maps.first['name'],
+    );
+    return map;
+  }
+
+  Future<String> getTopicDetailName({required int topicId}) async {
+    Database db = await database;
+
+    List<Map<String, dynamic>> maps = await db.query(
+      'topic',
+      where: 'id = ?',
+      whereArgs: [topicId],
+      limit: 1,
+    );
+
+    return maps.first['name'];
+  }
+
+  Future<void> updateTopicModel(TopicModel topic) async {
+    Database db = await database;
+
+    await db.update(
+      'topic', // 테이블 이름
+      topic.toMap(), // 업데이트할 데이터를 Map 형태로 변환
+      where: 'id = ?', // 업데이트할 조건 설정
+      whereArgs: [topic.id], // 조건 값 설정
+    );
+  }
+
+  Future<void> deleteTopicModel(TopicModel topic) async {
+    Database db = await database;
+
+    await db.delete(
+      'topic', // 테이블 이름
+      where: 'id = ?', // 삭제할 조건 설정
+      whereArgs: [topic.id], // 조건 값 설정
+    );
   }
 
   // 웹소켓 재연결

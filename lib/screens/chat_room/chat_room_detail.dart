@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:todomate/screens/chat_room/test_models.dart';
-import 'package:todomate/screens/chat_room/chat_room.dart';
+import 'package:todomate/models/chat_room_model.dart';
+import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/models/topic_model.dart';
+import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 
 class ChatRoomDetailScreen extends StatefulWidget {
   final ChatRoomModel chatRoomDetail;
@@ -28,6 +31,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   late Future<String> topicName;
   String topicNameString = '';
   final DatabaseHelper db = DatabaseHelper();
+  List<int> filterList = [];
 
   void _onClosePressed() {
     Navigator.of(context).pop();
@@ -71,8 +75,8 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
       });
     });
 
-    db.initDatabase();
-    chatRooms = db.getChatRoom();
+    // db.initDatabase();
+    chatRooms = db.getChatRoom(filterList);
     topics = db.getTopic();
   }
 
@@ -89,21 +93,22 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
       _name = _nameController.text;
     }
 
-    await db.updateChatRoomModel(ChatRoomModel(
+    final detail = ChatRoomModel(
       id: chatRoom.id,
       name: _name,
       topicId: topicId,
       userId: 1,
       startDate: '$_selectedDate $_selectedTime',
       endDate: '$_selectedDate ${_setEndTimeToString(_selectedTime)}',
-    ));
+    );
+
+    final chatRoomProvider =
+        Provider.of<ChatRoomProvider>(context, listen: false);
+
+    chatRoomProvider.updateChatRoomDetail(detail);
 
     if (mounted) {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => const ChatRoomScreen(),
-        ),
-      );
+      Navigator.of(context).pop(true);
     }
   }
 
@@ -119,8 +124,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   }
 
   void _onTopicSelectTap() {
-    Navigator.of(context).pop();
-    setState(() {});
+    Navigator.of(context).pop(true);
   }
 
   // 날짜 선택 함수
@@ -154,10 +158,15 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appbar의 높이 설정
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(0),
-        child: AppBar(),
+      // appbar
+      appBar: AppBar(
+        title: const Text('채팅방 수정'),
+        actions: [
+          IconButton(
+            onPressed: () => _updateChatRoom(widget.chatRoomDetail),
+            icon: const FaIcon(FontAwesomeIcons.check),
+          ),
+        ],
       ),
       // body
       body: Padding(
@@ -167,22 +176,6 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
         ),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // 뒤로가기 버튼
-                IconButton(
-                  onPressed: _onClosePressed,
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                ),
-                // 저장 버튼
-                IconButton(
-                  onPressed: () => _updateChatRoom(widget.chatRoomDetail),
-                  icon: const FaIcon(FontAwesomeIcons.check),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
             const Row(
               children: [
                 Text(
@@ -278,7 +271,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                                       return Text('Error: ${snapshot.error}');
                                     } else {
                                       List<TopicModel> topicList =
-                                      snapshot.data as List<TopicModel>;
+                                          snapshot.data as List<TopicModel>;
                                       return Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
@@ -293,7 +286,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                                                 border: Border.all(
                                                     color: Colors.black12),
                                                 borderRadius:
-                                                BorderRadius.circular(5),
+                                                    BorderRadius.circular(5),
                                               ),
                                               child: GestureDetector(
                                                 onTap: () => _onTopicDetailTap(
@@ -370,7 +363,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomAppBar(),
+      // bottomNavigationBar: const BottomAppBar(),
     );
   }
 }

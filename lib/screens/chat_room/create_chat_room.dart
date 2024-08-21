@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:todomate/screens/chat_room/test_models.dart';
-import 'package:todomate/screens/chat_room/chat_room.dart';
+import 'package:todomate/models/chat_room_model.dart';
+import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/models/topic_model.dart';
 
 class CreateChatRoomScreen extends StatefulWidget {
   const CreateChatRoomScreen({
@@ -20,6 +21,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
   late Future<List<TopicModel>> topics;
   late Future<String> topicName;
   int topicId = 0;
+  List<int> filterList = [];
 
   String _name = '';
   String topicNameString = '선택하기';
@@ -50,9 +52,9 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
     super.initState();
 
     // 채팅방 DB 초기화
-    db.initDatabase();
+    // db.initDatabase();
 
-    chatRooms = db.getChatRoom();
+    chatRooms = db.getChatRoom(filterList);
     topics = db.getTopic();
 
     _nameController.addListener(() {
@@ -75,18 +77,14 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
         topicId: topicId,
         userId: 1,
         startDate:
-        '${_setDateToString(_selectedDate)} ${_setStartTimeToString(_selectedTime)}',
+            '${_setDateToString(_selectedDate)} ${_setStartTimeToString(_selectedTime)}',
         endDate:
-        '${_setDateToString(_selectedDate)} ${_setEndTimeToString(_selectedTime)}',
+            '${_setDateToString(_selectedDate)} ${_setEndTimeToString(_selectedTime)}',
       ));
       _nameController.clear();
 
       if (mounted) {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => const ChatRoomScreen(),
-          ),
-        );
+        Navigator.of(context).pop(true);
       }
     }
   }
@@ -139,34 +137,24 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appbar의 높이 설정
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(0),
-        child: AppBar(),
+      // appbar
+      appBar: AppBar(
+        title: const Text('채팅방 등록'),
+        actions: [
+          IconButton(
+            onPressed: _addChatRoom,
+            icon: const FaIcon(FontAwesomeIcons.check),
+          ),
+        ],
       ),
       // body
       body: Padding(
         padding: const EdgeInsets.symmetric(
           horizontal: 30,
+          vertical: 10,
         ),
         child: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // 뒤로가기 버튼
-                IconButton(
-                  onPressed: _onClosePressed,
-                  icon: const FaIcon(FontAwesomeIcons.arrowLeft),
-                ),
-                // 저장 버튼
-                IconButton(
-                  onPressed: _addChatRoom,
-                  icon: const FaIcon(FontAwesomeIcons.check),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
             const Row(
               children: [
                 Text(
@@ -262,7 +250,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
                                       return Text('Error: ${snapshot.error}');
                                     } else {
                                       List<TopicModel> topicList =
-                                      snapshot.data as List<TopicModel>;
+                                          snapshot.data as List<TopicModel>;
                                       return Expanded(
                                         child: ListView.builder(
                                           scrollDirection: Axis.horizontal,
@@ -277,7 +265,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
                                                 border: Border.all(
                                                     color: Colors.black12),
                                                 borderRadius:
-                                                BorderRadius.circular(5),
+                                                    BorderRadius.circular(5),
                                               ),
                                               child: GestureDetector(
                                                 onTap: () => _onTopicDetailTap(
@@ -354,7 +342,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomAppBar(),
+      // bottomNavigationBar: const BottomAppBar(),
     );
   }
 }
