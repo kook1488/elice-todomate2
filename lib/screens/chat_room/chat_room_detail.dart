@@ -76,7 +76,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
     });
 
     // db.initDatabase();
-    chatRooms = db.getChatRoom();
+    chatRooms = db.getChatRoom(filterList);
     topics = db.getTopic();
   }
 

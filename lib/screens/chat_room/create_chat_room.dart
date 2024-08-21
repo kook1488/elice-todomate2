@@ -54,7 +54,7 @@ class _CreateChatRoomScreenState extends State<CreateChatRoomScreen> {
     // 채팅방 DB 초기화
     // db.initDatabase();
 
-    chatRooms = db.getChatRoom();
+    chatRooms = db.getChatRoom(filterList);
     topics = db.getTopic();
 
     _nameController.addListener(() {

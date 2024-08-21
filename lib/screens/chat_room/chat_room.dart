@@ -6,7 +6,6 @@ import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/models/topic_model.dart';
 import 'package:todomate/screens/chat/chat.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
-
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/chat_room/create_chat_room.dart';
 

@@ -11,7 +11,7 @@ class ChatRoomProvider with ChangeNotifier {
   List<ChatRoomModel> get chatRooms => _chatRooms;
 
   Future<void> getChatRoomList(var filterList) async {
-    _chatRooms = await _db.getChatRoom();
+    _chatRooms = await _db.getChatRoom(filterList);
     notifyListeners();
   }
 

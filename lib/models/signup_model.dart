@@ -605,16 +605,24 @@ class DatabaseHelper {
     return await db.insert('chat_room', chatRoom.toMap());
   }
 
-  Future<List<ChatRoomModel>> getChatRoom() async {
+  Future<List<ChatRoomModel>> getChatRoom(List<int> filterList) async {
     Database db = await database;
+    String topicListFilter =
+        'select * from chat_room where topicId in (${filterList.join(',')});';
+
+    if (filterList.isEmpty) {
+      topicListFilter = 'select * from chat_room;';
+    }
+    print(filterList);
 
     // 테이블에서 모든 행을 쿼리합니다.
-    List<Map<String, dynamic>> maps = await db.query(
-      'chat_room',
-      // where: 'topicId = ?',
-      // whereArgs: [1],
-      orderBy: 'id desc',
-    );
+    List<Map<String, dynamic>> maps = await db.rawQuery(topicListFilter);
+    // List<Map<String, dynamic>> maps = await db.query(
+    //   'chat_room',
+    //   where: 'topicId in ?',
+    //   whereArgs: [(1)],
+    //   orderBy: 'id desc',
+    // );
 
     // 쿼리 결과에서 객체의 목록을 생성합니다.
     return List.generate(maps.length, (index) {
