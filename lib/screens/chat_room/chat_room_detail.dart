@@ -123,7 +123,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
     return topicNameString.toString();
   }
 
-  void _onTopicSelectTap() {
+  void _onTopicSelectSaveTap() {
     Navigator.of(context).pop(true);
   }
 
@@ -232,7 +232,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
-                        onPressed: _onTopicSelectTap,
+                        onPressed: _onTopicSelectSaveTap,
                         child: const Text('저장'),
                       ),
                     ],

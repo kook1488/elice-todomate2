@@ -77,11 +77,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   // 채팅방 참여
-  void _onParticipateChatTap() {
+  void _onParticipateChatTap(int id) {
     Navigator.of(context)
         .push(
       MaterialPageRoute(
-        builder: (context) => const ChatScreen(),
+        builder: (context) => ChatScreen(topicId: id),
       ),
     )
         .then((onValue) {
@@ -101,7 +101,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     } else {
       filterList.remove(topicId);
     }
-    print(filterList);
+    print('주제 필터 목록 : $filterList');
+  }
+
+  void _onTopicSelectSaveTap() {
+    Navigator.of(context).pop(true);
   }
 
   Future<String> _topicName(int id) async {
@@ -128,7 +132,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       builder: (context) {
         return Dialog(
           child: SizedBox(
-            height: 170,
+            height: 230,
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: StatefulBuilder(
@@ -199,6 +203,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                           ),
                         );
                       }),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _onTopicSelectSaveTap,
+                        child: const Text('저장'),
+                      ),
                     ],
                   );
                 },
@@ -439,7 +448,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: isParticipateDisable
-                                                ? _onParticipateChatTap
+                                                ? () => _onParticipateChatTap(
+                                                    chatRoomList[index].topicId)
                                                 : null,
                                             child:
                                                 const Center(child: Text('참여')),
