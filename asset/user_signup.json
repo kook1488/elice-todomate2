@@ -1,9 +1,0 @@
-{
-  "success": true,
-  "user": {
-    "id": 1,
-    "nickname": "John Doe",
-    "avatar_path": "path_to_avatar_image"
-  },
-  "message": "회원가입이 성공적으로 완료되었습니다."
-}
