@@ -20,7 +20,7 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscureText = true;
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _loginIdController = TextEditingController();
-  bool _isChecked = false;
+  bool _autoLoginChecked = false;
   String? _errorMessage;
   UserInfo? _userInfo;
   final DatabaseHelper _databaseHelper = DatabaseHelper();
@@ -57,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
         TodoSharedPreference().setPreferenceWithKey('userNickName', _userInfo!.nickName);
         TodoSharedPreference().setPreferenceWithKey('userAvatarPath', _userInfo!.avatarPath);
         TodoSharedPreference().setPreferenceWithKey('userId', _userInfo!.loginId);
+        TodoSharedPreference().setPreferenceWithKey('isAutoLogin', _autoLoginChecked.toString());
 
         Navigator.pushReplacement(
           context,
@@ -185,10 +186,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Checkbox(
-                      value: _isChecked,
+                      value: _autoLoginChecked,
                       onChanged: (value) {
                         setState(() {
-                          _isChecked = value ?? false;
+                          _autoLoginChecked = value ?? false;
                         });
                       },
                     ),
