@@ -82,7 +82,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     Navigator.of(context)
         .push(
       MaterialPageRoute(
-        builder: (context) => const ChattingRoomScreen(roomId: '',),
+        builder: (context) => const ChattingRoomScreen(roomId: 'diary',),
       ),
     )
         .then((onValue) {

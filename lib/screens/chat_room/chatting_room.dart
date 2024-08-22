@@ -28,7 +28,7 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
 
   void _connectSocket() {
     //IP등록
-    socket = io('https://be35-59-6-82-123.ngrok-free.app', <String, dynamic>{
+    socket = io('https://f3ca-58-142-95-194.ngrok-free.app', <String, dynamic>{
       'transports': ['websocket'],
     });
 
