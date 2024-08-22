@@ -10,6 +10,9 @@ class ChatRoomProvider with ChangeNotifier {
 
   List<ChatRoomModel> get chatRooms => _chatRooms;
 
+  //& 생성된 채팅방 개수를 반환하는 getter 추가
+  int get activeChatCount => _chatRooms.length;
+
   Future<void> getChatRoomList(var filterList) async {
     _chatRooms = await _db.getChatRoom(filterList);
     notifyListeners();

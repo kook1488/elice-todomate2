@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
@@ -13,7 +14,13 @@ class ProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //워치에서 프로바이더를 가져옴
+    // ProfileProvider의 activeChatCount 업데이트
+    context
+        .read<ProfileProvider>()
+        .updateActiveChatCount(context.read<ChatRoomProvider>());
+    //& activeChatCount를 ChatRoomProvider와 연동하여 업데이트
+//.
+    //지금은 watch에서 프로바이더를 가져옴
     // ProfileProvider의 상태를 가져옴
     //디비로 초기값을 가져오는게 좋을 듯.. //watch가 디비를 관찰하는거 아닐까?
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
@@ -27,10 +34,10 @@ class ProfileWidget extends StatelessWidget {
         .completedTodoCount; // TodoProvider에서 완료된 할 일 개수 가져옴
     final int diaryCount = context
         .watch<DiaryProvider>()
-        .getDiaryCount(); //& DiaryProvider에서 일기 개수를 가져옴
+        .getDiaryCount(); // DiaryProvider에서 일기 개수를 가져옴
     final int friendCount = context.watch<ProfileProvider>().friendCount;
     final int activeChatCount =
-        context.watch<ProfileProvider>().activeChatCount;
+        context.watch<ProfileProvider>().activeChatCount; //activeChatCount를 사용
     final int reservedChatCount =
         context.watch<ProfileProvider>().reservedChatCount;
 

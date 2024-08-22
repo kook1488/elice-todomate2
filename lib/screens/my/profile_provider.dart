@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
+import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 
 class ProfileProvider with ChangeNotifier {
   final DatabaseHelper _dbHelper = DatabaseHelper(); // DB 불러옴
@@ -15,7 +16,7 @@ class ProfileProvider with ChangeNotifier {
   int _completedTodoCount = 5;
   int _diaryCount = 0;
   int _friendCount = 0;
-  int _activeChatCount = 5;
+  int _activeChatCount = 0;
   int _reservedChatCount = 2;
 
   // Getter 메서드
@@ -39,13 +40,13 @@ class ProfileProvider with ChangeNotifier {
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
-    if (_isNicknameLoaded) return; // 이미 로드된 경우 중복 로드 방지 //$
+    if (_isNicknameLoaded) return; // 이미 로드된 경우 중복 로드 방지
     _nickname = await _dbHelper.getNickname(loginId);
     if (_nickname == null || _nickname!.isEmpty) {
       _nickname = loginId; // 기본 닉네임을 로그인 아이디로 설정
       await _dbHelper.updateNickname(loginId, _nickname!); // 기본 닉네임 저장
     }
-    _isNicknameLoaded = true; // 로딩 완료 상태로 설정 //$
+    _isNicknameLoaded = true; // 로딩 완료 상태로 설정
     notifyListeners();
   }
 
@@ -79,8 +80,13 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void updateActiveChatCount(int count) {
-    _activeChatCount = count;
+  // 채팅방 개수 업데이트 (ChatRoomProvider와 연동)
+  Future<void> updateActiveChatCount(ChatRoomProvider chatRoomProvider) async {
+    //& ChatRoomProvider와 연동하여 채팅방 개수 업데이트
+    await chatRoomProvider
+        .getChatRoomList([]); // ChatRoomProvider에서 최신 채팅방 목록을 가져옴
+    _activeChatCount = chatRoomProvider
+        .activeChatCount; // ChatRoomProvider의 activeChatCount를 사용
     notifyListeners();
   }
 
