@@ -77,142 +77,145 @@ class _SignupScreenState extends State<SignupScreen> {
       appBar: AppBar(
         title: Text("회원 가입을 해볼까요?"),
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 100),
-          Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Text(
-              "회원가입",
-              style: TextStyle(fontSize: 40),
-            ),
-          ),
-          Form(
-            key: formKey,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-                          child: TextField(
-                            controller: _loginIdController,
-                            decoration: InputDecoration(
-                              labelText: "ID         email 형식으로 작성해주세요.",
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(20)),
-                                borderSide:
-                                BorderSide(color: Color(0XFFDBDAE3)),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          child: TextField(
-                            controller: _nicknameController,
-                            decoration: InputDecoration(
-                              labelText: "닉네임",
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(20)),
-                                borderSide:
-                                BorderSide(color: Color(0XFFDBDAE3)),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                          child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: _obscureText,
-                            decoration: InputDecoration(
-                              labelText: "비밀번호",
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(20)),
-                                borderSide:
-                                BorderSide(color: Color(0XFFDBDAE3)),
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureText
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: _toggleVisibility,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
-                          child: TextFormField(
-                            controller: _passwordController2,
-                            obscureText: _obscureText2,
-                            decoration: InputDecoration(
-                              labelText: "비밀번호 확인",
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius:
-                                BorderRadius.all(Radius.circular(20)),
-                                borderSide:
-                                BorderSide(color: Color(0XFFDBDAE3)),
-                              ),
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureText2
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onPressed: _toggleVisibility2,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              _checkPasswords();
-                            },
-                          ),
-                        ),
-                        if (_errorMessage != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 10),
-                            child: Text(
-                              _errorMessage!,
-                              style: TextStyle(color: Colors.red),
-                            ),
-                          ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: Size(370, 50),
-                            backgroundColor: Color(0XFFFF672D),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                          onPressed: () {
-                            _signup(); // 회원가입 요청
-                          },
-                          child: Text(
-                            "가입하기",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+      body: SingleChildScrollView(
+        //& 화면을 스크롤할 수 있도록 변경
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 100),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(
+                "회원가입",
+                style: TextStyle(fontSize: 40),
               ),
             ),
-          ),
-        ],
+            Form(
+              key: formKey,
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
+                            child: TextField(
+                              controller: _loginIdController,
+                              decoration: InputDecoration(
+                                labelText: "ID         email 형식으로 작성해주세요.",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0XFFDBDAE3)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            child: TextField(
+                              controller: _nicknameController,
+                              decoration: InputDecoration(
+                                labelText: "닉네임",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0XFFDBDAE3)),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
+                            child: TextFormField(
+                              controller: _passwordController,
+                              obscureText: _obscureText,
+                              decoration: InputDecoration(
+                                labelText: "비밀번호",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0XFFDBDAE3)),
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureText
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: _toggleVisibility,
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 30),
+                            child: TextFormField(
+                              controller: _passwordController2,
+                              obscureText: _obscureText2,
+                              decoration: InputDecoration(
+                                labelText: "비밀번호 확인",
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20)),
+                                  borderSide:
+                                      BorderSide(color: Color(0XFFDBDAE3)),
+                                ),
+                                suffixIcon: IconButton(
+                                  icon: Icon(
+                                    _obscureText2
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                  ),
+                                  onPressed: _toggleVisibility2,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                _checkPasswords();
+                              },
+                            ),
+                          ),
+                          if (_errorMessage != null)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 10),
+                              child: Text(
+                                _errorMessage!,
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: Size(370, 50),
+                              backgroundColor: Color(0XFFFF672D),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            onPressed: () {
+                              _signup(); // 회원가입 요청
+                            },
+                            child: Text(
+                              "가입하기",
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
