@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
 
@@ -24,7 +25,9 @@ class ProfileWidget extends StatelessWidget {
     final int completedTodoCount = context
         .watch<TodoProvider>()
         .completedTodoCount; // TodoProvider에서 완료된 할 일 개수 가져옴
-    final int diaryCount = context.watch<ProfileProvider>().diaryCount;
+    final int diaryCount = context
+        .watch<DiaryProvider>()
+        .getDiaryCount(); //& DiaryProvider에서 일기 개수를 가져옴
     final int friendCount = context.watch<ProfileProvider>().friendCount;
     final int activeChatCount =
         context.watch<ProfileProvider>().activeChatCount;
