@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:todomate/screens/diary/diary_add_screen.dart';
+import 'package:todomate/util/sharedpreference.dart';
 
 import 'package:todomate/util/string_utils.dart';
 
@@ -17,12 +18,12 @@ class DiaryCalendarScreen extends StatefulWidget {
 }
 
 class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
+  String _userId = '';
+
   @override
   void initState() {
     super.initState();
-    // 화면이 처음 로드될 때 일기 목록을 가져옵니다.
-    Future.microtask(() =>
-        Provider.of<DiaryProvider>(context, listen: false).loadDiaryDateList());
+    initProvider();
   }
 
   @override
@@ -60,7 +61,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                                     date: diaryProvider.selectedDay)),
                           ).then((result) {
                             if (result != null) {
-                              diaryProvider.loadDiaryDateList();
+                              diaryProvider.loadDiaryDateList(_userId);
                             }
                           });
                         },
@@ -222,7 +223,7 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
                         DiaryAddScreen(date: diaryProvider.selectedDay)),
               ).then((result) {
                 if (result != null) {
-                  diaryProvider.loadDiaryDateList();
+                  diaryProvider.loadDiaryDateList(_userId);
                 }
               });
             },
@@ -233,5 +234,14 @@ class _DiaryCalendarScreenState extends State<DiaryCalendarScreen> {
         );
       },
     );
+  }
+
+  Future<void> initProvider() async {
+    String userId = await TodoSharedPreference().getPreferenceWithKey("userId");
+    setState(() {
+      _userId = userId;
+    });
+    Future.microtask(() =>
+        Provider.of<DiaryProvider>(context, listen: false).loadDiaryDateList(_userId));
   }
 }

@@ -7,6 +7,7 @@ import 'package:todomate/models/diary_model.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/util/alert_dialog.dart';
+import 'package:todomate/util/sharedpreference.dart';
 import 'package:todomate/util/string_utils.dart'; // 수정된 경로
 
 class DiaryAddScreen extends StatefulWidget {
@@ -26,11 +27,12 @@ class _DiaryAddScreenState extends State<DiaryAddScreen> {
   File? _selectedImage;
 
   late ImagePicker _picker;
+  String _userId = '';
 
   @override
   void initState() {
     super.initState();
-
+    setUserId();
     _titleController = TextEditingController();
     _contentController = TextEditingController();
     _selectedDate = widget.date;
@@ -228,7 +230,7 @@ class _DiaryAddScreenState extends State<DiaryAddScreen> {
     try {
       if (checkInsert()) {
         DiaryDTO diary = DiaryDTO(
-          userId: '1',
+          userId: _userId,
           title: _titleController.text,
           description: _contentController.text,
           imageUrl: imageFilePath,
@@ -254,5 +256,13 @@ class _DiaryAddScreenState extends State<DiaryAddScreen> {
     } catch (e) {
       showAlertDialog(context, '오류', '등록 중 오류가 발생했습니다.');
     }
+  }
+
+  Future<void> setUserId() async {
+    final userId = await TodoSharedPreference().getPreferenceWithKey('userId');
+
+    setState(() {
+      _userId = userId;
+    });
   }
 }
