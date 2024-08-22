@@ -53,5 +53,8 @@ flutter clean
 flutter pub get 
 명령을 실행시켜 관련 패키지들을 다시 받아와야 할수 있다.
 
+# Socket.io
+socket 폴더에 연동 방법 이미지로 업로드 했습니다.
+flutter 연동화면은 diary_chat.dart 파일입니다.
 
 
