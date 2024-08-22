@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  const ChatScreen({super.key});
+  final int topicId;
+
+  const ChatScreen({
+    super.key,
+    required this.topicId,
+  });
 
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  int topicId = 0;
   List<String> chats = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    topicId = widget.topicId;
+    print('목록에서 받아온 주제 id : $topicId');
+  }
 
   void _addChat(String chat) {
     chats.add(chat);
