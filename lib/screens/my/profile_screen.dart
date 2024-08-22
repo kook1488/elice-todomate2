@@ -4,6 +4,7 @@ import 'package:todomate/screens/my/nickname_change.dart';
 import 'package:todomate/screens/my/password_change.dart';
 import 'package:todomate/screens/my/profile_change.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
+import 'package:todomate/util/notification_service.dart';
 
 import 'delete_account.dart';
 
@@ -20,8 +21,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String? _nickname; //* 닉네임을 저장할 변수 추가
-  final DatabaseHelper _dbHelper = DatabaseHelper(); //* DatabaseHelper 인스턴스 추가
+  String? _nickname; // 닉네임을 저장할 변수 추가
+  final DatabaseHelper _dbHelper = DatabaseHelper(); // DatabaseHelper 인스턴스 추가
 //클래스가 다를때는 위젯으로 가져온다//스테이트 풀위젯일때
   //왜 위젯.login 으로 가져왔는지.,.
 
@@ -44,6 +45,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _nickname = nickname ?? 'Unknown User'; // 닉네임을 초기화
     });
+  }
+
+  Future<void> _checkAndDisplayNotifications() async {
+    //%% 저장된 알림 메시지를 불러오기
+    List<String> notifications =
+        await NotificationService.getStoredNotifications();
+    if (notifications.isNotEmpty) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text('알림 메시지'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: notifications.map((message) => Text(message)).toList(),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                NotificationService.clearNotifications(); //%% 메시지 확인 후 삭제 (옵션)
+                Navigator.of(context).pop();
+              },
+              child: Text('확인'),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
