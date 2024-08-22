@@ -31,7 +31,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   late Future<String> topicName;
   String topicNameString = '';
   final DatabaseHelper db = DatabaseHelper();
-  List<int> filterList = [];
+  bool isSelected = false;
 
   void _onClosePressed() {
     Navigator.of(context).pop();
@@ -48,13 +48,14 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   }
 
   String _setStartTimeToString(TimeOfDay time) {
-    final stringTime = '${time.hour}:${time.minute}';
+    final stringTime = '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
     return stringTime;
   }
 
   String _setEndTimeToString(String time) {
     DateTime endTime = DateFormat("HH:mm").parse(time);
-    final stringTime = '${endTime.hour + 1}:${endTime.minute}';
+    final stringTime =
+        '${endTime.hour + 1}:${endTime.minute.toString().padLeft(2, '0')}';
     return stringTime;
   }
 
@@ -76,7 +77,6 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
     });
 
     // db.initDatabase();
-    chatRooms = db.getChatRoom(filterList);
     topics = db.getTopic();
   }
 
@@ -155,6 +155,99 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
     }
   }
 
+  void _onTopicDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: SizedBox(
+            height: 230,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Text(
+                            '주제를 선택하세요.',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      FutureBuilder(
+                        future: topics,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const CircularProgressIndicator();
+                          } else if (snapshot.hasError) {
+                            return Text('Error: ${snapshot.error}');
+                          } else {
+                            List<TopicModel> topicList =
+                                snapshot.data as List<TopicModel>;
+                            return Expanded(
+                              child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: topicList.length,
+                                itemBuilder: (context, index) {
+                                  isSelected = topicId == topicList[index].id;
+                                  return GestureDetector(
+                                    onTap: () {
+                                      setState(() {
+                                        _onTopicDetailTap(topicList[index]);
+                                      });
+                                    },
+                                    child: Container(
+                                      width: 70,
+                                      height: 70,
+                                      margin: const EdgeInsets.only(right: 10),
+                                      decoration: BoxDecoration(
+                                        color: isSelected
+                                            ? Colors.amber
+                                            : Colors.white,
+                                        border:
+                                            Border.all(color: Colors.black12),
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          topicList[index].name,
+                                          style: const TextStyle(
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                            );
+                          }
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _onTopicSelectTap,
+                        child: const Text('저장'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((onValue) {
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -224,6 +317,7 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
             SizedBox(
               width: 400,
               child: ElevatedButton(
+                onPressed: _onTopicDialog,
                 child: FutureBuilder<String>(
                   future: _topicName(topicId),
                   builder: (context, topicSnapshot) {
@@ -239,87 +333,6 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
                     }
                   },
                 ),
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) {
-                      return Dialog(
-                        child: SizedBox(
-                          height: 230,
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              children: [
-                                const Row(
-                                  children: [
-                                    Text(
-                                      '주제를 선택하세요.',
-                                      style: TextStyle(
-                                        fontSize: 25,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: 15),
-                                FutureBuilder(
-                                  future: topics,
-                                  builder: (context, snapshot) {
-                                    if (snapshot.connectionState ==
-                                        ConnectionState.waiting) {
-                                      return const CircularProgressIndicator();
-                                    } else if (snapshot.hasError) {
-                                      return Text('Error: ${snapshot.error}');
-                                    } else {
-                                      List<TopicModel> topicList =
-                                          snapshot.data as List<TopicModel>;
-                                      return Expanded(
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: topicList.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              width: 70,
-                                              height: 70,
-                                              margin: const EdgeInsets.only(
-                                                  right: 10),
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.black12),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                              child: GestureDetector(
-                                                onTap: () => _onTopicDetailTap(
-                                                    topicList[index]),
-                                                child: Center(
-                                                  child: Text(
-                                                    topicList[index].name,
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                    }
-                                  },
-                                ),
-                                const SizedBox(height: 20),
-                                ElevatedButton(
-                                  onPressed: _onTopicSelectTap,
-                                  child: const Text('저장'),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                },
               ),
             ),
             const SizedBox(height: 40),
