@@ -217,7 +217,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     return const Center(child: Text('마이페이지'));
   }
 
-  //dodo sharedpreference에서 가져오기
+  //sharedpreference에서 가져오기
   Future<void> getUserInfo() async {
     final userId = await TodoSharedPreference().getPreferenceWithKey('userId');
     final id = await TodoSharedPreference().getPreferenceWithKey('id');

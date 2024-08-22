@@ -1,7 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:todomate/chat/view/chats_screen.dart';
 import 'package:todomate/screens/account/loginscreen.dart';
+import 'package:todomate/util/sharedpreference.dart';
+
+import '../../chat/models/user_info.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -14,10 +18,13 @@ class _IntroScreenState extends State<IntroScreen> {
   double _fillRatio = 0.0;
   bool _isCompleted = false;
   Timer? _timer;
+  bool _isAutoLogin = false;
+  late UserInfo? _userInfo;
 
   @override
   void initState() {
     super.initState();
+    getIsAutoLogin();
     _startAnimation();
   }
 
@@ -41,7 +48,9 @@ class _IntroScreenState extends State<IntroScreen> {
     Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
+        _isAutoLogin ?
+          MaterialPageRoute(builder: (context) => ChatsScreen(userInfo: _userInfo!))
+            : MaterialPageRoute(builder: (context) => LoginScreen())
       );
     });
   }
@@ -107,5 +116,25 @@ class _IntroScreenState extends State<IntroScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> getIsAutoLogin() async {
+    //todo boolean값 넣을수 있게
+    String isAutoLogin = await TodoSharedPreference().getPreferenceWithKey("isAutoLogin");
+    if(isAutoLogin.isEmpty){
+      _isAutoLogin = false;
+    }else{
+      _isAutoLogin = bool.parse(isAutoLogin);
+    }
+
+    if(_isAutoLogin){//자동로그인이라면
+      String id = await TodoSharedPreference().getPreferenceWithKey("id");
+      String nickName = await TodoSharedPreference().getPreferenceWithKey("nickName");
+      String avatarPath = await TodoSharedPreference().getPreferenceWithKey("avatarPath");
+      String loginId = await TodoSharedPreference().getPreferenceWithKey("userId");
+      _userInfo = UserInfo(id: int.parse(id), nickName: nickName, avatarPath: avatarPath, loginId: loginId);
+    }else{
+      _userInfo = null;
+    }
   }
 }
