@@ -5,7 +5,6 @@ import 'package:todomate/screens/my/profile_provider.dart';
 
 class FriendSearchScreen extends StatefulWidget {
   final String userId;
-
   const FriendSearchScreen({Key? key, required this.userId}) : super(key: key);
 
   @override

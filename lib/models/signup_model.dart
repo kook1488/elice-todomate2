@@ -1,11 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:crypto/crypto.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:todomate/models/chat_room_model.dart';
-import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/diary_model.dart';
+import 'package:todomate/models/todo_model.dart';
 import 'package:todomate/models/topic_model.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
@@ -81,6 +82,7 @@ class DatabaseHelper {
     }
   }
 
+//on creat 다시 부르는 문제.
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'user_database.db');
 
@@ -776,5 +778,27 @@ class DatabaseHelper {
   void dispose() {
     disconnectWebSocket();
     _todoUpdateController.close();
+  }
+
+  Future<List<String>> getFriendIds(String loginId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'friend_requests',
+      columns: ['sender_id', 'receiver_id'],
+      where: '(sender_id = ? OR receiver_id = ?) AND status = ?',
+      whereArgs: [loginId, loginId, 'accepted'],
+    );
+
+    List<String> friendIds = [];
+
+    for (var map in maps) {
+      if (map['sender_id'] != loginId) {
+        friendIds.add(map['sender_id'] as String);
+      } else if (map['receiver_id'] != loginId) {
+        friendIds.add(map['receiver_id'] as String);
+      }
+    }
+
+    return friendIds;
   }
 }
