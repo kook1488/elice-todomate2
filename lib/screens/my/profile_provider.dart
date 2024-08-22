@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
+import 'package:todomate/util/notification_service.dart';
 
 class ProfileProvider with ChangeNotifier {
   final DatabaseHelper _dbHelper = DatabaseHelper(); // DB 불러옴
@@ -40,21 +41,28 @@ class ProfileProvider with ChangeNotifier {
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
-    if (_isNicknameLoaded) return; // 이미 로드된 경우 중복 로드 방지
     _nickname = await _dbHelper.getNickname(loginId);
-    if (_nickname == null || _nickname!.isEmpty) {
-      _nickname = loginId; // 기본 닉네임을 로그인 아이디로 설정
-      await _dbHelper.updateNickname(loginId, _nickname!); // 기본 닉네임 저장
-    }
-    _isNicknameLoaded = true; // 로딩 완료 상태로 설정
     notifyListeners();
   }
 
   // 닉네임 상태 변경
   Future<void> updateNickname(String loginId, String newNickname) async {
-    await _dbHelper.updateNickname(loginId, newNickname); // 데이터베이스에 닉네임 업데이트
+    if (_nickname == null) return;
+
+    String oldNickname = _nickname!; //%% 기존 닉네임 저장
+
+    await _dbHelper.updateNickname(loginId, newNickname);
     _nickname = newNickname;
     notifyListeners();
+
+    List<String> friendIds =
+        await _dbHelper.getFriendIds(loginId); //%% 친구 목록 가져오기
+
+    for (String friendId in friendIds) {
+      //%% 친구들에게 알림 보내기
+      await NotificationService.sendNicknameChangeNotification(
+          oldNickname: oldNickname, newNickname: newNickname);
+    }
   }
 
   // 아바타 이미지 변경

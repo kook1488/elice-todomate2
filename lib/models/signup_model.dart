@@ -777,4 +777,26 @@ class DatabaseHelper {
     disconnectWebSocket();
     _todoUpdateController.close();
   }
+
+  Future<List<String>> getFriendIds(String loginId) async {
+    final db = await database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'friend_requests',
+      columns: ['sender_id', 'receiver_id'],
+      where: '(sender_id = ? OR receiver_id = ?) AND status = ?',
+      whereArgs: [loginId, loginId, 'accepted'],
+    );
+
+    List<String> friendIds = [];
+
+    for (var map in maps) {
+      if (map['sender_id'] != loginId) {
+        friendIds.add(map['sender_id'] as String);
+      } else if (map['receiver_id'] != loginId) {
+        friendIds.add(map['receiver_id'] as String);
+      }
+    }
+
+    return friendIds;
+  }
 }
