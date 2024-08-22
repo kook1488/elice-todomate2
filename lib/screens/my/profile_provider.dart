@@ -95,8 +95,8 @@ class ProfileProvider with ChangeNotifier {
         .getChatRoomList([]); // ChatRoomProvider에서 최신 채팅방 목록을 가져옴
     _activeChatCount = chatRoomProvider
         .activeChatCount; // ChatRoomProvider의 activeChatCount를 사용
-    notifyListeners();
-  }
+    // notifyListeners();
+  } //받고... 왜 해결 됬을까?
 
   void updateReservedChatCount(int count) {
     _reservedChatCount = count;
