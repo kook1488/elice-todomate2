@@ -619,10 +619,10 @@ class DatabaseHelper {
   Future<List<ChatRoomModel>> getChatRoom(List<int> filterList) async {
     Database db = await database;
     String topicListFilter =
-        'select * from chat_room where topicId in (${filterList.join(',')});';
+        'select * from chat_room where topicId in (${filterList.join(',')}) order by id desc;';
 
     if (filterList.isEmpty) {
-      topicListFilter = 'select * from chat_room;';
+      topicListFilter = 'select * from chat_room order by id desc;';
     }
     print(filterList);
 

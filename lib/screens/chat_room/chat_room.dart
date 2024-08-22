@@ -28,6 +28,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   bool isReserveDisable = false;
   bool isParticipateDisable = false;
   List<int> filterList = [];
+  Color selectedColor = Colors.white;
 
   @override
   void initState() {
@@ -77,11 +78,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
   }
 
   // 채팅방 참여
-  void _onParticipateChatTap() {
+  void _onParticipateChatTap(int id) {
     Navigator.of(context)
         .push(
       MaterialPageRoute(
-        builder: (context) => const ChattingRoomScreen(roomId: 'diary'),
+        builder: (context) => const ChattingRoomScreen(roomId: id),
       ),
     )
         .then((onValue) {
@@ -101,8 +102,11 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     } else {
       filterList.remove(topicId);
     }
-    setState(() {});
-    print(filterList);
+    print('주제 필터 목록 : $filterList');
+  }
+
+  void _onTopicSelectSaveTap() {
+    Navigator.of(context).pop(true);
   }
 
   Future<String> _topicName(int id) async {
@@ -123,6 +127,103 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return isParticipateDisable;
   }
 
+  void _onFilterDialog() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          child: SizedBox(
+            height: 230,
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: StatefulBuilder(
+                builder: (BuildContext context, StateSetter setState) {
+                  return Column(
+                    children: [
+                      const Row(
+                        children: [
+                          Text(
+                            '주제를 선택하세요.',
+                            style: TextStyle(
+                              fontSize: 25,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      Consumer<ChatRoomProvider>(
+                          builder: (context, topicProvider, child) {
+                        final topicList = topicProvider.topics;
+                        return SizedBox(
+                          height: 70,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: topicList.length,
+                                  itemBuilder: (context, index) {
+                                    bool isSelected = filterList
+                                        .where((item) =>
+                                            item == topicList[index].id)
+                                        .isNotEmpty;
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          _onTopicDetailTap(topicList[index]);
+                                        });
+                                      },
+                                      child: Container(
+                                        width: 70,
+                                        // height: 70,
+                                        margin:
+                                            const EdgeInsets.only(right: 10),
+                                        decoration: BoxDecoration(
+                                          color: isSelected
+                                              ? Colors.amber
+                                              : Colors.white,
+                                          border:
+                                              Border.all(color: Colors.black12),
+                                          borderRadius:
+                                              BorderRadius.circular(5),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            topicList[index].name,
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: _onTopicSelectSaveTap,
+                        child: const Text('저장'),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+        );
+      },
+    ).then((onValue) {
+      Provider.of<ChatRoomProvider>(context, listen: false)
+          .getChatRoomList(filterList);
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -133,84 +234,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
               icon: const FaIcon(
                 FontAwesomeIcons.filter,
               ),
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) {
-                    return Dialog(
-                      child: SizedBox(
-                        height: 170,
-                        child: Padding(
-                          padding: const EdgeInsets.all(20),
-                          child: Column(
-                            children: [
-                              const Row(
-                                children: [
-                                  Text(
-                                    '주제를 선택하세요.',
-                                    style: TextStyle(
-                                      fontSize: 25,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: 15),
-                              Consumer<ChatRoomProvider>(
-                                  builder: (context, topicProvider, child) {
-                                final topicList = topicProvider.topics;
-                                return SizedBox(
-                                  height: 70,
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: ListView.builder(
-                                          scrollDirection: Axis.horizontal,
-                                          itemCount: topicList.length,
-                                          itemBuilder: (context, index) {
-                                            return Container(
-                                              width: 70,
-                                              // height: 70,
-                                              margin: const EdgeInsets.only(
-                                                  right: 10),
-                                              decoration: BoxDecoration(
-                                                color: Colors.white,
-                                                border: Border.all(
-                                                    color: Colors.black12),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                              child: GestureDetector(
-                                                onTap: () => _onTopicDetailTap(
-                                                    topicList[index]),
-                                                child: Center(
-                                                  child: Text(
-                                                    topicList[index].name,
-                                                    style: const TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ).then((onValue) {
-                  Provider.of<ChatRoomProvider>(context, listen: false)
-                      .getChatRoomList(filterList);
-                  setState(() {});
-                });
-              },
+              onPressed: _onFilterDialog,
             ),
           ],
         ),
@@ -425,7 +449,8 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                         children: [
                                           ElevatedButton(
                                             onPressed: isParticipateDisable
-                                                ? _onParticipateChatTap
+                                                ? () => _onParticipateChatTap(
+                                                    chatRoomList[index].topicId)
                                                 : null,
                                             child:
                                                 const Center(child: Text('참여')),
