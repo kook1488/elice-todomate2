@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
+import 'package:todomate/screens/diary/diary.dart';
 import 'package:todomate/screens/diary/diary_chat.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/todo/todo_list_screen.dart';
@@ -81,7 +82,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
       // _buildChatList(),
       const ChatRoomScreen(),
       TodoListScreen(userId: widget.userInfo.id.toString()),
-      const DiaryChatScreen(roomId: "diary"),
+      const DiaryCalendarScreen(),
       ProfileScreen(loginId: _userId) //required로 필수로 지정하다보니
     ];
     //프로필 스크린으로 가는 와중에 위젯문제로 에러가 난다
