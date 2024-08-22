@@ -51,8 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
           avatarPath: user['avatar_path'],
           loginId: _loginIdController.text, // loginId를 추가합니다.
         );
-
-        //저장 wowo
+        
         TodoSharedPreference().setPreferenceWithKey('id', _userInfo!.id.toString());
         TodoSharedPreference().setPreferenceWithKey('userNickName', _userInfo!.nickName);
         TodoSharedPreference().setPreferenceWithKey('userAvatarPath', _userInfo!.avatarPath);

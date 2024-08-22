@@ -119,8 +119,13 @@ class _IntroScreenState extends State<IntroScreen> {
   }
 
   Future<void> getIsAutoLogin() async {
+    //todo boolean값 넣을수 있게
     String isAutoLogin = await TodoSharedPreference().getPreferenceWithKey("isAutoLogin");
-    _isAutoLogin = bool.parse(isAutoLogin);
+    if(isAutoLogin.isEmpty){
+      _isAutoLogin = false;
+    }else{
+      _isAutoLogin = bool.parse(isAutoLogin);
+    }
 
     if(_isAutoLogin){//자동로그인이라면
       String id = await TodoSharedPreference().getPreferenceWithKey("id");

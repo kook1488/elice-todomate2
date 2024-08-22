@@ -7,6 +7,7 @@ import 'package:todomate/models/topic_model.dart';
 import 'package:todomate/screens/chat/chat.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
+import 'package:todomate/screens/chat_room/chatting_room.dart';
 import 'package:todomate/screens/chat_room/create_chat_room.dart';
 
 class ChatRoomScreen extends StatefulWidget {
@@ -80,7 +81,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     Navigator.of(context)
         .push(
       MaterialPageRoute(
-        builder: (context) => const ChatScreen(),
+        builder: (context) => const ChattingRoomScreen(roomId: 'diary'),
       ),
     )
         .then((onValue) {
