@@ -48,14 +48,17 @@ class ChatRoomDetailScreenState extends State<ChatRoomDetailScreen> {
   }
 
   String _setStartTimeToString(TimeOfDay time) {
-    final stringTime = '${time.hour}:${time.minute.toString().padLeft(2, '0')}';
+    final hour = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
+    final stringTime = '$hour:$minute';
     return stringTime;
   }
 
   String _setEndTimeToString(String time) {
     DateTime endTime = DateFormat("HH:mm").parse(time);
-    final stringTime =
-        '${endTime.hour + 1}:${endTime.minute.toString().padLeft(2, '0')}';
+    final hour = (endTime.hour + 1).toString().padLeft(2, '0');
+    final minute = endTime.minute.toString().padLeft(2, '0');
+    final stringTime = '$hour:$minute';
     return stringTime;
   }
 
