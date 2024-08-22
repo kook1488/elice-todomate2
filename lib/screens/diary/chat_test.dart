@@ -1,9 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 
-//노드 제이에스- 서버  원교님 쓴느 와이파이로 옴
+//1 Node JS- 서버구축할 수 있게 해주는거  원교님 쓴느 와이파이로 옴
+//노드 js 는 구축할때만 쓴다.
+//VS코드로 노드 js 로 서버 구축 mpn =nod js서버 까는 방법
+
+//2 소켓io 라이브러리 = 실시간으로 통신할 수 있게 만들어주는것
+//클라이언트 - 앱자체.
 //원교님 동네로 간것
-//json 으로.
+
+//3 nglock 로컬에 네트워크를 열었을때
+//다른사람이 내 로컬에 들어 올 수 있게 하는것.
+
+//4 json은 객체로 보내야 하니깐. 스트링만 보내는게 아니라 :모든 언어에서 사용할 수 있게 한 데이터덩어리
+//자바스크립트랑 다트랑 : 스트링- 객체로 하고  받는데서 객체를 스트링 형태로 하고 받
+//제이슨이 객체를 스트링 데이터로 만듬
+//안드로이드 스튜디오에도 깐다.
+
+//1 서버구축nod js
+//2 안드노드 소켓io 연동시킨 후 3채팅 확인할 때 json후
+//4 마지막으로 nglock 으로
 
 class ChatScreenTest extends StatefulWidget {
   final String roomId;
