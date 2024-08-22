@@ -1,20 +1,13 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
-import 'package:todomate/screens/diary/diary.dart';
-import 'package:todomate/screens/my/profile_provider.dart';
+import 'package:todomate/screens/diary/diary_chat.dart';
 import 'package:todomate/screens/my/profile_screen.dart';
 import 'package:todomate/screens/todo/todo_list_screen.dart';
 import 'package:todomate/util/sharedpreference.dart';
 
-// 매개변수 값 안넣고 하는거 쉐어드 프리퍼랜스
-// 로그인 스크린에서 로그인 아이디 없이 디비 조회 할 것인데
-// 어떻게 할것인가? -쉐어드 프리퍼렌스
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
@@ -29,7 +22,7 @@ class ChatsScreen extends StatefulWidget {
 
 class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
   final StreamController<List<ChatModel>> _chatListController =
-      StreamController<List<ChatModel>>.broadcast();
+  StreamController<List<ChatModel>>.broadcast();
   List<ChatModel> _chatList = [];
   int _selectedIndex = 0;
   String _id = '';
@@ -73,13 +66,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     }
   }
 
-  void _onItemTapped(int index) async {
-    if (index == 3) {
-      // '마이페이지' 탭이 선택되었을 때
-      final profileProvider =
-          Provider.of<ProfileProvider>(context, listen: false); // 수정된 부분
-      await profileProvider.loadNickname(_userId); // 닉네임 로드
-    }
+  void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
@@ -94,17 +81,13 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
       // _buildChatList(),
       const ChatRoomScreen(),
       TodoListScreen(userId: widget.userInfo.id.toString()),
-      const DiaryCalendarScreen(),
+      const DiaryChatScreen(roomId: "diary"),
       ProfileScreen(loginId: _userId) //required로 필수로 지정하다보니
     ];
     //프로필 스크린으로 가는 와중에 위젯문제로 에러가 난다
     //아이디 삭제는 따로 잘되는거 같다 페이지 이동에 문제가 있을 뿐
 
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("채팅방 리스트"),
-      //   backgroundColor: Colors.blue,
-      // ),
       body: pages[_selectedIndex],
       // floatingActionButton: _selectedIndex == 0
       //     ? FloatingActionButton(
@@ -197,7 +180,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
                 return ListView.builder(
                   controller: scrollController,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   itemCount: chats.length,
                   itemBuilder: (context, index) {
                     final chat = chats[index];
@@ -234,7 +217,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
     return const Center(child: Text('마이페이지'));
   }
 
-  //dodo sharedpreference에서 가져오기
+  //sharedpreference에서 가져오기
   Future<void> getUserInfo() async {
     final userId = await TodoSharedPreference().getPreferenceWithKey('userId');
     final id = await TodoSharedPreference().getPreferenceWithKey('id');

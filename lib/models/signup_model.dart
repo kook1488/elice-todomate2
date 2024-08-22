@@ -361,11 +361,13 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<DiaryDTO>> getDiaryList() async {
+  Future<List<DiaryDTO>> getDiaryList(String userId) async {
     Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'diary',
       columns: ['id', 'userId', 'title', 'description', 'imageUrl', 'createAt'],
+      where: 'userId = ?',
+      whereArgs: [userId],
     );
     return List<DiaryDTO>.from(
       maps.map((map) => DiaryDTO.fromJson(map)),
@@ -619,10 +621,10 @@ class DatabaseHelper {
   Future<List<ChatRoomModel>> getChatRoom(List<int> filterList) async {
     Database db = await database;
     String topicListFilter =
-        'select * from chat_room where topicId in (${filterList.join(',')});';
+        'select * from chat_room where topicId in (${filterList.join(',')}) order by id desc;';
 
     if (filterList.isEmpty) {
-      topicListFilter = 'select * from chat_room;';
+      topicListFilter = 'select * from chat_room order by id desc;';
     }
     print(filterList);
 

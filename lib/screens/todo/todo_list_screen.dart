@@ -7,6 +7,7 @@ import 'package:todomate/screens/todo/todo_provider.dart';
 import 'package:todomate/screens/todo/todo_create_screen.dart';
 import 'package:todomate/screens/todo/todo_edit_screen.dart';
 import 'package:intl/intl.dart';
+import 'package:todomate/util/sharedpreference.dart';
 
 class TodoListScreen extends StatefulWidget {
   final String userId;
@@ -71,7 +72,10 @@ class _TodoListScreenState extends State<TodoListScreen> with WidgetsBindingObse
           ),
           IconButton(
             icon: Icon(Icons.refresh),
-            onPressed: () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen())),
+            onPressed: (){
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => LoginScreen()));
+              TodoSharedPreference().setPreferenceWithKey('isAutoLogin', 'false');
+            }
           ),
         ],
       ),
