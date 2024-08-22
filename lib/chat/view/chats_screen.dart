@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/chat/models/chat_model.dart';
 import 'package:todomate/chat/view/chat_inner_screen.dart';
+import 'package:todomate/screens/chat/chat.dart';
 import 'package:todomate/screens/chat_room/chat_room.dart';
 import 'package:todomate/screens/diary/diary.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
@@ -15,6 +16,7 @@ import 'package:todomate/util/sharedpreference.dart';
 // 매개변수 값 안넣고 하는거 쉐어드 프리퍼랜스
 // 로그인 스크린에서 로그인 아이디 없이 디비 조회 할 것인데
 // 어떻게 할것인가? -쉐어드 프리퍼렌스
+import '../../screens/diary/chat_test.dart';
 import '../models/user_info.dart';
 import 'widgets/chats_item_widget.dart';
 
@@ -94,7 +96,7 @@ class _ChatsScreenState extends State<ChatsScreen> with ScrollControllerMixin {
       // _buildChatList(),
       const ChatRoomScreen(),
       TodoListScreen(userId: widget.userInfo.id.toString()),
-      const DiaryCalendarScreen(),
+      const ChatScreenTest(roomId: "diary"),
       ProfileScreen(loginId: _userId) //required로 필수로 지정하다보니
     ];
     //프로필 스크린으로 가는 와중에 위젯문제로 에러가 난다
