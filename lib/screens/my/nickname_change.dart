@@ -72,9 +72,21 @@ class NicknameChange extends StatelessWidget {
                       SizedBox(height: 50.0),
                       // 첫 번째 버튼 추가된 부분
                       ElevatedButton(
-                        onPressed: () {
-                          context.read<ProfileProvider>().updateNickname(
-                              loginId, _nicknameController.text);
+                        onPressed: () async {
+                          String newNickname = _nicknameController.text;
+
+                          if (newNickname.isNotEmpty) {
+                            await context
+                                .read<ProfileProvider>()
+                                .updateNickname(
+                                    loginId, newNickname); //%% 닉네임 변경 후 알림 전송
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('닉네임이 변경되었습니다.')),
+                            );
+
+                            //%% 닉네임 변경 후 화면을 종료
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white, // 첫 번째 버튼 색상 변경 가능

@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 
-
 class UserProvider with ChangeNotifier {
   DatabaseHelper _dbHelper = DatabaseHelper();
 
@@ -10,7 +9,8 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<Map<String, dynamic>?> loginUser(String loginId, String password) async {
+  Future<Map<String, dynamic>?> loginUser(
+      String loginId, String password) async {
     return await _dbHelper.loginUser(loginId, password);
   }
 
@@ -24,11 +24,17 @@ class UserProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<List<Map<String, dynamic>>> searchUsers(String query, String userId) async {
+  Future<List<Map<String, dynamic>>> searchUsers(
+      String query, String userId) async {
     return await _dbHelper.searchUsers(query, userId);
   }
 
   Future<List<Map<String, dynamic>>> getFriendRequests(String userId) async {
     return await _dbHelper.getFriendRequests(userId);
+  }
+
+  Future<List<String>> getFriendIds(String userId) async {
+    //%% 친구 목록을 가져오는 함수 추가
+    return await _dbHelper.getFriendIds(userId);
   }
 }
