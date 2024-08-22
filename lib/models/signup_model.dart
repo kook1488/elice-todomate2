@@ -359,11 +359,13 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<DiaryDTO>> getDiaryList() async {
+  Future<List<DiaryDTO>> getDiaryList(String userId) async {
     Database db = await database;
     final List<Map<String, dynamic>> maps = await db.query(
       'diary',
       columns: ['id', 'userId', 'title', 'description', 'imageUrl', 'createAt'],
+      where: 'userId = ?',
+      whereArgs: [userId],
     );
     return List<DiaryDTO>.from(
       maps.map((map) => DiaryDTO.fromJson(map)),

@@ -22,10 +22,6 @@ class DiaryProvider extends ChangeNotifier {
 
   bool get isLoading => _isLoading;
 
-  DiaryProvider() {
-    // Provider 생성 시 초기 데이터 로딩
-    loadDiaryDateList();
-  }
 
   void setSelectedDay(DateTime day) {
     _selectedDay = day;
@@ -38,11 +34,11 @@ class DiaryProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadDiaryDateList() async {
+  Future<void> loadDiaryDateList(String userId) async {
     _isLoading = true;
     notifyListeners();
 
-    _diaryList = await DatabaseHelper().getDiaryList();
+    _diaryList = await DatabaseHelper().getDiaryList(userId);
     _isLoading = false;
     setSelectedDiaryList();
     notifyListeners();
@@ -71,7 +67,7 @@ class DiaryProvider extends ChangeNotifier {
     );
 
     if (result != null) {
-      loadDiaryDateList();
+      loadDiaryDateList(diary.userId);
     }
   }
 
@@ -94,7 +90,7 @@ class DiaryProvider extends ChangeNotifier {
 
       if (isSuccessDeleteDiary) {
         showAlertDialog(context, '알림', '삭제 되었습니다.');
-        await loadDiaryDateList();
+        await loadDiaryDateList(diary.userId);
       } else {
         showAlertDialog(context, "알림", "삭제 실패했습니다.");
       }
