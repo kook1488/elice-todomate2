@@ -41,8 +41,10 @@ class ProfileProvider with ChangeNotifier {
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
+    if (_isNicknameLoaded) return; //^^ 이미 닉네임이 로드되었으면 중단
     _nickname = await _dbHelper.getNickname(loginId);
-    notifyListeners();
+    _isNicknameLoaded = true; //^^ 닉네임이 로드되었음을 표시
+    notifyListeners(); //^^ 상태가 변경되었음을 알림
   }
 
   // 닉네임 상태 변경
@@ -53,7 +55,8 @@ class ProfileProvider with ChangeNotifier {
 
     await _dbHelper.updateNickname(loginId, newNickname);
     _nickname = newNickname;
-    notifyListeners();
+    _isNicknameLoaded = true; //^^ 닉네임이 업데이트된 후에도 로딩 상태를 유지
+    //notifyListeners(); //^^ 상태가 변경되었음을 알림
 
     List<String> friendIds =
         await _dbHelper.getFriendIds(loginId); //%% 친구 목록 가져오기

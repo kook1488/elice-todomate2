@@ -313,6 +313,7 @@ class DatabaseHelper {
     }
   }
 
+//닉네임 변경
   Future<int> updateNickname(String loginId, String newNickname) async {
     Database db = await database;
     return await db.update(

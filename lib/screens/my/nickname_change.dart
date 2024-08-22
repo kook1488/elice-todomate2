@@ -69,23 +69,23 @@ class NicknameChange extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 50.0),
+                      SizedBox(height: 30.0),
                       // 첫 번째 버튼 추가된 부분
                       ElevatedButton(
                         onPressed: () async {
                           String newNickname = _nicknameController.text;
-
                           if (newNickname.isNotEmpty) {
+                            // Provider를 통해 닉네임 업데이트
                             await context
                                 .read<ProfileProvider>()
-                                .updateNickname(
-                                    loginId, newNickname); //%% 닉네임 변경 후 알림 전송
+                                .updateNickname(loginId, newNickname);
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('닉네임이 변경되었습니다.')),
-                            );
-
-                            //%% 닉네임 변경 후 화면을 종료
+                            // 화면 갱신을 위해 닉네임을 다시 로드
+                            await context
+                                .read<ProfileProvider>()
+                                .loadNickname(loginId);
+                            //확인용 로그 추가
+                            // print('닉네임 변경 요청: $newNickname'); 됨
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -107,8 +107,39 @@ class NicknameChange extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 30.0),
+                      ElevatedButton(
+                        onPressed: () async {
+                          // String newNickname = _nicknameController.text;
+                          //
+                          // if (newNickname.isNotEmpty) {
+                          //   await context
+                          //       .read<ProfileProvider>()
+                          //       .updateNickname(
+                          //           loginId, newNickname); //%% 닉네임 변경 후 알림 전송
+                          // }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white, // 첫 번째 버튼 색상 변경 가능
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          elevation: 5, // 그림자 효과
+                          shadowColor:
+                              Colors.grey.withOpacity(0.3), // 그림자 색상 및 불투명도
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 35.0, vertical: 10.0),
+                        ),
+                        child: Text(
+                          'Change Call', // 첫 번째 버튼의 텍스트
+                          style: TextStyle(
+                            fontSize: 35.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
 
-                      SizedBox(height: 120.0), // 두 버튼 사이의 간격
+                      SizedBox(height: 80.0), // 두 버튼 사이의 간격
                       ElevatedButton(
                         onPressed: () {
                           // pop
@@ -119,6 +150,8 @@ class NicknameChange extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
+                          elevation: 8, // 그림자 효과
+                          shadowColor: Colors.grey.withOpacity(0.5),
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),
                         ),

@@ -6,6 +6,7 @@ import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
+import 'package:todomate/util/sharedpreference.dart';
 
 class ProfileWidget extends StatelessWidget {
   final String? nickname;
@@ -15,17 +16,26 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // ProfileProvider의 activeChatCount 업데이트
+    // activeChatCount를 ChatRoomProvider와 연동하여 업데이트
     context
         .read<ProfileProvider>()
         .updateActiveChatCount(context.read<ChatRoomProvider>());
-    //& activeChatCount를 ChatRoomProvider와 연동하여 업데이트
-//.
+// SharedPreferences에서 저장된 닉네임을 가져옴 //^^
+    final TodoSharedPreference prefs = TodoSharedPreference();
+    prefs.getPreferenceWithKey('nickname').then((savedNickname) {
+      if (savedNickname.isNotEmpty) {
+        context
+            .read<ProfileProvider>()
+            .updateNickname('', savedNickname); // 저장된 닉네임을 프로바이더에 반영
+      }
+    });
+
     //지금은 watch에서 프로바이더를 가져옴
     // ProfileProvider의 상태를 가져옴
     //디비로 초기값을 가져오는게 좋을 듯.. //watch가 디비를 관찰하는거 아닐까?
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
-    final String? nickname =
-        context.watch<ProfileProvider>().nickname; // Provider에서 닉네임을 가져옴
+    final String? currentNickname =
+        context.watch<ProfileProvider>().nickname; //변경된 닉네임을 반영
 
     final int todoCount =
         context.watch<TodoProvider>().incompleteTodoCount; // 완료되지 않은 할 일 개수 사용
@@ -66,7 +76,7 @@ class ProfileWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    nickname ?? '$nickname',
+                    currentNickname ?? '$nickname',
                     style: TextStyle(
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
