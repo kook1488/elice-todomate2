@@ -68,7 +68,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
     )
         .then((onValue) {
-      if (onValue) {
+      if (onValue != null) {
         Provider.of<ChatRoomProvider>(context, listen: false)
             .getChatRoomList(filterList);
         setState(() {});
@@ -85,7 +85,7 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
       ),
     )
         .then((onValue) {
-      if (onValue) {
+      if (onValue != null) {
         Provider.of<ChatRoomProvider>(context, listen: false)
             .getChatRoomList(filterList);
         setState(() {});
