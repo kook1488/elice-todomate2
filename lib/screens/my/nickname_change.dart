@@ -7,7 +7,9 @@ class NicknameChange extends StatelessWidget {
   final String loginId;
   final String nickname;
   final TextEditingController _nicknameController = TextEditingController();
+
   NicknameChange({required this.loginId, required this.nickname});
+
 //디비를 한번 더 불러서 화면을 더 갱신시켜야 한다.
 
   @override
@@ -54,8 +56,8 @@ class NicknameChange extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12.0),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding:
-                              EdgeInsets.zero, // 패딩을 없애서 아이콘과 텍스트를 최대한 가깝게
+                          contentPadding: EdgeInsets.zero,
+                          // 패딩을 없애서 아이콘과 텍스트를 최대한 가깝게
                           prefixIcon: Icon(
                             Icons.published_with_changes,
                             size: 40.0,
@@ -75,27 +77,27 @@ class NicknameChange extends StatelessWidget {
                         onPressed: () async {
                           String newNickname = _nicknameController.text;
                           if (newNickname.isNotEmpty) {
-                            // Provider를 통해 닉네임 업데이트
+                            // 닉네임 업데이트
                             await context
                                 .read<ProfileProvider>()
                                 .updateNickname(loginId, newNickname);
 
-                            // 화면 갱신을 위해 닉네임을 다시 로드
+                            // 변경된 닉네임을 ProfileWidget에 반영하기 위해 로드
                             await context
                                 .read<ProfileProvider>()
                                 .loadNickname(loginId);
-                            //확인용 로그 추가
-                            // print('닉네임 변경 요청: $newNickname'); 됨
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // 첫 번째 버튼 색상 변경 가능
+                          backgroundColor: Colors.white,
+                          // 첫 번째 버튼 색상 변경 가능
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
-                          elevation: 5, // 그림자 효과
-                          shadowColor:
-                              Colors.grey.withOpacity(0.3), // 그림자 색상 및 불투명도
+                          elevation: 5,
+                          // 그림자 효과
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                          // 그림자 색상 및 불투명도
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),
                         ),
@@ -110,6 +112,16 @@ class NicknameChange extends StatelessWidget {
                       SizedBox(height: 30.0),
                       ElevatedButton(
                         onPressed: () async {
+                          String newNickname = _nicknameController.text;
+                          if (newNickname.isNotEmpty) {
+                            // Provider를 통해 닉네임 업데이트
+                            await context
+                                .read<ProfileProvider>()
+                                .updateNickname(loginId, newNickname);
+
+                            //^^ 닉네임 변경 후, ProfileWidget의 상태를 갱신하기 위해 notifyListeners() 호출
+                            context.read<ProfileProvider>().notifyListeners();
+                          }
                           // String newNickname = _nicknameController.text;
                           //
                           // if (newNickname.isNotEmpty) {
@@ -120,13 +132,15 @@ class NicknameChange extends StatelessWidget {
                           // }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // 첫 번째 버튼 색상 변경 가능
+                          backgroundColor: Colors.white,
+                          // 첫 번째 버튼 색상 변경 가능
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
-                          elevation: 5, // 그림자 효과
-                          shadowColor:
-                              Colors.grey.withOpacity(0.3), // 그림자 색상 및 불투명도
+                          elevation: 5,
+                          // 그림자 효과
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                          // 그림자 색상 및 불투명도
                           padding: EdgeInsets.symmetric(
                               horizontal: 35.0, vertical: 10.0),
                         ),
@@ -150,7 +164,8 @@ class NicknameChange extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
-                          elevation: 8, // 그림자 효과
+                          elevation: 8,
+                          // 그림자 효과
                           shadowColor: Colors.grey.withOpacity(0.5),
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),

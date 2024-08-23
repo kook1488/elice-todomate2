@@ -297,6 +297,7 @@ class DatabaseHelper {
     );
   }
 
+//처음 닉네임
   Future<String?> getNickname(String loginId) async {
     Database db = await database;
     List<Map<String, dynamic>> results = await db.query(

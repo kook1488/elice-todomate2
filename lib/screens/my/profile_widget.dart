@@ -6,7 +6,6 @@ import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
-import 'package:todomate/util/sharedpreference.dart';
 
 class ProfileWidget extends StatelessWidget {
   final String? nickname;
@@ -20,15 +19,6 @@ class ProfileWidget extends StatelessWidget {
     context
         .read<ProfileProvider>()
         .updateActiveChatCount(context.read<ChatRoomProvider>());
-// SharedPreferences에서 저장된 닉네임을 가져옴 //^^
-    final TodoSharedPreference prefs = TodoSharedPreference();
-    prefs.getPreferenceWithKey('nickname').then((savedNickname) {
-      if (savedNickname.isNotEmpty) {
-        context
-            .read<ProfileProvider>()
-            .updateNickname('', savedNickname); // 저장된 닉네임을 프로바이더에 반영
-      }
-    });
 
     //지금은 watch에서 프로바이더를 가져옴
     // ProfileProvider의 상태를 가져옴
