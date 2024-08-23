@@ -670,7 +670,7 @@ class DatabaseHelper {
     if (filterList.isEmpty) {
       topicListFilter = 'select * from chat_room order by id desc;';
     }
-    print(filterList);
+    // print(filterList);
 
     // 테이블에서 모든 행을 쿼리합니다.
     List<Map<String, dynamic>> maps = await db.rawQuery(topicListFilter);

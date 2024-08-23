@@ -29,6 +29,8 @@ android {
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
+        // Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -42,6 +44,8 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
+        //notification 추가
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -50,6 +54,13 @@ android {
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.debug
         }
+    }
+
+    dependencies {
+        implementation 'androidx.window:window:1.0.0' // WindowManager 라이브러리 추가
+        implementation 'androidx.window:window-java:1.0.0' // WindowManager Java 지원 추가
+
+        coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
     }
 }
 
