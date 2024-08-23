@@ -7,7 +7,9 @@ class NicknameChange extends StatelessWidget {
   final String loginId;
   final String nickname;
   final TextEditingController _nicknameController = TextEditingController();
+
   NicknameChange({required this.loginId, required this.nickname});
+
 //디비를 한번 더 불러서 화면을 더 갱신시켜야 한다.
 
   @override
@@ -54,8 +56,8 @@ class NicknameChange extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12.0),
                             borderSide: BorderSide.none,
                           ),
-                          contentPadding:
-                              EdgeInsets.zero, // 패딩을 없애서 아이콘과 텍스트를 최대한 가깝게
+                          contentPadding: EdgeInsets.zero,
+                          // 패딩을 없애서 아이콘과 텍스트를 최대한 가깝게
                           prefixIcon: Icon(
                             Icons.published_with_changes,
                             size: 40.0,
@@ -69,33 +71,34 @@ class NicknameChange extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                       ),
-                      SizedBox(height: 50.0),
+                      SizedBox(height: 30.0),
                       // 첫 번째 버튼 추가된 부분
                       ElevatedButton(
                         onPressed: () async {
+                          //[1]버튼 눌렀을때
                           String newNickname = _nicknameController.text;
-
                           if (newNickname.isNotEmpty) {
+                            // 1. ProfileProvider의 updateNickname 메서드를 호출하여 닉네임을 업데이트
                             await context
                                 .read<ProfileProvider>()
-                                .updateNickname(
-                                    loginId, newNickname); //%% 닉네임 변경 후 알림 전송
+                                .updateNickname(loginId, newNickname);
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text('닉네임이 변경되었습니다.')),
-                            );
-
-                            //%% 닉네임 변경 후 화면을 종료
-                          }
+                            // 2. 변경된 닉네임을 다시 로드하여 화면을 갱신 (옵션, 필요 시)
+                            await context
+                                .read<ProfileProvider>()
+                                .loadNickname(loginId);
+                          } // 3. 프로바이더로 가기
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white, // 첫 번째 버튼 색상 변경 가능
+                          backgroundColor: Colors.white,
+                          // 첫 번째 버튼 색상 변경 가능
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
-                          elevation: 5, // 그림자 효과
-                          shadowColor:
-                              Colors.grey.withOpacity(0.3), // 그림자 색상 및 불투명도
+                          elevation: 5,
+                          // 그림자 효과
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                          // 그림자 색상 및 불투명도
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),
                         ),
@@ -107,8 +110,46 @@ class NicknameChange extends StatelessWidget {
                           ),
                         ),
                       ),
+                      SizedBox(height: 30.0),
 
-                      SizedBox(height: 120.0), // 두 버튼 사이의 간격
+                      //kook[1] 알림작업 과정: 1.버튼클릭 2.DB에 메서드 생성 3.프로바이더 클래스 구현 4.알림클래스 구현 5.UI에서 메서드 호출
+                      //  cf 구현순서 : 1버튼클릭,2프로바이더 메서드 호출,3.DB에 변경정보 저장,
+                      //               4. 마이프로필 열때 알림 전송 5.로컬 알림 전송
+                      //kook[5]버튼 클릭 시 saveNicknameChangeForFriends 메서드가 호출
+                      ElevatedButton(
+                        onPressed: () async {
+                          String newNickname = _nicknameController.text;
+
+                          if (newNickname.isNotEmpty) {
+                            // 닉네임 변경 후 친구들에게 알림 저장 //
+                            await context
+                                .read<ProfileProvider>()
+                                .saveNicknameChangeForFriends(
+                                    loginId, newNickname); //
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                          ),
+                          elevation: 5,
+                          // 그림자 효과
+                          shadowColor: Colors.grey.withOpacity(0.3),
+                          // 그림자 색상 및 불투명도
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 35.0, vertical: 10.0),
+                        ),
+                        child: Text(
+                          'Change Call', // 첫 번째 버튼의 텍스트
+                          style: TextStyle(
+                            fontSize: 35.0,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+
+                      SizedBox(height: 80.0), // 두 버튼 사이의 간격
                       ElevatedButton(
                         onPressed: () {
                           // pop
@@ -119,6 +160,9 @@ class NicknameChange extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
+                          elevation: 8,
+                          // 그림자 효과
+                          shadowColor: Colors.grey.withOpacity(0.5),
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),
                         ),

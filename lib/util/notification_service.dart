@@ -5,8 +5,13 @@ class NotificationService {
   static final FlutterLocalNotificationsPlugin _notificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  static Future<void> sendNicknameChangeNotification(
-      {required String oldNickname, required String newNickname}) async {
+//////////////////////////////////////////////
+// kook[4] 알림 설정및 전송
+  static Future<void> sendNicknameChangeNotification({
+    required String oldNickname,
+    required String newNickname,
+    required String friendId,
+  }) async {
     // 알림 생성
     const AndroidNotificationDetails androidDetails =
         AndroidNotificationDetails(
@@ -46,4 +51,5 @@ class NotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('notifications');
   }
+  //////////////////////////////////////////////
 }
