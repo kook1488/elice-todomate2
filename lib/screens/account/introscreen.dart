@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:todomate/chat/view/chats_screen.dart';
 import 'package:todomate/screens/account/loginscreen.dart';
+import 'package:todomate/util/alert_dialog.dart';
 import 'package:todomate/util/sharedpreference.dart';
 
 import '../../chat/models/user_info.dart';
+import '../../util/notification_util.dart';
 
 class IntroScreen extends StatefulWidget {
   const IntroScreen({super.key});
@@ -24,8 +27,7 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   void initState() {
     super.initState();
-    getIsAutoLogin();
-    _startAnimation();
+    _permissionRequest();
   }
 
   void _startAnimation() {
@@ -135,6 +137,32 @@ class _IntroScreenState extends State<IntroScreen> {
       _userInfo = UserInfo(id: int.parse(id), nickName: nickName, avatarPath: avatarPath, loginId: loginId);
     }else{
       _userInfo = null;
+    }
+  }
+
+  Future<void> _permissionRequest() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      final result = await Permission.notification.request();
+      if (result.isGranted) {
+        // 권한이 허용되었을 때 실행할 로직
+        WidgetsFlutterBinding.ensureInitialized(); //notificaitonUtil initialize
+        await NotificationUtil().initialize();
+        getIsAutoLogin(); //자동로그인 값 체크
+        _startAnimation();// 로그인화면 이동
+      } else {
+        // 권한이 거부되었을 때 실행할 로직 (선택적)
+        showAppSettingAlertDialog(context, "알림", "알림 권한 설정을 해주세요.");
+      }
+    } else if (status.isGranted) {
+      // 권한이 이미 허용되었을 때 실행할 로직
+      WidgetsFlutterBinding.ensureInitialized(); //notificaitonUtil initialize
+      await NotificationUtil().initialize();
+      getIsAutoLogin();//자동로그인 값 체크
+      _startAnimation();// 로그인화면 이동
+    } else {
+      // 기타 상태 처리 (예: 권한이 영구적으로 거부된 경우)
+      showAppSettingAlertDialog(context, "알림", "알림 권한 설정을 해주세요.");
     }
   }
 }
