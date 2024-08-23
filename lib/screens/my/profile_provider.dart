@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
+import 'package:todomate/util/notification_service.dart';
 
 class ProfileProvider with ChangeNotifier {
   final DatabaseHelper _dbHelper = DatabaseHelper(); // DB 불러옴
@@ -132,7 +133,39 @@ class ProfileProvider with ChangeNotifier {
       _friendCount -= 1;
       notifyListeners();
     }
+  }
 
-// 기타 필요한 메서드들 추가 가능
+  //kook [3] 알림
+  //[1]친구에게 닉네임 변경 알림 시작
+  // 닉네임 변경 정보를 로컬 데이터베이스에 저장하는 메서드
+  Future<void> saveNicknameChangeForFriends(
+      String loginId, String newNickname) async {
+    String oldNickname = _nickname ?? '';
+    // 닉네임 변경 정보를 로컬 데이터베이스에 저장 //
+    await _dbHelper.saveNicknameChange(loginId, oldNickname, newNickname);
+    // 친구들에게 알림을 보내는 로직은 나중에 친구가 마이프로필을 열 때 실행됩니다.
+  }
+
+  //닉네임 변경 알림
+  // 친구가 마이프로필을 열 때 닉네임 변경 알림을 보내는 메서드
+  // 로컬 데이터베이스에서 닉네임 변경 정보를 가져옴
+  Future<void> notifyNicknameChange(List<String> acceptedFriends) async {
+    // friendId 대신 acceptedFriends 사용
+    for (var friendId in acceptedFriends) {
+      // 각 친구의 ID를 사용
+      List<Map<String, dynamic>> changes =
+          await _dbHelper.getNicknameChangesForFriend(friendId);
+      // 가져온 변경 정보로 알림 전송
+      for (var change in changes) {
+        await NotificationService.sendNicknameChangeNotification(
+          oldNickname: change['oldNickname'],
+          newNickname: change['newNickname'],
+          friendId: friendId,
+        );
+      }
+
+      // 알림 전송 후 해당 변경 정보를 로컬 데이터베이스에서 삭제 //
+      await _dbHelper.clearNicknameChangesForFriend(friendId);
+    }
   }
 }

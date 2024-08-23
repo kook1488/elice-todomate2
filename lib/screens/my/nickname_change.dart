@@ -111,30 +111,25 @@ class NicknameChange extends StatelessWidget {
                         ),
                       ),
                       SizedBox(height: 30.0),
+
+                      //kook[1] 알림작업 과정: 1.버튼클릭 2.DB에 메서드 생성 3.프로바이더 클래스 구현 4.알림클래스 구현 5.UI에서 메서드 호출
+                      //  cf 구현순서 : 1버튼클릭,2프로바이더 메서드 호출,3.DB에 변경정보 저장,
+                      //               4. 마이프로필 열때 알림 전송 5.로컬 알림 전송
+                      //kook[5]버튼 클릭 시 saveNicknameChangeForFriends 메서드가 호출
                       ElevatedButton(
                         onPressed: () async {
                           String newNickname = _nicknameController.text;
+
                           if (newNickname.isNotEmpty) {
-                            // Provider를 통해 닉네임 업데이트
+                            // 닉네임 변경 후 친구들에게 알림 저장 //
                             await context
                                 .read<ProfileProvider>()
-                                .updateNickname(loginId, newNickname);
-
-                            //^^ 닉네임 변경 후, ProfileWidget의 상태를 갱신하기 위해 notifyListeners() 호출
-                            context.read<ProfileProvider>().notifyListeners();
+                                .saveNicknameChangeForFriends(
+                                    loginId, newNickname); //
                           }
-                          // String newNickname = _nicknameController.text;
-                          //
-                          // if (newNickname.isNotEmpty) {
-                          //   await context
-                          //       .read<ProfileProvider>()
-                          //       .updateNickname(
-                          //           loginId, newNickname); //%% 닉네임 변경 후 알림 전송
-                          // }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          // 첫 번째 버튼 색상 변경 가능
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
