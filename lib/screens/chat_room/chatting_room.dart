@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:socket_io_client/socket_io_client.dart';
+import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
+import 'package:todomate/util/notification_util.dart';
 import '../../models/chatdto_model.dart';
 
 class ChattingRoomScreen extends StatefulWidget {
@@ -11,24 +12,56 @@ class ChattingRoomScreen extends StatefulWidget {
   State<ChattingRoomScreen> createState() => _ChattingRoomScreenState();
 }
 
-class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollControllerMixin{
-  late Socket socket; // 별칭 없이 직접 사용
+class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollControllerMixin, WidgetsBindingObserver{
+  late IO.Socket socket; // 별칭 없이 직접 사용
   late TextEditingController _messageController;
   //채팅방 메시지 객체 리스트
   List<ChatDTO> chats = [];
   String _socketId = '';
+  bool _isAppInBackground = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _messageController = TextEditingController();
     //소켓 접속
     _connectSocket();
   }
 
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    switch (state) {
+      case AppLifecycleState.paused:
+      // 앱이 백그라운드 상태일 때
+        setState(() {
+          _isAppInBackground = true;
+        });
+        break;
+      case AppLifecycleState.hidden:
+        setState(() {
+          _isAppInBackground = true;
+        });
+        break;
+      case AppLifecycleState.detached:
+        setState(() {
+          _isAppInBackground = false;
+        });
+      case AppLifecycleState.resumed:
+        setState(() {
+          _isAppInBackground = false;
+        });
+      case AppLifecycleState.inactive:
+        setState(() {
+          _isAppInBackground = false;
+        });
+    }
+  }
+
+
   void _connectSocket() {
     //IP등록
-    socket = io('https://f3ca-58-142-95-194.ngrok-free.app', <String, dynamic>{
+    socket = IO.io('https://6997-58-142-95-194.ngrok-free.app', <String, dynamic>{
       'transports': ['websocket'],
     });
 
@@ -40,7 +73,7 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
 
     //연결 성공시 서버에서 socketId 보내주면 초기화
     socket.on('socketId', (socketId) {
-      print('socketId : $socketId');
+      print('socketId : ${socket.id}');
       setState(() {
         _socketId = socketId;
       });
@@ -50,6 +83,9 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
     socket.on('receiveMessage', (message) {
       //채팅 객체를 josn형태로 받아서 ChatDTO로 파싱
       ChatDTO chatDTO = ChatDTO.fromJson(message);
+      if(_isAppInBackground){
+        NotificationUtil().showNotification("새로운 메시지",chatDTO.message);
+      }
       setState(() {
         chats.add(chatDTO);
         scrollToBottom();
@@ -186,4 +222,19 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
       ),
     );
   }
+
+  void _disConnectSocket() {
+    socket.disconnect();   // 소켓 연결 종료
+    final manager = socket.io;
+    manager.nsps.clear(); // 네임스페이스 캐시 제거
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _disConnectSocket();
+    super.dispose();
+  }
+
+  
 }
