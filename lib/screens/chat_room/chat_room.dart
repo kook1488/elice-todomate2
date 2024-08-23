@@ -9,6 +9,7 @@ import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/chat_room/chatting_room.dart';
 import 'package:todomate/screens/chat_room/create_chat_room.dart';
+import 'package:todomate/screens/chat_room/notification.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({super.key});
@@ -79,10 +80,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
 
   // 채팅방 참여
   void _onParticipateChatTap(int id) {
+    // topicId String으로 전달
     Navigator.of(context)
         .push(
       MaterialPageRoute(
-        builder: (context) => const ChattingRoomScreen(roomId: 'diary',),
+        builder: (context) => ChattingRoomScreen(
+          roomId: id.toString(),
+        ),
       ),
     )
         .then((onValue) {
@@ -115,12 +119,14 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
     return nameString.toString();
   }
 
+  // 예약 버튼 활성화 여부
   bool _reserveButtonDisable(String date) {
     DateTime now = DateTime.now();
     isReserveDisable = DateTime.parse(date).isAfter(now);
     return isReserveDisable;
   }
 
+  // 참여 버튼 활성화 여부
   bool _participateButtonDisable(String date) {
     DateTime now = DateTime.now();
     isParticipateDisable = DateTime.parse(date).isAfter(now);
@@ -457,8 +463,13 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                           ),
                                           const SizedBox(width: 10),
                                           ElevatedButton(
-                                            onPressed:
-                                                isReserveDisable ? () {} : null,
+                                            onPressed: isReserveDisable
+                                                ? () => FlutterLocalNotification
+                                                    .showNotification(
+                                                        chatRoomList[index],
+                                                        '예약 완료되었습니다.',
+                                                        '')
+                                                : null,
                                             child:
                                                 const Center(child: Text('예약')),
                                           ),
