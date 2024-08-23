@@ -93,6 +93,7 @@ class ProfileWidget extends StatelessWidget {
                     ),
                   ),
                   RichText(
+                    /////
                     text: TextSpan(
                       children: [
                         TextSpan(
