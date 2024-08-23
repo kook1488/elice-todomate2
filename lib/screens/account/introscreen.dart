@@ -27,7 +27,8 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   void initState() {
     super.initState();
-    _permissionRequest();
+    getIsAutoLogin(); //자동로그인 값 체크
+    _startAnimation();// 로그인화면 이동
   }
 
   void _startAnimation() {
@@ -140,9 +141,9 @@ class _IntroScreenState extends State<IntroScreen> {
     }
   }
 
-  Future<void> _permissionRequest() async {
+  /*Future<void> _permissionRequest() async {
     final status = await Permission.notification.status;
-    if (status.isDenied) {
+    if (status.isDenied && status.isPermanentlyDenied) {
       final result = await Permission.notification.request();
       if (result.isGranted) {
         // 권한이 허용되었을 때 실행할 로직
@@ -164,5 +165,5 @@ class _IntroScreenState extends State<IntroScreen> {
       // 기타 상태 처리 (예: 권한이 영구적으로 거부된 경우)
       showAppSettingAlertDialog(context, "알림", "알림 권한 설정을 해주세요.");
     }
-  }
+  }*/
 }
