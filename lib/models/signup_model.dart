@@ -314,7 +314,9 @@ class DatabaseHelper {
     }
   }
 
-//닉네임 변경
+//닉네임 변경 [3]프로바이더에서 데이터베이스를 호출하여 updateNickname 메서드를 통해 닉네임을 업데이트
+  //[3]DatabaseHelper 클래스의 updateNickname 메서드는 닉네임을 데이터베이스에 저장
+  //이 메서드는 loginId를 기반으로 users 테이블에서 해당 사용자의 닉네임을 새로 입력된 newNickname으로 업데이트
   Future<int> updateNickname(String loginId, String newNickname) async {
     Database db = await database;
     return await db.update(
@@ -322,7 +324,7 @@ class DatabaseHelper {
       {'nickname': newNickname},
       where: 'login_id = ?',
       whereArgs: [loginId],
-    );
+    ); //[4] UI 도 같이 업데이트됨 [2]에서 프로바이더 호출 받을때.
   }
 
   Future<int> deleteUserByLoginId(String loginId) async {

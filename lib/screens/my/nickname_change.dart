@@ -75,18 +75,19 @@ class NicknameChange extends StatelessWidget {
                       // 첫 번째 버튼 추가된 부분
                       ElevatedButton(
                         onPressed: () async {
+                          //[1]버튼 눌렀을때
                           String newNickname = _nicknameController.text;
                           if (newNickname.isNotEmpty) {
-                            // 닉네임 업데이트
+                            // 1. ProfileProvider의 updateNickname 메서드를 호출하여 닉네임을 업데이트
                             await context
                                 .read<ProfileProvider>()
                                 .updateNickname(loginId, newNickname);
 
-                            // 변경된 닉네임을 ProfileWidget에 반영하기 위해 로드
+                            // 2. 변경된 닉네임을 다시 로드하여 화면을 갱신 (옵션, 필요 시)
                             await context
                                 .read<ProfileProvider>()
                                 .loadNickname(loginId);
-                          }
+                          } // 3. 프로바이더로 가기
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

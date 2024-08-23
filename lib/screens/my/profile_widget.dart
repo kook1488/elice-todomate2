@@ -24,6 +24,9 @@ class ProfileWidget extends StatelessWidget {
     // ProfileProvider의 상태를 가져옴
     //디비로 초기값을 가져오는게 좋을 듯.. //watch가 디비를 관찰하는거 아닐까?
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
+    //[4] 프로바이더에서 DB 변경과 동시에 notifyListeners 호 호출 받아서
+    // profileProvider에 연결된 모든 UI 가 새 닉네임 반영
+    //호출 받아서 닉네임 업데이트
     final String? currentNickname =
         context.watch<ProfileProvider>().nickname; //변경된 닉네임을 반영
 

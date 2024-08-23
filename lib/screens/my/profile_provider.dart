@@ -48,19 +48,24 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners(); // 상태가 변경되었음을 알림
   }
 
-//닉네임 업데이트
+//[2]버튼 눌린 후 닉네임 업데이트
   Future<void> updateNickname(String loginId, String newNickname) async {
-    if (_nickname == null || _isUpdatingNickname)
-      return; // 현재 닉네임이 없거나 업데이트 중이면 중단
-    if (_nickname == newNickname) return; // 기존 닉네임과 같으면 중단
+    // 1. 현재 닉네임과 새 닉네임이 동일하지 않은지 확인
+    if (_nickname == null || _isUpdatingNickname) return;
+    if (_nickname == newNickname) return;
 
-    _isUpdatingNickname = true; // 닉네임 업데이트 플래그 설정
-    await _dbHelper.updateNickname(loginId, newNickname); // 데이터베이스에서 닉네임 업데이트
+    _isUpdatingNickname = true; // 닉네임 업데이트 중 상태 플래그 설정
 
-    _nickname = newNickname; // 닉네임 상태 업데이트
+    // 2. 데이터베이스에서 닉네임을 업데이트
+    await _dbHelper.updateNickname(loginId, newNickname);
+
+    // 3. 닉네임을 새 값으로 업데이트
+    _nickname = newNickname;
     _isNicknameLoaded = true;
     _isUpdatingNickname = false;
-    notifyListeners(); // 상태가 변경되었음을 알림
+
+    // 4. 상태 변경 알림
+    notifyListeners(); //이후 데이터베이스 업데이트도 하고, UI도 바꿔준다.
   }
   // List<String> friendIds =
   //     await _dbHelper.getFriendIds(loginId); // 친구 목록 가져오기
