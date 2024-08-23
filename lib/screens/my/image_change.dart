@@ -62,7 +62,7 @@ class _ImageChangeState extends State<ImageChange> {
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Column(
                         children: [
-                          SizedBox(height: 20.0),
+                          SizedBox(height: 10.0),
                           // 첫 번째 Change 버튼 (사진 올리기)
                           ElevatedButton(
                             onPressed: _pickImage, // 이미지 선택 메서드 호출
@@ -85,10 +85,10 @@ class _ImageChangeState extends State<ImageChange> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20.0),
+                          SizedBox(height: 30.0),
 
                           // 버튼들이 밀리지 않도록 추가한 SizedBox
-                          SizedBox(height: 220.0),
+                          SizedBox(height: 200.0),
                           ElevatedButton(
                             onPressed: () {
                               if (_image != null) {
@@ -119,7 +119,7 @@ class _ImageChangeState extends State<ImageChange> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20.0),
+                          SizedBox(height: 10.0),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context); // 첫 번째 pop
@@ -150,7 +150,7 @@ class _ImageChangeState extends State<ImageChange> {
               ),
               if (_image != null)
                 Positioned(
-                  top: 360,
+                  top: 350,
                   left: MediaQuery.of(context).size.width * 0.25, // 가운데 정렬
                   child: Image.file(
                     _image!,
