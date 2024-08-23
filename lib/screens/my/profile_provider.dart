@@ -7,11 +7,12 @@ class ProfileProvider with ChangeNotifier {
   final DatabaseHelper _dbHelper = DatabaseHelper(); // DB 불러옴
   String? _nickname;
   String _avatarPath = 'asset/image/avata_1.png'; // 기본 아바타 경로로 초기화
-  bool _isNicknameLoaded = false; // 닉네임 로딩 상태 추가
+  bool _isNicknameLoaded = false;
+  // 닉네임 로딩 상태 추가
   // 프로필 관련 상태
-//프로바이더가 초기화 되는 시점이 그 화면을 가야만
-// 프로바이더가 초기화 되는 상황
-//프로바이더가
+  //프로바이더가 초기화 되는 시점이 그 화면을 가야만
+  // 프로바이더가 초기화 되는 상황
+  //프로바이더가
   //마이 페이지 눌렀을때 디비에서 초기화함.
   int _todoCount = 7;
   int _completedTodoCount = 5;
@@ -41,10 +42,10 @@ class ProfileProvider with ChangeNotifier {
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
-    if (_isNicknameLoaded) return; //^^ 이미 닉네임이 로드되었으면 중단
+    if (_isNicknameLoaded) return; // 이미 닉네임이 로드되었으면 중단
     _nickname = await _dbHelper.getNickname(loginId);
-    _isNicknameLoaded = true; //^^ 닉네임이 로드되었음을 표시
-    notifyListeners(); //^^ 상태가 변경되었음을 알림
+    _isNicknameLoaded = true; // 닉네임이 로드되었음을 표시
+    notifyListeners(); // 상태가 변경되었음을 알림
   }
 
   // 닉네임 상태 변경
@@ -55,14 +56,14 @@ class ProfileProvider with ChangeNotifier {
 
     await _dbHelper.updateNickname(loginId, newNickname);
     _nickname = newNickname;
-    _isNicknameLoaded = true; //^^ 닉네임이 업데이트된 후에도 로딩 상태를 유지
-    //notifyListeners(); //^^ 상태가 변경되었음을 알림
+    _isNicknameLoaded = true; // 닉네임이 업데이트된 후에도 로딩 상태를 유지
+    //notifyListeners(); // 상태가 변경되었음을 알림
 
     List<String> friendIds =
         await _dbHelper.getFriendIds(loginId); //%% 친구 목록 가져오기
 
     for (String friendId in friendIds) {
-      //%% 친구들에게 알림 보내기
+      // 친구들에게 알림 보내기
       await NotificationService.sendNicknameChangeNotification(
           oldNickname: oldNickname,
           newNickname: newNickname,
@@ -76,7 +77,7 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // 각 상태를 업데이트하는 메서드 추가
+  //각 상태를 업데이트하는 메서드 추가
   void updateTodoCount(int count) {
     _todoCount = count;
     notifyListeners();

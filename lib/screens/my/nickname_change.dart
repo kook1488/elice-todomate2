@@ -28,6 +28,7 @@ class NicknameChange extends StatelessWidget {
         ),
         resizeToAvoidBottomInset: false, // 이 줄을 추가하여 키보드가 나타날 때 레이아웃 재조정을 방지
         body: SafeArea(
+          //
           child: Column(
             children: [
               // 상단 프로필 섹션
