@@ -8,6 +8,7 @@ class ProfileProvider with ChangeNotifier {
   String? _nickname;
   String _avatarPath = 'asset/image/avata_1.png'; // 기본 아바타 경로로 초기화
   bool _isNicknameLoaded = false; // 닉네임 로딩 상태 추가
+  bool _isUpdatingNickname = false; // 닉네임 업데이트 중인지 여부를 나타내는 플래그 추가
   // 프로필 관련 상태
 //프로바이더가 초기화 되는 시점이 그 화면을 가야만
 // 프로바이더가 초기화 되는 상황
@@ -41,29 +42,40 @@ class ProfileProvider with ChangeNotifier {
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
+    if (_isNicknameLoaded || _isUpdatingNickname)
+      return; // 이미 닉네임이 로드되었거나 업데이트 중이라면 중단
     _nickname = await _dbHelper.getNickname(loginId);
-    notifyListeners();
+    _isNicknameLoaded = true; // 닉네임이 로드되었음을 표시
+    notifyListeners(); // 상태가 변경되었음을 알림
   }
 
-  // 닉네임 상태 변경
+//[2]버튼 눌린 후 닉네임 업데이트
   Future<void> updateNickname(String loginId, String newNickname) async {
-    if (_nickname == null) return;
+    // 1. 현재 닉네임과 새 닉네임이 동일하지 않은지 확인
+    if (_nickname == null || _isUpdatingNickname) return;
+    if (_nickname == newNickname) return;
 
-    String oldNickname = _nickname!; //%% 기존 닉네임 저장
+    _isUpdatingNickname = true; // 닉네임 업데이트 중 상태 플래그 설정
 
+    // 2. 데이터베이스에서 닉네임을 업데이트
     await _dbHelper.updateNickname(loginId, newNickname);
+
+    // 3. 닉네임을 새 값으로 업데이트
     _nickname = newNickname;
-    notifyListeners();
+    _isNicknameLoaded = true;
+    _isUpdatingNickname = false;
 
-    List<String> friendIds =
-        await _dbHelper.getFriendIds(loginId); //%% 친구 목록 가져오기
-
-    for (String friendId in friendIds) {
-      //%% 친구들에게 알림 보내기
-      await NotificationService.sendNicknameChangeNotification(
-          oldNickname: oldNickname, newNickname: newNickname);
-    }
+    // 4. 상태 변경 알림
+    notifyListeners(); //이후 데이터베이스 업데이트도 하고, UI도 바꿔준다.
   }
+  // List<String> friendIds =
+  //     await _dbHelper.getFriendIds(loginId); // 친구 목록 가져오기
+  //
+  // for (String friendId in friendIds) {
+  //   //친구들에게 알림 보내기
+  //   await NotificationService.sendNicknameChangeNotification(
+  //       oldNickname: oldNickname, newNickname: newNickname);
+  // }
 
   // 아바타 이미지 변경
   Future<void> updateAvatarPath(String loginId, String newAvatarPath) async {
@@ -95,8 +107,8 @@ class ProfileProvider with ChangeNotifier {
         .getChatRoomList([]); // ChatRoomProvider에서 최신 채팅방 목록을 가져옴
     _activeChatCount = chatRoomProvider
         .activeChatCount; // ChatRoomProvider의 activeChatCount를 사용
-    notifyListeners();
-  }
+    // notifyListeners();
+  } //받고... 왜 해결 됬을까?
 
   void updateReservedChatCount(int count) {
     _reservedChatCount = count;
@@ -121,7 +133,39 @@ class ProfileProvider with ChangeNotifier {
       _friendCount -= 1;
       notifyListeners();
     }
+  }
 
-// 기타 필요한 메서드들 추가 가능
+  //kook [3] 알림
+  //[1]친구에게 닉네임 변경 알림 시작
+  // 닉네임 변경 정보를 로컬 데이터베이스에 저장하는 메서드
+  Future<void> saveNicknameChangeForFriends(
+      String loginId, String newNickname) async {
+    String oldNickname = _nickname ?? '';
+    // 닉네임 변경 정보를 로컬 데이터베이스에 저장 //
+    await _dbHelper.saveNicknameChange(loginId, oldNickname, newNickname);
+    // 친구들에게 알림을 보내는 로직은 나중에 친구가 마이프로필을 열 때 실행됩니다.
+  }
+
+  //닉네임 변경 알림
+  // 친구가 마이프로필을 열 때 닉네임 변경 알림을 보내는 메서드
+  // 로컬 데이터베이스에서 닉네임 변경 정보를 가져옴
+  Future<void> notifyNicknameChange(List<String> acceptedFriends) async {
+    // friendId 대신 acceptedFriends 사용
+    for (var friendId in acceptedFriends) {
+      // 각 친구의 ID를 사용
+      List<Map<String, dynamic>> changes =
+          await _dbHelper.getNicknameChangesForFriend(friendId);
+      // 가져온 변경 정보로 알림 전송
+      for (var change in changes) {
+        await NotificationService.sendNicknameChangeNotification(
+          oldNickname: change['oldNickname'],
+          newNickname: change['newNickname'],
+          friendId: friendId,
+        );
+      }
+
+      // 알림 전송 후 해당 변경 정보를 로컬 데이터베이스에서 삭제 //
+      await _dbHelper.clearNicknameChangesForFriend(friendId);
+    }
   }
 }

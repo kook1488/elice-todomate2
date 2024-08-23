@@ -278,6 +278,8 @@ class DatabaseHelper {
     }
   }
 
+//kook////////////////////////////////////////////////////
+  //마이 프로필 열때 업데이트된 정보가져올때 씀
   Future<int> updateUser(Map<String, dynamic> user) async {
     Database db = await database;
     return await db.update(
@@ -288,6 +290,7 @@ class DatabaseHelper {
     );
   }
 
+//회원 삭제(안쓰고 밑에서를 씀)- login id 안 물고 삭제
   Future<int> deleteUser(int id) async {
     Database db = await database;
     return await db.delete(
@@ -297,6 +300,7 @@ class DatabaseHelper {
     );
   }
 
+//마이 프로필 열때 처음 닉네임
   Future<String?> getNickname(String loginId) async {
     Database db = await database;
     List<Map<String, dynamic>> results = await db.query(
@@ -313,6 +317,10 @@ class DatabaseHelper {
     }
   }
 
+//닉네임 변경
+// [3]프로바이더에서 데이터베이스를 호출하여 updateNickname 메서드를 통해 닉네임을 업데이트
+// [3]DatabaseHelper 클래스의 updateNickname 메서드는 닉네임을 데이터베이스에 저장
+  //이 메서드는 loginId를 기반으로 users 테이블에서 해당 사용자의 닉네임을 새로 입력된 newNickname으로 업데이트
   Future<int> updateNickname(String loginId, String newNickname) async {
     Database db = await database;
     return await db.update(
@@ -320,9 +328,10 @@ class DatabaseHelper {
       {'nickname': newNickname},
       where: 'login_id = ?',
       whereArgs: [loginId],
-    );
+    ); //[4] UI 도 같이 업데이트됨 [2]에서 프로바이더 호출 받을때.
   }
 
+//회원 탈퇴
   Future<int> deleteUserByLoginId(String loginId) async {
     Database db = await database;
     return await db.delete(
@@ -332,6 +341,41 @@ class DatabaseHelper {
     );
   }
 
+//kook [2]DB에 메서드 추가
+//닉네임 변경시 알림 할려고 밑에 메서드 3개 만듬
+// 1닉네임 변경 정보를 저장하는 메서드
+  Future<void> saveNicknameChange(
+      String loginId, String oldNickname, String newNickname) async {
+    final db = await database;
+    await db.insert('nickname_changes', {
+      'login_id': loginId,
+      'oldNickname': oldNickname,
+      'newNickname': newNickname,
+    });
+  }
+
+  // 2친구가 받은 닉네임 변경 정보를 조회하는 메서드
+  Future<List<Map<String, dynamic>>> getNicknameChangesForFriend(
+      String friendId) async {
+    final db = await database;
+    return await db.query(
+      'nickname_changes',
+      where: 'friend_id = ?',
+      whereArgs: [friendId], //
+    );
+  }
+
+  // 3 조회된 닉네임 변경 정보를 삭제하는 메서드 //
+  Future<void> clearNicknameChangesForFriend(String friendId) async {
+    final db = await database;
+    await db.delete(
+      'nickname_changes',
+      where: 'friend_id = ?',
+      whereArgs: [friendId],
+    );
+  }
+
+/////////////////////////////////////////////////////
   Future<void> updatePasswordToHash() async {
     Database db = await database;
     List<Map<String, dynamic>> users = await db.query('users');
