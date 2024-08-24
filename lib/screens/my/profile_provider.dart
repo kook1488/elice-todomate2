@@ -7,12 +7,12 @@ class ProfileProvider with ChangeNotifier {
   final DatabaseHelper _dbHelper = DatabaseHelper(); // DB 불러옴
   String? _nickname;
   String _avatarPath = 'asset/image/avata_1.png'; // 기본 아바타 경로로 초기화
-  bool _isNicknameLoaded = false;
-  // 닉네임 로딩 상태 추가
+  bool _isNicknameLoaded = false; // 닉네임 로딩 상태 추가
+  bool _isUpdatingNickname = false; // 닉네임 업데이트 중인지 여부를 나타내는 플래그 추가
   // 프로필 관련 상태
-  //프로바이더가 초기화 되는 시점이 그 화면을 가야만
-  // 프로바이더가 초기화 되는 상황
-  //프로바이더가
+//프로바이더가 초기화 되는 시점이 그 화면을 가야만
+// 프로바이더가 초기화 되는 상황
+//프로바이더가
   //마이 페이지 눌렀을때 디비에서 초기화함.
   int _todoCount = 7;
   int _completedTodoCount = 5;
@@ -42,42 +42,42 @@ class ProfileProvider with ChangeNotifier {
 
   // 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
-    if (_isNicknameLoaded) return; // 이미 닉네임이 로드되었으면 중단
+    if (_isNicknameLoaded || _isUpdatingNickname)
+      return; // 이미 닉네임이 로드되었거나 업데이트 중이라면 중단
     _nickname = await _dbHelper.getNickname(loginId);
     _isNicknameLoaded = true; // 닉네임이 로드되었음을 표시
     notifyListeners(); // 상태가 변경되었음을 알림
   }
 
-  // 닉네임 상태 변경
+////////////////////////////////////
+//[2]버튼 눌린 후 닉네임 업데이트
   Future<void> updateNickname(String loginId, String newNickname) async {
-    if (_nickname == null) return;
+    // 1. 현재 닉네임과 새 닉네임이 동일하지 않은지 확인
+    if (_nickname == null || _isUpdatingNickname) return;
+    if (_nickname == newNickname) return;
 
-    String oldNickname = _nickname!; //%% 기존 닉네임 저장
+    _isUpdatingNickname = true; // 닉네임 업데이트 중 상태 플래그 설정
 
+    // 2. 데이터베이스에서 닉네임을 업데이트
     await _dbHelper.updateNickname(loginId, newNickname);
+
+    // 3. 닉네임을 새 값으로 업데이트
     _nickname = newNickname;
-    _isNicknameLoaded = true; // 닉네임이 업데이트된 후에도 로딩 상태를 유지
-    //notifyListeners(); // 상태가 변경되었음을 알림
+    _isNicknameLoaded = true;
+    _isUpdatingNickname = false;
 
-    List<String> friendIds =
-        await _dbHelper.getFriendIds(loginId); //%% 친구 목록 가져오기
-
-    for (String friendId in friendIds) {
-      // 친구들에게 알림 보내기
-      await NotificationService.sendNicknameChangeNotification(
-          oldNickname: oldNickname,
-          newNickname: newNickname,
-          friendId: friendId);
-    }
+    // 4. 상태 변경 알림
+    notifyListeners(); //이후 데이터베이스 업데이트도 하고, UI도 바꿔준다.
   }
 
+///////////////////////////////////////
   // 아바타 이미지 변경
   Future<void> updateAvatarPath(String loginId, String newAvatarPath) async {
     _avatarPath = newAvatarPath; // 새로운 프로필 이미지 경로를 설정
     notifyListeners();
   }
 
-  //각 상태를 업데이트하는 메서드 추가
+  // 각 상태를 업데이트하는 메서드 추가
   void updateTodoCount(int count) {
     _todoCount = count;
     notifyListeners();
@@ -104,6 +104,7 @@ class ProfileProvider with ChangeNotifier {
     // notifyListeners();
   } //받고... 왜 해결 됬을까?
 
+//예약된 채팅방 개수
   void updateReservedChatCount(int count) {
     _reservedChatCount = count;
     notifyListeners();
@@ -115,13 +116,13 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners(); // 상태가 변경되었음을 알림
   }
 
-  // 친구 추가 시 호출할 메서드 (예시)
+  // 친구 추가 시 호출할 메서드
   void addFriend() {
     _friendCount += 1;
     notifyListeners();
   }
 
-  // 친구 삭제 시 호출할 메서드 (예시)
+  // 친구 삭제 시 호출할 메서드
   void removeFriend() {
     if (_friendCount > 0) {
       _friendCount -= 1;
