@@ -40,7 +40,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _loadNickname() async {
-    //* 닉네임을 불러오는 메서드 추가
+    // 닉네임을 불러오는 메서드 추가
     String? nickname = await _dbHelper.getNickname(widget.loginId);
     setState(() {
       _nickname = nickname ?? 'Unknown User'; // 닉네임을 초기화
@@ -48,7 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _checkAndDisplayNotifications() async {
-    //%% 저장된 알림 메시지를 불러오기
+    //저장된 알림 메시지를 불러오기
     List<String> notifications =
         await NotificationService.getStoredNotifications();
     if (notifications.isNotEmpty) {
@@ -90,10 +90,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: [
             // 상단 프로필 섹션
             ProfileWidget(
-                nickname: _nickname ?? 'Unknown User'), //* 닉네임 전달 시 null 처리
+                nickname: _nickname ?? 'Unknown User'), // 닉네임 전달 시 null 처리
             // 하단 버튼 섹션
             Expanded(
-              // 이쪽 버튼 사이에 구현이 안되는거 해결 해야할듯
               child: Container(
                 color: Colors.white,
                 width: 320.0,
@@ -125,15 +124,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => NicknameChange(
-                              loginId: widget.loginId, //* loginId 전달
+                              loginId: widget.loginId, // loginId 전달
                               nickname: _nickname ?? 'Unknown User',
                             ),
                           ),
-                        ); //* widget.loginId로 수정                        );
+                        ); // widget.loginId로 수정
                       },
                       child: buildMenuItem(Icons.sync, "닉네임 변경"),
-                    ), // 간격 추가
-
+                    ),
                     SizedBox(height: 8.0),
                     GestureDetector(
                       onTap: () {
@@ -141,14 +139,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           context,
                           MaterialPageRoute(
                               builder: (context) => PasswordChange(
-                                    loginId: widget.loginId, //* loginId 전달
+                                    loginId: widget.loginId, // loginId 전달
                                     nickname: _nickname ?? 'Unknown User',
                                   )),
                         );
                       },
                       child: buildMenuItem(Icons.lock, "비밀번호 변경"),
-                    ), // 간격 추가
-
+                    ),
                     SizedBox(height: 8.0),
                     GestureDetector(
                       onTap: () {
@@ -157,14 +154,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           MaterialPageRoute(
                             builder: (context) => DeleteAccount(
                               loginId: widget.loginId,
-                              nickname: _nickname ??
-                                  'Unknown User', // nickname 전달// nickname 전달
+                              nickname:
+                                  _nickname ?? 'Unknown User', // nickname 전달
                             ),
                           ),
                         );
                       },
                       child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
-                    ), // 간격 추가
+                    ),
                   ],
                 ),
               ),
@@ -175,7 +172,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  // 메뉴 아이템 빌드 함수
+  //메뉴 아이템 빌드 함수---페이지별로 위젯을 나눴어야 그페이지에 필요한 위젯 바로 볼 수 있었을것
   Widget buildMenuItem(IconData icon, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

@@ -2,7 +2,7 @@ import 'dart:io'; // 파일 처리를 위해 dart:io 사용
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // image_picker 패키지 임포트
-import 'package:provider/provider.dart'; // Provider 임포트
+import 'package:provider/provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
@@ -63,7 +63,6 @@ class _ImageChangeState extends State<ImageChange> {
                       child: Column(
                         children: [
                           SizedBox(height: 10.0),
-                          // 첫 번째 Change 버튼 (사진 올리기)
                           ElevatedButton(
                             onPressed: _pickImage, // 이미지 선택 메서드 호출
                             style: ElevatedButton.styleFrom(

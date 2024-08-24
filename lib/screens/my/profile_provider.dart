@@ -9,17 +9,13 @@ class ProfileProvider with ChangeNotifier {
   String _avatarPath = 'asset/image/avata_1.png'; // 기본 아바타 경로로 초기화
   bool _isNicknameLoaded = false; // 닉네임 로딩 상태 추가
   bool _isUpdatingNickname = false; // 닉네임 업데이트 중인지 여부를 나타내는 플래그 추가
-  // 프로필 관련 상태
-//프로바이더가 초기화 되는 시점이 그 화면을 가야만
 // 프로바이더가 초기화 되는 상황
-//프로바이더가
-  //마이 페이지 눌렀을때 디비에서 초기화함.
+// 마이 페이지 눌렀을때 디비에서 초기화함.
   int _todoCount = 7;
   int _completedTodoCount = 5;
   int _diaryCount = 0;
   int _friendCount = 0;
   int _activeChatCount = 0;
-
   int _reservedChatCount = 0;
 
   // Getter 메서드
@@ -40,7 +36,7 @@ class ProfileProvider with ChangeNotifier {
   int get activeChatCount => _activeChatCount;
 
   int get reservedChatCount => _reservedChatCount;
-/////////koo 채팅방 예약개수 1
+/////////koo 채팅방 예약개수 +1
   void incrementReservedChatCount() {
     _reservedChatCount++;
     notifyListeners();
@@ -54,13 +50,13 @@ class ProfileProvider with ChangeNotifier {
     }
   }
 
-  /////////// 데이터베이스에서 닉네임 가져옴
+  //데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
     if (_isNicknameLoaded || _isUpdatingNickname)
       return; // 이미 닉네임이 로드되었거나 업데이트 중이라면 중단
     _nickname = await _dbHelper.getNickname(loginId);
     _isNicknameLoaded = true; // 닉네임이 로드되었음을 표시
-    notifyListeners(); // 상태가 변경되었음을 알림
+    notifyListeners();
   }
 
 ////////////////////////////////////
@@ -71,17 +67,14 @@ class ProfileProvider with ChangeNotifier {
     if (_nickname == newNickname) return;
 
     _isUpdatingNickname = true; // 닉네임 업데이트 중 상태 플래그 설정
-
     // 2. 데이터베이스에서 닉네임을 업데이트
     await _dbHelper.updateNickname(loginId, newNickname);
-
     // 3. 닉네임을 새 값으로 업데이트
     _nickname = newNickname;
     _isNicknameLoaded = true;
     _isUpdatingNickname = false;
-
     // 4. 상태 변경 알림
-    notifyListeners(); //이후 데이터베이스 업데이트도 하고, UI도 바꿔준다.
+    notifyListeners();
   }
 
 ///////////////////////////////////////
@@ -115,8 +108,8 @@ class ProfileProvider with ChangeNotifier {
         .getChatRoomList([]); // ChatRoomProvider에서 최신 채팅방 목록을 가져옴
     _activeChatCount = chatRoomProvider
         .activeChatCount; // ChatRoomProvider의 activeChatCount를 사용
-    // notifyListeners();
-  } //받고... 왜 해결 됬을까?
+    // notifyListeners(); -이거 주석처리 했더니 무한호출이 해결됨
+  } // 왜 해결 됬을까?
 
 //예약된 채팅방 개수
   void updateReservedChatCount(int count) {
@@ -127,7 +120,7 @@ class ProfileProvider with ChangeNotifier {
   // 친구 수 업데이트 메서드
   void updateFriendCount(int count) {
     _friendCount = count;
-    notifyListeners(); // 상태가 변경되었음을 알림
+    notifyListeners();
   }
 
   // 친구 추가 시 호출할 메서드
@@ -161,10 +154,8 @@ class ProfileProvider with ChangeNotifier {
   Future<void> notifyNicknameChange(List<String> acceptedFriends) async {
     // friendId 대신 acceptedFriends 사용
     for (var friendId in acceptedFriends) {
-      // 각 친구의 ID를 사용
       List<Map<String, dynamic>> changes =
           await _dbHelper.getNicknameChangesForFriend(friendId);
-      // 가져온 변경 정보로 알림 전송
       for (var change in changes) {
         await NotificationService.sendNicknameChangeNotification(
           oldNickname: change['oldNickname'],
