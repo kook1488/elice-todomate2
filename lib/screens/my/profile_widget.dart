@@ -162,10 +162,14 @@ class ProfileWidget extends StatelessWidget {
               Column(
                 children: [
                   Icon(Icons.star, size: 40.0, color: Colors.orange),
-                  Text('$reservedChatCount',
-                      style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                  Text('예약한 채팅방',
-                      style: TextStyle(fontSize: 12.0, color: Colors.white)),
+                  Text(
+                    '${context.watch<ProfileProvider>().reservedChatCount}', // 예약된 채팅방 개수 사용
+                    style: TextStyle(fontSize: 16.0, color: Colors.white),
+                  ),
+                  Text(
+                    '예약한 채팅방',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
                 ],
               ),
             ],

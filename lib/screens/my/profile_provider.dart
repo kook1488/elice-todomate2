@@ -19,7 +19,8 @@ class ProfileProvider with ChangeNotifier {
   int _diaryCount = 0;
   int _friendCount = 0;
   int _activeChatCount = 0;
-  int _reservedChatCount = 2;
+
+  int _reservedChatCount = 0;
 
   // Getter 메서드
   String? get nickname => _nickname;
@@ -39,8 +40,21 @@ class ProfileProvider with ChangeNotifier {
   int get activeChatCount => _activeChatCount;
 
   int get reservedChatCount => _reservedChatCount;
+/////////koo 채팅방 예약개수 1
+  void incrementReservedChatCount() {
+    _reservedChatCount++;
+    notifyListeners();
+  }
 
-  // 데이터베이스에서 닉네임 가져옴
+//줄이는건 필요없지 않나?
+  void decrementReservedChatCount() {
+    if (_reservedChatCount > 0) {
+      _reservedChatCount--;
+      notifyListeners();
+    }
+  }
+
+  /////////// 데이터베이스에서 닉네임 가져옴
   Future<void> loadNickname(String loginId) async {
     if (_isNicknameLoaded || _isUpdatingNickname)
       return; // 이미 닉네임이 로드되었거나 업데이트 중이라면 중단
