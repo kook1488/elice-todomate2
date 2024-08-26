@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/screens/my/nickname_change.dart';
 import 'package:todomate/screens/my/password_change.dart';
 import 'package:todomate/screens/my/profile_change.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 import 'package:todomate/util/notification_service.dart';
 
@@ -41,11 +43,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _loadNickname() async {
-    // 닉네임을 불러오는 메서드 추가
-    String? nickname = await _dbHelper.getNickname(widget.loginId);
-    setState(() {
-      _nickname = nickname ?? 'Unknown User'; // 닉네임을 초기화
-    });
+    await context
+        .read<ProfileProvider>() //여기서 쉐어드나 바로 닉네임
+        .justloadNickname(widget.loginId); // 닉네임을 불러오는 메서드 추가
+    // 닉네임을 초기화
   }
 
   Future<void> _checkAndDisplayNotifications() async {

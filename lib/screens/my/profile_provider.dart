@@ -59,6 +59,12 @@ class ProfileProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> justloadNickname(String loginId) async {
+    _nickname = await _dbHelper.getNickname(loginId);
+    // 닉네임이 로드되었음을 표시
+    notifyListeners();
+  }
+
 ////////////////////////////////////
 //[2]버튼 눌린 후 닉네임 업데이트
   Future<void> updateNickname(String loginId, String newNickname) async {
