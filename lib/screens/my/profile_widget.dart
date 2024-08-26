@@ -93,7 +93,7 @@ class ProfileWidget extends StatelessWidget {
                         TextSpan(
                           text: '$todoCount개', // 해야할 일 개수 변수 사용
                           style:
-                              TextStyle(fontSize: 20.0, color: Colors.orange),
+                              TextStyle(fontSize: 25.0, color: Colors.orange),
                         ),
                       ],
                     ),
@@ -108,7 +108,7 @@ class ProfileWidget extends StatelessWidget {
                         TextSpan(
                           text: '$completedTodoCount개', // 완료한 일 개수 변수 사용
                           style:
-                              TextStyle(fontSize: 20.0, color: Colors.orange),
+                              TextStyle(fontSize: 25.0, color: Colors.orange),
                         ),
                       ],
                     ),

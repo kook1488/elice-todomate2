@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/util/notification_util.dart';
+
 import '../../models/chatdto_model.dart';
+
+//여기서
 
 class ChattingRoomScreen extends StatefulWidget {
   final String roomId;
@@ -12,7 +15,8 @@ class ChattingRoomScreen extends StatefulWidget {
   State<ChattingRoomScreen> createState() => _ChattingRoomScreenState();
 }
 
-class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollControllerMixin, WidgetsBindingObserver{
+class _ChattingRoomScreenState extends State<ChattingRoomScreen>
+    with ScrollControllerMixin, WidgetsBindingObserver {
   late IO.Socket socket; // 별칭 없이 직접 사용
   late TextEditingController _messageController;
   //채팅방 메시지 객체 리스트
@@ -33,7 +37,7 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.paused:
-      // 앱이 백그라운드 상태일 때
+        // 앱이 백그라운드 상태일 때
         setState(() {
           _isAppInBackground = true;
         });
@@ -58,17 +62,17 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
     }
   }
 
-
   void _connectSocket() {
     //IP등록
-    socket = IO.io('https://6997-58-142-95-194.ngrok-free.app', <String, dynamic>{
+    socket =
+        IO.io('https://49ad-59-6-82-123.ngrok-free.app/', <String, dynamic>{
       'transports': ['websocket'],
     });
 
     socket.on('connect', (_) {
       print('Connected to server');
       //roomId로 룸 가입
-      socket.emit('joinRoom',widget.roomId);
+      socket.emit('joinRoom', widget.roomId);
     });
 
     //연결 성공시 서버에서 socketId 보내주면 초기화
@@ -79,12 +83,11 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
       });
     });
 
-
     socket.on('receiveMessage', (message) {
       //채팅 객체를 josn형태로 받아서 ChatDTO로 파싱
       ChatDTO chatDTO = ChatDTO.fromJson(message);
-      if(_isAppInBackground){
-        NotificationUtil().showNotification("새로운 메시지",chatDTO.message);
+      if (_isAppInBackground) {
+        NotificationUtil().showNotification("새로운 메시지", chatDTO.message);
       }
       setState(() {
         chats.add(chatDTO);
@@ -102,13 +105,13 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
       //emit할때 배열로 인자 2개(message,roomId) 안 넣으면 receiveMessage가 안옴 ->
       // 룸안에 있는 사람에게 전역으로 revicemessage를 주기 때문
 
-      ChatDTO sendChatDTO = ChatDTO(id: _socketId, message: _messageController.text );
+      ChatDTO sendChatDTO =
+          ChatDTO(id: _socketId, message: _messageController.text);
       //채팅 객체를 json으로 파싱해서 보냄
       socket.emit('sendMessage', [sendChatDTO.toJson(), widget.roomId]);
       _messageController.clear();
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +137,7 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
                   horizontal: 14,
                 ),
                 separatorBuilder: (context, index) =>
-                const SizedBox(height: 10),
+                    const SizedBox(height: 10),
                 itemCount: chats.length,
                 itemBuilder: (context, index) {
                   //현재 내 socketId와 같으면 오른쪽 메시지 다르면 왼쪽 메시지
@@ -148,7 +151,8 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
                       Container(
                         //가로로 채팅 최대로 넘어갈 시 오류나서 최대값 정해줌
                         constraints: BoxConstraints(
-                          maxWidth: MediaQuery.of(context).size.width * 0.7, // 말풍선의 최대 너비 설정
+                          maxWidth: MediaQuery.of(context).size.width *
+                              0.7, // 말풍선의 최대 너비 설정
                         ),
                         padding: const EdgeInsets.all(14),
                         decoration: BoxDecoration(
@@ -207,7 +211,7 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
                   ),
                   const SizedBox(width: 10),
                   ElevatedButton(
-                    onPressed: () =>{
+                    onPressed: () => {
                       _sendMessage(),
                       //전송버튼 누르면 보내던것 초기화
                       _messageController.clear()
@@ -224,7 +228,7 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
   }
 
   void _disConnectSocket() {
-    socket.disconnect();   // 소켓 연결 종료
+    socket.disconnect(); // 소켓 연결 종료
     final manager = socket.io;
     manager.nsps.clear(); // 네임스페이스 캐시 제거
   }
@@ -235,6 +239,4 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
     _disConnectSocket();
     super.dispose();
   }
-
-  
 }

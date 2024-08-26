@@ -1,4 +1,4 @@
-import 'dart:io'; // 파일 처리를 위해 dart:io 사용
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // image_picker 패키지 임포트
@@ -49,15 +49,15 @@ class _ImageChangeState extends State<ImageChange> {
           ),
         ),
         body: SafeArea(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // 상단 프로필 섹션
-                  ProfileWidget(nickname: widget.nickname),
-                  // 하단 버튼 섹션
-                  Expanded(
-                    child: Container(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // 상단 프로필 섹션
+                    ProfileWidget(nickname: widget.nickname),
+                    // 하단 버튼 섹션
+                    Container(
                       color: Colors.white,
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Column(
@@ -144,21 +144,21 @@ class _ImageChangeState extends State<ImageChange> {
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-              if (_image != null)
-                Positioned(
-                  top: 350,
-                  left: MediaQuery.of(context).size.width * 0.25, // 가운데 정렬
-                  child: Image.file(
-                    _image!,
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
-                  ),
+                  ],
                 ),
-            ],
+                if (_image != null)
+                  Positioned(
+                    top: 350,
+                    left: MediaQuery.of(context).size.width * 0.25, // 가운데 정렬
+                    child: Image.file(
+                      _image!,
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
