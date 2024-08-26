@@ -11,6 +11,7 @@ class ProfileProvider with ChangeNotifier {
   bool _isUpdatingNickname = false; // 닉네임 업데이트 중인지 여부를 나타내는 플래그 추가
 // 프로바이더가 초기화 되는 상황
 // 마이 페이지 눌렀을때 디비에서 초기화함.
+
   int _todoCount = 7;
   int _completedTodoCount = 5;
   int _diaryCount = 0;
