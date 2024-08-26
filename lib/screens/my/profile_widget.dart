@@ -15,15 +15,15 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // [6]kook 친구가 마이프로필 열때 닉네임 변경 알림 전송
-    final profileProvider = context.read<ProfileProvider>(); //프로바이더 인스턴스 가져오기
-    final List<String> acceptedFriends = [
+    // final profileProvider = context.read<ProfileProvider>(); //프로바이더 인스턴스 가져오기
+    // final List<String> acceptedFriends = [
       // 친구 목록을 받아와야 함
-      "friend1",
-      "friend2",
-      // 추가 친구 ID...
-    ];
-    // 마이프로필을 열 때 친구가 받은 닉네임 변경 알림 확인
-    profileProvider.notifyNicknameChange(acceptedFriends);
+    //   "friend1",
+    //   "friend2",
+    //   // 추가 친구 ID...
+    // ];
+    // // 마이프로필을 열 때 친구가 받은 닉네임 변경 알림 확인
+    // profileProvider.notifyNicknameChange(acceptedFriends);
     // ProfileProvider의 activeChatCount 업데이트
     // activeChatCount를 ChatRoomProvider와 연동하여 업데이트
     context
