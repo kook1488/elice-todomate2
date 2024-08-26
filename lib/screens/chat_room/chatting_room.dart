@@ -1,4 +1,6 @@
+
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 import 'package:todomate/chat/core/scroll_controller_mixin.dart';
 import 'package:todomate/util/notification_util.dart';
@@ -27,6 +29,8 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen>
   @override
   void initState() {
     super.initState();
+    NotificationUtil().initialize();
+    permissionCheck();
     WidgetsBinding.instance.addObserver(this);
     _messageController = TextEditingController();
     //소켓 접속
@@ -239,4 +243,14 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen>
     _disConnectSocket();
     super.dispose();
   }
+
+  Future<void> permissionCheck() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied || status.isPermanentlyDenied) {
+      await Permission.notification.request();
+      NotificationUtil().requestNotificationPermission();
+    }
+  }
+
+  
 }
