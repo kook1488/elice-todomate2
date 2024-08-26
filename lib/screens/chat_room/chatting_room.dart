@@ -244,6 +244,7 @@ class _ChattingRoomScreenState extends State<ChattingRoomScreen> with ScrollCont
     final status = await Permission.notification.status;
     if (status.isDenied || status.isPermanentlyDenied) {
       await Permission.notification.request();
+      NotificationUtil().requestNotificationPermission();
     }
   }
 
