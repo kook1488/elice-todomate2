@@ -1,6 +1,5 @@
 import 'dart:io';
 
-////
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
@@ -16,9 +15,7 @@ class ProfileWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // [6]kook 친구가 마이프로필 열때 닉네임 변경 알림 전송
-
-    final profileProvider =
-        context.read<ProfileProvider>(); //^^ 프로바이더 인스턴스 가져오기
+    final profileProvider = context.read<ProfileProvider>(); //프로바이더 인스턴스 가져오기
     final List<String> acceptedFriends = [
       // 친구 목록을 받아와야 함
       "friend1",
@@ -26,25 +23,20 @@ class ProfileWidget extends StatelessWidget {
       // 추가 친구 ID...
     ];
     // 마이프로필을 열 때 친구가 받은 닉네임 변경 알림 확인
-
     profileProvider.notifyNicknameChange(acceptedFriends);
-
     // ProfileProvider의 activeChatCount 업데이트
     // activeChatCount를 ChatRoomProvider와 연동하여 업데이트
     context
         .read<ProfileProvider>()
         .updateActiveChatCount(context.read<ChatRoomProvider>());
-    //TODO:
-    //지금은 watch에서 프로바이더를 가져옴
+    //지금은 watch에서 프로바이더를 가져옴 - read 보다 낫다 바로바로 변해야 하니깐
     // ProfileProvider의 상태를 가져옴
-    //디비로 초기값을 가져오는게 좋을 듯.. //watch가 디비를 관찰하는거 아닐까?
+    //디비로 초기값을 가져오는게 좋을 듯..
     final avatarPath = context.watch<ProfileProvider>().avatarPath;
     //[4] 프로바이더에서 DB 변경과 동시에 notifyListeners 호 호출 받아서
     // profileProvider에 연결된 모든 UI 가 새 닉네임 반영
     //호출 받아서 닉네임 업데이트
-    final String? currentNickname =
-        context.watch<ProfileProvider>().nickname; //변경된 닉네임을 반영
-
+    final String? currentNickname = context.watch<ProfileProvider>().nickname;
     final int todoCount =
         context.watch<TodoProvider>().incompleteTodoCount; // 완료되지 않은 할 일 개수 사용
     final int completedTodoCount = context
@@ -66,7 +58,6 @@ class ProfileWidget extends StatelessWidget {
         children: [
           Row(
             children: [
-              // 프로필 이미지
               Padding(
                 padding: const EdgeInsets.only(left: 40.0),
                 child: CircleAvatar(
@@ -102,13 +93,12 @@ class ProfileWidget extends StatelessWidget {
                         TextSpan(
                           text: '$todoCount개', // 해야할 일 개수 변수 사용
                           style:
-                              TextStyle(fontSize: 20.0, color: Colors.orange),
+                              TextStyle(fontSize: 25.0, color: Colors.orange),
                         ),
                       ],
                     ),
                   ),
                   RichText(
-                    /////
                     text: TextSpan(
                       children: [
                         TextSpan(
@@ -118,7 +108,7 @@ class ProfileWidget extends StatelessWidget {
                         TextSpan(
                           text: '$completedTodoCount개', // 완료한 일 개수 변수 사용
                           style:
-                              TextStyle(fontSize: 20.0, color: Colors.orange),
+                              TextStyle(fontSize: 25.0, color: Colors.orange),
                         ),
                       ],
                     ),
@@ -127,7 +117,7 @@ class ProfileWidget extends StatelessWidget {
                     text: TextSpan(
                       children: [
                         TextSpan(
-                          text: '내가 쓴 일기 $diaryCount개', // 일기 개수 변수 사용
+                          text: '내가 쓴 일기 $diaryCount개',
                           style: TextStyle(fontSize: 16.0, color: Colors.white),
                         ),
                       ],
@@ -138,7 +128,6 @@ class ProfileWidget extends StatelessWidget {
             ],
           ),
           SizedBox(height: 16.0),
-          // 추가된 통계 섹션
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -163,10 +152,14 @@ class ProfileWidget extends StatelessWidget {
               Column(
                 children: [
                   Icon(Icons.star, size: 40.0, color: Colors.orange),
-                  Text('$reservedChatCount',
-                      style: TextStyle(fontSize: 16.0, color: Colors.white)),
-                  Text('예약한 채팅방',
-                      style: TextStyle(fontSize: 12.0, color: Colors.white)),
+                  Text(
+                    '${context.watch<ProfileProvider>().reservedChatCount}', // 예약된 채팅방 개수 사용
+                    style: TextStyle(fontSize: 16.0, color: Colors.white),
+                  ),
+                  Text(
+                    '예약한 채팅방',
+                    style: TextStyle(fontSize: 12.0, color: Colors.white),
+                  ),
                 ],
               ),
             ],

@@ -84,7 +84,6 @@ class ProfileChange extends StatelessWidget {
   }
 
   // 메뉴 아이템 빌드 함수
-  // 메뉴 아이템 빌드 함수
   Widget buildMenuItemWithImage(String imagePath, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

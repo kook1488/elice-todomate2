@@ -5,7 +5,7 @@ import 'package:todomate/screens/my/profile_widget.dart';
 
 class DeleteAccount extends StatelessWidget {
   final String nickname;
-  //탈퇴작업 178번째 줄
+  //탈퇴작업 DB 178번째 줄
   final String loginId; // 사용자의 loginId를 받아서 처리
   DeleteAccount({required this.loginId, required this.nickname});
   // 생성자에서 loginId 를 전달받음
@@ -64,10 +64,8 @@ class DeleteAccount extends StatelessWidget {
                             onPressed: () async {
                               // final : 불변변수  ,DatabaseHelper 인스턴스 가져오기
                               final dbHelper = DatabaseHelper();
-
                               // loginId를 기반으로 사용자 삭제
                               await dbHelper.deleteUserByLoginId(loginId);
-
                               // 로그인 화면으로 이동 및 이전 페이지 스택 제거
                               Navigator.of(context).pushAndRemoveUntil(
                                 MaterialPageRoute(
@@ -76,7 +74,7 @@ class DeleteAccount extends StatelessWidget {
                               );
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.grey, // 회색 버튼
+                              backgroundColor: Colors.grey,
                               padding: EdgeInsets.symmetric(
                                   vertical: 15.0, horizontal: 55.0),
                               shape: RoundedRectangleBorder(
@@ -96,7 +94,7 @@ class DeleteAccount extends StatelessWidget {
                               Navigator.pop(context);
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange, // 오렌지색 버튼
+                              backgroundColor: Colors.orange,
                               padding: EdgeInsets.symmetric(
                                   vertical: 15.0, horizontal: 40.0),
                               shape: RoundedRectangleBorder(
@@ -124,41 +122,41 @@ class DeleteAccount extends StatelessWidget {
     );
   }
 
-  // 메뉴 아이템 빌드 함수
-  Widget buildMenuItem(IconData icon, String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Container(
-        padding: EdgeInsets.all(16.0),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.3),
-              spreadRadius: 2,
-              blurRadius: 5,
-            ),
-          ],
-        ),
-        child: Row(
-          children: [
-            CircleAvatar(
-              radius: 24.0,
-              backgroundColor: Colors.grey[300],
-              child: Icon(icon, color: Colors.black, size: 30.0),
-            ),
-            SizedBox(width: 16.0),
-            Text(
-              text,
-              style: TextStyle(
-                fontSize: 18.0,
-                color: Colors.black87,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // 메뉴 아이템 빌드 함수 -겹침
+  // Widget buildMenuItem(IconData icon, String text) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8.0),
+  //     child: Container(
+  //       padding: EdgeInsets.all(16.0),
+  //       decoration: BoxDecoration(
+  //         color: Colors.white,
+  //         borderRadius: BorderRadius.circular(12.0),
+  //         boxShadow: [
+  //           BoxShadow(
+  //             color: Colors.grey.withOpacity(0.3),
+  //             spreadRadius: 2,
+  //             blurRadius: 5,
+  //           ),
+  //         ],
+  //       ),
+  //       child: Row(
+  //         children: [
+  //           CircleAvatar(
+  //             radius: 24.0,
+  //             backgroundColor: Colors.grey[300],
+  //             child: Icon(icon, color: Colors.black, size: 30.0),
+  //           ),
+  //           SizedBox(width: 16.0),
+  //           Text(
+  //             text,
+  //             style: TextStyle(
+  //               fontSize: 18.0,
+  //               color: Colors.black87,
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 }
