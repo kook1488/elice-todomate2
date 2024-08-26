@@ -4,12 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:todomate/models/chat_room_model.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/models/topic_model.dart';
-import 'package:todomate/screens/chat/chat.dart';
 import 'package:todomate/screens/chat_room/chat_room_detail.dart';
 import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/chat_room/chatting_room.dart';
 import 'package:todomate/screens/chat_room/create_chat_room.dart';
 import 'package:todomate/screens/chat_room/notification.dart';
+import 'package:todomate/screens/my/profile_provider.dart';
 
 class ChatRoomScreen extends StatefulWidget {
   const ChatRoomScreen({super.key});
@@ -464,11 +464,18 @@ class _ChatRoomScreenState extends State<ChatRoomScreen> {
                                           const SizedBox(width: 10),
                                           ElevatedButton(
                                             onPressed: isReserveDisable
-                                                ? () => FlutterLocalNotification
-                                                    .showNotification(
-                                                        chatRoomList[index],
-                                                        '예약 완료되었습니다.',
-                                                        '')
+                                                ? () {
+                                                    FlutterLocalNotification
+                                                        .showNotification(
+                                                            chatRoomList[index],
+                                                            '예약 완료되었습니다.',
+                                                            '');
+
+                                                    // 예약된 채팅방 개수를 증가시킴
+                                                    context
+                                                        .read<ProfileProvider>()
+                                                        .incrementReservedChatCount();
+                                                  }
                                                 : null,
                                             child:
                                                 const Center(child: Text('예약')),

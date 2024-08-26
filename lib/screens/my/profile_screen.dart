@@ -17,19 +17,20 @@ class ProfileScreen extends StatefulWidget {
   ProfileScreen({required this.loginId});
 
   @override
-  _ProfileScreenState createState() => _ProfileScreenState(); //* State 클래스 생성
+  _ProfileScreenState createState() => _ProfileScreenState(); // State 클래스 생성
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
   String? _nickname; // 닉네임을 저장할 변수 추가
-  final DatabaseHelper _dbHelper = DatabaseHelper(); // DatabaseHelper 인스턴스 추가
-//클래스가 다를때는 위젯으로 가져온다//스테이트 풀위젯일때
+  final DatabaseHelper _dbHelper = DatabaseHelper();
+  // DatabaseHelper 인스턴스 추가
+  //클래스가 다를때는 위젯으로 가져온다//스테이트 풀위젯일때
   //왜 위젯.login 으로 가져왔는지.,.
 
   @override
   void initState() {
     super.initState();
-    _loadNickname(); //* 닉네임을 불러오는 메서드 호출
+    _loadNickname(); // 닉네임을 불러오는 메서드 호출
   }
 
   @override
@@ -40,7 +41,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _loadNickname() async {
-    //* 닉네임을 불러오는 메서드 추가
+    // 닉네임을 불러오는 메서드 추가
     String? nickname = await _dbHelper.getNickname(widget.loginId);
     setState(() {
       _nickname = nickname ?? 'Unknown User'; // 닉네임을 초기화
@@ -48,7 +49,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Future<void> _checkAndDisplayNotifications() async {
-    //%% 저장된 알림 메시지를 불러오기
+    //저장된 알림 메시지를 불러오기
     List<String> notifications =
         await NotificationService.getStoredNotifications();
     if (notifications.isNotEmpty) {
@@ -63,7 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                NotificationService.clearNotifications(); //%% 메시지 확인 후 삭제 (옵션)
+                NotificationService.clearNotifications(); // 메시지 확인 후 삭제 (옵션)
                 Navigator.of(context).pop();
               },
               child: Text('확인'),
@@ -86,96 +87,96 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            // 상단 프로필 섹션
-            ProfileWidget(
-                nickname: _nickname ?? 'Unknown User'), //* 닉네임 전달 시 null 처리
-            // 하단 버튼 섹션
-            Expanded(
-              // 이쪽 버튼 사이에 구현이 안되는거 해결 해야할듯
-              child: Container(
-                color: Colors.white,
-                width: 320.0,
-                child: Column(
-                  mainAxisAlignment:
-                      MainAxisAlignment.start, // Column의 주 축에서 시작
-                  crossAxisAlignment: CrossAxisAlignment.stretch, // 가로로 꽉 차게
-                  children: [
-                    SizedBox(height: 20.0),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ProfileChange(
-                              loginId: widget.loginId, //클래스다른데도 위에 있는 클래스에서
-                              nickname:
-                                  _nickname ?? 'Unknown User', // nickname 전달
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              // 상단 프로필 섹션
+              ProfileWidget(
+                  nickname: _nickname ?? 'Unknown User'), // 닉네임 전달 시 null 처리
+              // 하단 버튼 섹션
+              Container(
+                child: Container(
+                  color: Colors.white,
+                  width: 340.0, // 넓이를 기기 화면에 맞게 조정
+                  padding: EdgeInsets.symmetric(horizontal: 16.0), //
+                  child: Column(
+                    mainAxisAlignment:
+                        MainAxisAlignment.start, // Column의 주 축에서 시작
+                    // 가로로 꽉 차게
+                    children: [
+                      SizedBox(height: 20.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ProfileChange(
+                                loginId: widget.loginId, //클래스다른데도 위에 있는 클래스에서
+                                nickname:
+                                    _nickname ?? 'Unknown User', // nickname 전달
+                              ),
+                            ), //widget.loginId로 수정
+                          );
+                        },
+                        child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
+                      ),
+                      SizedBox(height: 8.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NicknameChange(
+                                loginId: widget.loginId, // loginId 전달
+                                nickname: _nickname ?? 'Unknown User',
+                              ),
                             ),
-                          ), //widget.loginId로 수정
-                        );
-                      },
-                      child: buildMenuItem(Icons.person, "프로필 이미지 변경"),
-                    ),
-                    SizedBox(height: 8.0),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NicknameChange(
-                              loginId: widget.loginId, //* loginId 전달
-                              nickname: _nickname ?? 'Unknown User',
+                          ); // widget.loginId로 수정
+                        },
+                        child: buildMenuItem(Icons.sync, "닉네임 변경"),
+                      ),
+                      SizedBox(height: 8.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => PasswordChange(
+                                      loginId: widget.loginId, // loginId 전달
+                                      nickname: _nickname ?? 'Unknown User',
+                                    )),
+                          );
+                        },
+                        child: buildMenuItem(Icons.lock, "비밀번호 변경"),
+                      ),
+                      SizedBox(height: 8.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => DeleteAccount(
+                                loginId: widget.loginId,
+                                nickname:
+                                    _nickname ?? 'Unknown User', // nickname 전달
+                              ),
                             ),
-                          ),
-                        ); //* widget.loginId로 수정                        );
-                      },
-                      child: buildMenuItem(Icons.sync, "닉네임 변경"),
-                    ), // 간격 추가
-
-                    SizedBox(height: 8.0),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => PasswordChange(
-                                    loginId: widget.loginId, //* loginId 전달
-                                    nickname: _nickname ?? 'Unknown User',
-                                  )),
-                        );
-                      },
-                      child: buildMenuItem(Icons.lock, "비밀번호 변경"),
-                    ), // 간격 추가
-
-                    SizedBox(height: 8.0),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => DeleteAccount(
-                              loginId: widget.loginId,
-                              nickname: _nickname ??
-                                  'Unknown User', // nickname 전달// nickname 전달
-                            ),
-                          ),
-                        );
-                      },
-                      child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
-                    ), // 간격 추가
-                  ],
+                          );
+                        },
+                        child: buildMenuItem(Icons.exit_to_app, "회원 탈퇴"),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 
-  // 메뉴 아이템 빌드 함수
+  //메뉴 아이템 빌드 함수---페이지별로 위젯을 나눴어야 그페이지에 필요한 위젯 바로 볼 수 있었을것
   Widget buildMenuItem(IconData icon, String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),

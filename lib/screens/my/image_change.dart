@@ -1,8 +1,8 @@
-import 'dart:io'; // 파일 처리를 위해 dart:io 사용
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart'; // image_picker 패키지 임포트
-import 'package:provider/provider.dart'; // Provider 임포트
+import 'package:provider/provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
 
@@ -49,21 +49,20 @@ class _ImageChangeState extends State<ImageChange> {
           ),
         ),
         body: SafeArea(
-          child: Stack(
-            children: [
-              Column(
-                children: [
-                  // 상단 프로필 섹션
-                  ProfileWidget(nickname: widget.nickname),
-                  // 하단 버튼 섹션
-                  Expanded(
-                    child: Container(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Column(
+                  children: [
+                    // 상단 프로필 섹션
+                    ProfileWidget(nickname: widget.nickname),
+                    // 하단 버튼 섹션
+                    Container(
                       color: Colors.white,
                       padding: EdgeInsets.symmetric(horizontal: 16.0),
                       child: Column(
                         children: [
-                          SizedBox(height: 20.0),
-                          // 첫 번째 Change 버튼 (사진 올리기)
+                          SizedBox(height: 10.0),
                           ElevatedButton(
                             onPressed: _pickImage, // 이미지 선택 메서드 호출
                             style: ElevatedButton.styleFrom(
@@ -85,10 +84,10 @@ class _ImageChangeState extends State<ImageChange> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20.0),
+                          SizedBox(height: 30.0),
 
                           // 버튼들이 밀리지 않도록 추가한 SizedBox
-                          SizedBox(height: 220.0),
+                          SizedBox(height: 200.0),
                           ElevatedButton(
                             onPressed: () {
                               if (_image != null) {
@@ -119,7 +118,7 @@ class _ImageChangeState extends State<ImageChange> {
                               ),
                             ),
                           ),
-                          SizedBox(height: 20.0),
+                          SizedBox(height: 10.0),
                           ElevatedButton(
                             onPressed: () {
                               Navigator.pop(context); // 첫 번째 pop
@@ -145,21 +144,21 @@ class _ImageChangeState extends State<ImageChange> {
                         ],
                       ),
                     ),
-                  ),
-                ],
-              ),
-              if (_image != null)
-                Positioned(
-                  top: 360,
-                  left: MediaQuery.of(context).size.width * 0.25, // 가운데 정렬
-                  child: Image.file(
-                    _image!,
-                    height: 200,
-                    width: 200,
-                    fit: BoxFit.cover,
-                  ),
+                  ],
                 ),
-            ],
+                if (_image != null)
+                  Positioned(
+                    top: 350,
+                    left: MediaQuery.of(context).size.width * 0.25, // 가운데 정렬
+                    child: Image.file(
+                      _image!,
+                      height: 200,
+                      width: 200,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),

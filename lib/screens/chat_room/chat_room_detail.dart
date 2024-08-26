@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:todomate/models/chat_room_model.dart';
 import 'package:todomate/models/signup_model.dart';
 import 'package:todomate/models/topic_model.dart';

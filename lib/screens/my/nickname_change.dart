@@ -10,8 +10,6 @@ class NicknameChange extends StatelessWidget {
 
   NicknameChange({required this.loginId, required this.nickname});
 
-//디비를 한번 더 불러서 화면을 더 갱신시켜야 한다.
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -28,6 +26,7 @@ class NicknameChange extends StatelessWidget {
         ),
         resizeToAvoidBottomInset: false, // 이 줄을 추가하여 키보드가 나타날 때 레이아웃 재조정을 방지
         body: SafeArea(
+          //
           child: Column(
             children: [
               // 상단 프로필 섹션
@@ -83,27 +82,24 @@ class NicknameChange extends StatelessWidget {
                                 .read<ProfileProvider>()
                                 .updateNickname(loginId, newNickname);
 
-                            // 2. 변경된 닉네임을 다시 로드하여 화면을 갱신 (옵션, 필요 시)
+                            // 2. 변경된 닉네임을 다시 로드하여 화면을 갱신
                             await context
                                 .read<ProfileProvider>()
                                 .loadNickname(loginId);
-                          } // 3. 프로바이더로 가기
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,
-                          // 첫 번째 버튼 색상 변경 가능
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 5,
-                          // 그림자 효과
                           shadowColor: Colors.grey.withOpacity(0.3),
-                          // 그림자 색상 및 불투명도
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),
                         ),
                         child: Text(
-                          'Change', // 첫 번째 버튼의 텍스트
+                          'Change',
                           style: TextStyle(
                             fontSize: 35.0,
                             color: Colors.grey,
@@ -134,22 +130,19 @@ class NicknameChange extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 5,
-                          // 그림자 효과
                           shadowColor: Colors.grey.withOpacity(0.3),
-                          // 그림자 색상 및 불투명도
                           padding: EdgeInsets.symmetric(
                               horizontal: 35.0, vertical: 10.0),
                         ),
                         child: Text(
-                          'Change Call', // 첫 번째 버튼의 텍스트
+                          'Change Call',
                           style: TextStyle(
                             fontSize: 35.0,
                             color: Colors.grey,
                           ),
                         ),
                       ),
-
-                      SizedBox(height: 80.0), // 두 버튼 사이의 간격
+                      SizedBox(height: 80.0),
                       ElevatedButton(
                         onPressed: () {
                           // pop
@@ -161,7 +154,6 @@ class NicknameChange extends StatelessWidget {
                             borderRadius: BorderRadius.circular(12.0),
                           ),
                           elevation: 8,
-                          // 그림자 효과
                           shadowColor: Colors.grey.withOpacity(0.5),
                           padding: EdgeInsets.symmetric(
                               horizontal: 70.0, vertical: 10.0),

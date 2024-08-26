@@ -85,14 +85,10 @@ class DatabaseHelper {
 //on creat 다시 부르는 문제.
   Future<Database> _initDatabase() async {
     String path = join(await getDatabasesPath(), 'user_database.db');
-
-    // deleteDatabase(path);
-
     return await openDatabase(
       path,
       version: 4,
       onCreate: _onCreate,
-      // onUpgrade: _onUpgrade,
     );
   }
 
@@ -278,7 +274,8 @@ class DatabaseHelper {
     }
   }
 
-//kook////////////////////////////////////////////////////
+/////kook////////////////////////////////////////////////
+
   //마이 프로필 열때 업데이트된 정보가져올때 씀
   Future<int> updateUser(Map<String, dynamic> user) async {
     Database db = await database;
@@ -361,11 +358,11 @@ class DatabaseHelper {
     return await db.query(
       'nickname_changes',
       where: 'friend_id = ?',
-      whereArgs: [friendId], //
+      whereArgs: [friendId],
     );
   }
 
-  // 3 조회된 닉네임 변경 정보를 삭제하는 메서드 //
+  // 3 조회된 닉네임 변경 정보를 삭제하는 메서드
   Future<void> clearNicknameChangesForFriend(String friendId) async {
     final db = await database;
     await db.delete(
@@ -375,7 +372,7 @@ class DatabaseHelper {
     );
   }
 
-/////////////////////////////////////////////////////
+////////////////////////////////////////////////////////
   Future<void> updatePasswordToHash() async {
     Database db = await database;
     List<Map<String, dynamic>> users = await db.query('users');
