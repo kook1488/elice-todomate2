@@ -97,7 +97,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 child: Container(
                   color: Colors.white,
-                  width: double.infinity, // 넓이를 기기 화면에 맞게 조정
+                  width: 340.0, // 넓이를 기기 화면에 맞게 조정
                   padding: EdgeInsets.symmetric(horizontal: 16.0), //
                   child: Column(
                     mainAxisAlignment:
