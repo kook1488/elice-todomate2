@@ -50,6 +50,7 @@ class MyApp extends StatelessWidget {
     // webSocketService.connect('ws://172.30.1.57:8080'); // 실제 WebSocket URL로 변경
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Todomate',
       theme: ThemeData(
         primarySwatch: Colors.blue,

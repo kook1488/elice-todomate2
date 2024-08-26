@@ -340,7 +340,7 @@ class DatabaseHelper {
 
 //kook [2]DB에 메서드 추가
 //닉네임 변경시 알림 할려고 밑에 메서드 3개 만듬
-//1닉네임 변경 정보를 저장하는 메서드
+// 1닉네임 변경 정보를 저장하는 메서드
   Future<void> saveNicknameChange(
       String loginId, String oldNickname, String newNickname) async {
     final db = await database;
