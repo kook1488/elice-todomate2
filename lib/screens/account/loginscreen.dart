@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
               children: [
                 SizedBox(width: 20),
                 Text(
-                  "환영합니다.",
+                  "TodoMate.",
                   style: TextStyle(fontSize: 40),
                 ),
               ],
@@ -219,39 +219,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                SizedBox(height: 50),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.fromLTRB(40, 17, 10, 10),
-                      width: 170,
-                      height: 60,
-                      color: Colors.yellow,
-                      child: Text(
-                        "카톡 로그인",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                    SizedBox(width: 30),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(40, 17, 10, 10),
-                      width: 170,
-                      height: 60,
-                      color: Colors.blue,
-                      child: Text(
-                        "구글 로그인",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
+                SizedBox(height: 300),
                 RichText(
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: "SNS 계정 로그인",
+                        text: "관리자 페이지",
                         style: TextStyle(color: Colors.black),
                         recognizer: TapGestureRecognizer()
                           ..onTap = () {
