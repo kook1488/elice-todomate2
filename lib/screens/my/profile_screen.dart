@@ -42,12 +42,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _loadNickname(); // 닉네임을 다시 불러옴
   }
 
-  //코드의 차이점
+  // //코드의 차이점
   // String? nickname = await _dbHelper.getNickname(widget.loginId);
   // setState(() {
   // _nickname = nickname ?? 'Unknown User'; // 닉네임을 초기화
   // });
-
+//BD헬퍼 안하고 바로 프로바이더로 해결이 된 상황
   void _loadNickname() async {
     await context
         .read<ProfileProvider>() //여기서 쉐어드나 바로 닉네임
