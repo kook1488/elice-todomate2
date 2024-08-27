@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/account/introscreen.dart';
+import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/diary/diary_provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
-import 'package:todomate/screens/chat_room/chat_room_provider.dart';
 import 'package:todomate/screens/todo/todo_provider.dart';
-
+import 'package:todomate/util/notification_service.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  NotificationService.initialize();
   initializeDateFormatting().then((_) {
     runApp(
       MultiProvider(

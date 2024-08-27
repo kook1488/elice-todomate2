@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todomate/screens/my/profile_provider.dart';
 import 'package:todomate/screens/my/profile_widget.dart';
+import 'package:todomate/util/notification_service.dart';
 
 class NicknameChange extends StatelessWidget {
   final String loginId;
@@ -115,15 +116,11 @@ class NicknameChange extends StatelessWidget {
                       //kook[5]버튼 클릭 시 saveNicknameChangeForFriends 메서드가 호출
                       ElevatedButton(
                         onPressed: () async {
-                          String newNickname = _nicknameController.text;
-
-                          if (newNickname.isNotEmpty) {
-                            // 닉네임 변경 후 친구들에게 알림 저장 //
-                            await context
-                                .read<ProfileProvider>()
-                                .saveNicknameChangeForFriends(
-                                    loginId, newNickname); //
-                          }
+                          await NotificationService.showNotification(
+                            title: 'Nickname Changed',
+                            body:
+                                'Your nickname has been successfully updated.',
+                          );
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

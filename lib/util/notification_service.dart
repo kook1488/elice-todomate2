@@ -51,5 +51,46 @@ class NotificationService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove('notifications');
   }
+
   //////////////////////////////////////////////
+  //알림기능 시작
+  static Future<void> initialize() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    // iOS 초기화 설정
+    const DarwinInitializationSettings
+        initializationSettingsDarwin = // 여기 이름 수정
+        DarwinInitializationSettings();
+
+    const InitializationSettings initializationSettings =
+        InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin, // 수정된 부분
+    );
+
+    await _notificationsPlugin.initialize(initializationSettings);
+  }
+
+  static Future<void> showNotification(
+      {required String title, required String body}) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'channel_id',
+      'channel_name',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    // iOS 알림 세부사항
+    const DarwinNotificationDetails darwinPlatformChannelSpecifics = // 여기 이름 수정
+        DarwinNotificationDetails();
+
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: darwinPlatformChannelSpecifics, // 수정된 부분
+    );
+
+    await _notificationsPlugin.show(0, title, body, platformChannelSpecifics);
+  }
 }
