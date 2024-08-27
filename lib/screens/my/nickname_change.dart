@@ -77,7 +77,8 @@ class NicknameChange extends StatelessWidget {
                       ElevatedButton(
                         onPressed: () async {
                           //[1]버튼 눌렀을때
-                          String newNickname = _nicknameController.text;
+                          String newNickname =
+                              _nicknameController.text; // 새로운 닉네임 변수에 할당
                           if (newNickname.isNotEmpty) {
                             // 1. ProfileProvider의 updateNickname 메서드를 호출하여 닉네임을 업데이트
                             await context
@@ -116,11 +117,16 @@ class NicknameChange extends StatelessWidget {
                       //kook[5]버튼 클릭 시 saveNicknameChangeForFriends 메서드가 호출
                       ElevatedButton(
                         onPressed: () async {
-                          await NotificationService.showNotification(
-                            title: 'Nickname Changed',
-                            body:
-                                'Your nickname has been successfully updated.',
-                          );
+                          String newNickname =
+                              _nicknameController.text; // 새로운 닉네임 변수에 할당
+                          if (newNickname.isNotEmpty) {
+                            await NotificationService
+                                .sendNicknameChangeNotification(
+                              oldNickname: nickname, // 기존 닉네임
+                              newNickname: newNickname, // 새로운 닉네임
+                              friendId: loginId,
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.white,

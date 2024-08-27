@@ -24,12 +24,13 @@ class NotificationService {
 
     const NotificationDetails platformDetails =
         NotificationDetails(android: androidDetails);
-
+    // 알림 내용 수정
+    String notificationBody = '$oldNickname가 $newNickname로 닉네임을 변경하였습니다.';
     // 알림 전송
     await _notificationsPlugin.show(
       0,
       '닉네임 변경',
-      '$oldNickname에서 $newNickname으로 닉네임이 변경되었습니다.',
+      notificationBody,
       platformDetails,
     );
 
