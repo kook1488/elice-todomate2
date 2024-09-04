@@ -9,6 +9,7 @@ import 'package:todomate/screens/my/profile_widget.dart';
 import 'package:todomate/util/notification_service.dart';
 
 import 'delete_account.dart';
+import 'profile_webview.dart';
 
 //유저 객체를 가져와서 유저의 로그인 아이디를 빼와서
 // 로그인한 유저의 정보를 삭제해야한다.
@@ -154,6 +155,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           );
                         },
                         child: buildMenuItem(Icons.lock, "비밀번호 변경"),
+                      ),
+                      SizedBox(height: 8.0),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  GoogleSearchPage(), // 구글 검색 페이지로 이동
+                            ),
+                          );
+                        },
+                        child: buildMenuItem(Icons.search, "구글 검색"),
                       ),
                       SizedBox(height: 8.0),
                       GestureDetector(

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart' as firebaseAuth;
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:todomate/chat/models/user_info.dart';
@@ -8,6 +9,7 @@ import 'package:todomate/screens/account/signupscreen.dart';
 import 'package:todomate/screens/account/userlistscreen.dart';
 
 import '../../util/sharedpreference.dart';
+import 'google_login.dart'; // AuthService 파일을 가져옵니다.
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -17,6 +19,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final AuthService _authService = AuthService(); // AuthService 인스턴스 생성
   bool _obscureText = true;
   TextEditingController _passwordController = TextEditingController();
   TextEditingController _loginIdController = TextEditingController();
@@ -31,13 +34,13 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+/////다른 로그인
   Future<void> _login() async {
     setState(() {
       _errorMessage = null;
     });
 
     try {
-
       final loginResult = await _databaseHelper.loginUser(
         _loginIdController.text,
         _passwordController.text,
@@ -51,12 +54,17 @@ class _LoginScreenState extends State<LoginScreen> {
           avatarPath: user['avatar_path'],
           loginId: _loginIdController.text, // loginId를 추가합니다.
         );
-        
-        TodoSharedPreference().setPreferenceWithKey('id', _userInfo!.id.toString());
-        TodoSharedPreference().setPreferenceWithKey('userNickName', _userInfo!.nickName);
-        TodoSharedPreference().setPreferenceWithKey('userAvatarPath', _userInfo!.avatarPath);
-        TodoSharedPreference().setPreferenceWithKey('userId', _userInfo!.loginId);
-        TodoSharedPreference().setPreferenceWithKey('isAutoLogin', _autoLoginChecked.toString());
+
+        TodoSharedPreference()
+            .setPreferenceWithKey('id', _userInfo!.id.toString());
+        TodoSharedPreference()
+            .setPreferenceWithKey('userNickName', _userInfo!.nickName);
+        TodoSharedPreference()
+            .setPreferenceWithKey('userAvatarPath', _userInfo!.avatarPath);
+        TodoSharedPreference()
+            .setPreferenceWithKey('userId', _userInfo!.loginId);
+        TodoSharedPreference()
+            .setPreferenceWithKey('isAutoLogin', _autoLoginChecked.toString());
 
         Navigator.pushReplacement(
           context,
@@ -181,6 +189,32 @@ class _LoginScreenState extends State<LoginScreen> {
                       style: TextStyle(color: Colors.red),
                     ),
                   ),
+                SizedBox(height: 20),
+                // 구글 로그인 버튼 추가
+                ElevatedButton.icon(
+                  icon: Icon(Icons.login, color: Colors.blue),
+                  label: Text('Google 로그인'),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: Size(370, 50),
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      side: BorderSide(color: Colors.grey),
+                    ),
+                  ),
+                  onPressed: () async {
+                    firebaseAuth.User? user =
+                        await _authService.signInWithGoogle();
+                    if (user != null) {
+                      // 로그인 성공 처리
+                      print('구글 로그인 성공: ${user.displayName}');
+                    } else {
+                      // 로그인 실패 처리
+                      print('구글 로그인 실패');
+                    }
+                  },
+                ),
+                SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
