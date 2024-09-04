@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "474379223776",
+    "project_id": "kook-ef6fa",
+    "storage_bucket": "kook-ef6fa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474379223776:android:448a184e9f83b6d80d4685",
+        "android_client_info": {
+          "package_name": "com.example.danggeun"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcl_Ve5m-b-Te5aQwrZsGDq2TRUR6fVjw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474379223776:android:20e0441dd6549d8e0d4685",
+        "android_client_info": {
+          "package_name": "com.example.todomate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcl_Ve5m-b-Te5aQwrZsGDq2TRUR6fVjw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474379223776:android:dc4e13024204d2100d4685",
+        "android_client_info": {
+          "package_name": "com.test.kook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcl_Ve5m-b-Te5aQwrZsGDq2TRUR6fVjw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
